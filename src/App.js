@@ -1,25 +1,37 @@
-import logo from './logo.svg';
+// App.js
+import React, { useState } from 'react';
+import GameSelect from './GameSelect';
+import Matchup from './Matchup';
+import ScoreDisplay from './ScoreDisplay';
 import './App.css';
+const App = () => {
+	// Define your list of games (you can add more games here)
+	const games = [
+		{ id: "1", name: 'Melee' },
+		{ id: "1386", name: 'Ultimate' }
+	];
+  
+	const [videogameId, setVideogameId] = useState("1");
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+	const handleGameSelect = (gameId) => {
+		setVideogameId(gameId);
+	};
+	
+
+	// Other logic for handling character display and matchup
+	return (
+		<div className="app-container">
+			<div className="left-column">
+				<GameSelect games={games} videogameId={videogameId} selectGame={handleGameSelect} />
+				<Matchup videogameId={videogameId} quizMode={true} />
+			</div>
+			<div className="right-column">
+				<ScoreDisplay score={100} />
+			</div>
+			
+		</div>
+		
+	);
+};
 
 export default App;

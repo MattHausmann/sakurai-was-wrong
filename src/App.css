@@ -1,38 +1,231 @@
-.App {
+body {
+  font-family: Arial, sans-serif;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.app-container {
+    display: flex;
+    align-items: stretch; /* Equal height for both columns */
+    justify-content: center;
+    height: 100vh;
+	background-color:red;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Left column */
+.left-column {
+    flex: 1; /* Take up available space */
+    border: 2px solid #333; /* Rectangle outline */
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Right column */
+.right-column {
+    flex: 1; /* Take up available space */
+    border: 2px solid #333; /* Rectangle outline */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+
+/* Game buttons (square, no text) */
+.game-button {
+	display: inline-block;
+	width: 130px; /* Adjust as needed */
+	height: 48px; /* Square buttons */
+	background-color: #444444;
+	/* Add your game logos as background images */
+	background-size: cover;
+	margin: 10px;
+}
+
+.game-button.selected {
+	/* Add any other styles you want for selected buttons */
+}
+
+/* Slider styling */
+.matchup-slider {
+  display: inline-block;
+  margin: 20px auto;
+  position:relative;
+  top:120px;
+}
+
+#slider-input {
+	width:300px;
+}
+
+#slider-meter {
+	width:300px;
+}
+
+.text-above-slider {
+  position: absolute;
+  bottom: 50px; /* Adjust the value as needed */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-40%); /* Center horizontally */
+  font-size: 60px; /* Adjust font size */
+  color: #000000; /* Text color */
+  display: flex; /* Use flexbox for alignment */
+  align-items: middle; /* Vertically center elements */
+}
+
+.winrate {
+  color: #87B38D;
+}
+
+.questionMessage {
+	width:250px;
+	display:inline-block;
+	position:relative;
+	background-color:white;
+}
+
+.winrate-input {
+  color: #87b38d;
+  font-size: 60px; /* Match the font size */
+  background-color: rgba(0,0,0,.1); /* Make it transparent */
+  width: 140px;
+  text-align: right; /* Center the input value */
+  display: inline-block; /* Display as inline-block */
+
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  opacity: 1;
+}  
+.winDivider {
+  display: inline;
+  margin: 0 10px; /* Add some spacing between elements */
+}
+
+.loserate {
+	text-align:left;
+	width:140px;
+  color: #CC76A1;
+}
+
+
+
+/* Character portraits (adjust size as needed) */
+.labeled-portrait {
+  display: inline-block;
+  width: 132px;
+  margin: 10px;
+  vertical-align: top;
+}
+
+.labeled-portrait img {
+  width: 132px;
+  height: 132px;
+  border: 2px solid #333;
+}
+
+.loading-container {
+  width: 132px;
+  height: 132px;
+  border: 2px solid #333;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+/* Game buttons (square, no text) */
+.game-button {
+  display: inline-block;
+  width: 130px; /* Adjust as needed */
+  height: 48px; /* Square buttons */
+  background-color: #444444;
+  /* Add your game logos as background images */
+  background-size: cover;
+  padding:0px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.game-button.selected {
+  background-color:#999;
 }
+
+
+.matchup-container {
+  position: relative;
+  display: inline-block;
+  background-color:#555555;
+}
+
+.layout-container {
+	display:inline-block;
+	position:relative;
+}
+
+
+.navigation {
+	background-color:red;
+}
+#previous,
+#next,
+#guess-button {
+  display: inline-block;
+  position: absolute; /* Position the button */
+}
+
+#previous {
+	left:0%;
+}
+
+#next {
+	right:0%;
+}
+
+
+
+        .matchup-navigation {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column; /* Adjusted to vertical layout */
+            align-items: center;
+        }
+        .matchup-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .matchup-display img {
+            max-width: 50px;
+            height: auto;
+        }
+        .matchup-navigator {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%; /* Occupy full width */
+        }
+        .matchup-navigator select {
+            margin-right: 10px;
+        }
+        .matchup-navigator button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .matchup-navigator button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .left-buttons {
+            display: flex;
+            align-items: center;
+        }
+        .right-buttons {
+            display: flex;
+            align-items: center;
+        }
