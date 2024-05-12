@@ -1,5 +1,5 @@
 .matchup-container {
-  position: relative;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   background-color: #555555;
 }

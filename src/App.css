@@ -13,7 +13,7 @@ body {
 
 /* Left column */
 .left-column {
-  flex: 4; /* Take up available space */
+  flex: 4;
   border: 2px solid #333; /* Rectangle outline */
   padding: 20px;
   box-sizing: border-box;
@@ -21,10 +21,16 @@ body {
 
 /* Right column */
 .right-column {
-  flex: 1; /* Take up available space */
+  flex: 1;
   border: 2px solid #333; /* Rectangle outline */
   padding: 20px;
   box-sizing: border-box;
+}
+
+@media (width <= 900px) {
+  .right-column {
+    flex: 0;
+  }
 }
 
 /* Game buttons (square, no text) */
@@ -139,35 +145,6 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .game-button.selected {
   background-color: #999;
-}
-
-.matchup-container {
-  position: relative;
-  display: inline-block;
-  background-color: #555555;
-}
-
-.layout-container {
-  display: inline-block;
-  position: relative;
-}
-
-.navigation {
-  background-color: red;
-}
-#previous,
-#next,
-#guess-button {
-  display: inline-block;
-  position: absolute; /* Position the button */
-}
-
-#previous {
-  left: 0%;
-}
-
-#next {
-  right: 0%;
 }
 
 .matchup-navigation {
