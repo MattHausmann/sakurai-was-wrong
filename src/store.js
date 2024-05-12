@@ -222,6 +222,8 @@ let initialState = {
   quizResults: [],
 };
 
+initialState.matchup = unsortedMatchupList[initialState.currentIndex];
+
 while (
   getTotalGames(
     sortedMatchupLists[initialState.orderBy][initialState.currentIndex]
