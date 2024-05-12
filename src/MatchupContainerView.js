@@ -22,6 +22,7 @@ const MatchupContainerView = (props) => {
             videogameId={props.videogameId}
             name={props.rightCharacterName}
           />
+        </div>
 
           <MatchupSlider
             winsL={props.leftWins}
@@ -33,7 +34,6 @@ const MatchupContainerView = (props) => {
             rightCharacter={props.rightCharacterName}
           />
         </div>
-      </div>
     );
   }
 

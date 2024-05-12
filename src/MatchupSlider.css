@@ -1,0 +1,29 @@
+.matchup-slider {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* #slider-input { */
+/*   width: 300px; */
+/* } */
+
+/* #slider-meter { */
+/*   width: 300px; */
+/* } */
+
+.text-above-slider {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  font-size: 4.5em;
+  justify-content: center;
+
+  .winrate-text {
+    color: #87b38d;
+  }
+
+  .loserate-text {
+    color: #cc76a1;
+  }
+}

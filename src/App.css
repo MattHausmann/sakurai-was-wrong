@@ -48,37 +48,6 @@ body {
   /* Add any other styles you want for selected buttons */
 }
 
-/* Slider styling */
-.matchup-slider {
-  display: inline-block;
-  margin: 20px auto;
-  position: relative;
-  top: 120px;
-}
-
-#slider-input {
-  width: 300px;
-}
-
-#slider-meter {
-  width: 300px;
-}
-
-.text-above-slider {
-  position: absolute;
-  bottom: 50px; /* Adjust the value as needed */
-  left: 50%; /* Center horizontally */
-  transform: translateX(-40%); /* Center horizontally */
-  font-size: 60px; /* Adjust font size */
-  color: #000000; /* Text color */
-  display: flex; /* Use flexbox for alignment */
-  align-items: middle; /* Vertically center elements */
-}
-
-.winrate {
-  color: #87b38d;
-}
-
 .questionMessage {
   width: 250px;
   display: inline-block;
@@ -97,39 +66,6 @@ body {
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   opacity: 1;
-}
-.winDivider {
-  display: inline;
-  margin: 0 10px; /* Add some spacing between elements */
-}
-
-.loserate {
-  text-align: left;
-  width: 140px;
-  color: #cc76a1;
-}
-
-/* Character portraits (adjust size as needed) */
-.labeled-portrait {
-  display: inline-block;
-  width: 132px;
-  margin: 10px;
-  vertical-align: top;
-}
-
-.labeled-portrait img {
-  width: 132px;
-  height: 132px;
-  border: 2px solid #333;
-}
-
-.loading-container {
-  width: 132px;
-  height: 132px;
-  border: 2px solid #333;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* Game buttons (square, no text) */
