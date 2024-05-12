@@ -4,59 +4,58 @@ body {
 }
 
 .app-container {
-    display: flex;
-    align-items: stretch; /* Equal height for both columns */
-    justify-content: center;
-    height: 100vh;
+  display: flex;
+  align-items: stretch; /* Equal height for both columns */
+  justify-content: center;
+  height: 100vh;
   background-color: #dadaee;
 }
 
 /* Left column */
 .left-column {
-    flex: 1; /* Take up available space */
-    border: 2px solid #333; /* Rectangle outline */
-    padding: 20px;
-    box-sizing: border-box;
+  flex: 4; /* Take up available space */
+  border: 2px solid #333; /* Rectangle outline */
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 /* Right column */
 .right-column {
-    flex: 1; /* Take up available space */
-    border: 2px solid #333; /* Rectangle outline */
-    padding: 20px;
-    box-sizing: border-box;
+  flex: 1; /* Take up available space */
+  border: 2px solid #333; /* Rectangle outline */
+  padding: 20px;
+  box-sizing: border-box;
 }
-
 
 /* Game buttons (square, no text) */
 .game-button {
-	display: inline-block;
-	width: 130px; /* Adjust as needed */
-	height: 48px; /* Square buttons */
-	background-color: #444444;
-	/* Add your game logos as background images */
-	background-size: cover;
-	margin: 10px;
+  display: inline-block;
+  width: 130px; /* Adjust as needed */
+  height: 48px; /* Square buttons */
+  background-color: #444444;
+  /* Add your game logos as background images */
+  background-size: cover;
+  margin: 10px;
 }
 
 .game-button.selected {
-	/* Add any other styles you want for selected buttons */
+  /* Add any other styles you want for selected buttons */
 }
 
 /* Slider styling */
 .matchup-slider {
   display: inline-block;
   margin: 20px auto;
-  position:relative;
-  top:120px;
+  position: relative;
+  top: 120px;
 }
 
 #slider-input {
-	width:300px;
+  width: 300px;
 }
 
 #slider-meter {
-	width:300px;
+  width: 300px;
 }
 
 .text-above-slider {
@@ -71,41 +70,38 @@ body {
 }
 
 .winrate {
-  color: #87B38D;
+  color: #87b38d;
 }
 
 .questionMessage {
-	width:250px;
-	display:inline-block;
-	position:relative;
-	background-color:white;
+  width: 250px;
+  display: inline-block;
+  position: relative;
+  background-color: white;
 }
 
 .winrate-input {
   color: #87b38d;
   font-size: 60px; /* Match the font size */
-  background-color: rgba(0,0,0,.1); /* Make it transparent */
+  background-color: rgba(0, 0, 0, 0.1); /* Make it transparent */
   width: 140px;
   text-align: right; /* Center the input value */
   display: inline-block; /* Display as inline-block */
-
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   opacity: 1;
-}  
+}
 .winDivider {
   display: inline;
   margin: 0 10px; /* Add some spacing between elements */
 }
 
 .loserate {
-	text-align:left;
-	width:140px;
-  color: #CC76A1;
+  text-align: left;
+  width: 140px;
+  color: #cc76a1;
 }
-
-
 
 /* Character portraits (adjust size as needed) */
 .labeled-portrait {
@@ -138,29 +134,26 @@ input[type="number"]::-webkit-outer-spin-button {
   background-color: #444444;
   /* Add your game logos as background images */
   background-size: cover;
-  padding:0px;
+  padding: 0px;
 }
-
 
 .game-button.selected {
-  background-color:#999;
+  background-color: #999;
 }
-
 
 .matchup-container {
   position: relative;
   display: inline-block;
-  background-color:#555555;
+  background-color: #555555;
 }
 
 .layout-container {
-	display:inline-block;
-	position:relative;
+  display: inline-block;
+  position: relative;
 }
 
-
 .navigation {
-	background-color:red;
+  background-color: red;
 }
 #previous,
 #next,
@@ -170,62 +163,60 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 #previous {
-	left:0%;
+  left: 0%;
 }
 
 #next {
-	right:0%;
+  right: 0%;
 }
 
-
-
-        .matchup-navigation {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column; /* Adjusted to vertical layout */
-            align-items: center;
-        }
-        .matchup-display {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .matchup-display img {
-            max-width: 50px;
-            height: auto;
-        }
-        .matchup-navigator {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%; /* Occupy full width */
-        }
-        .matchup-navigator select {
-            margin-right: 10px;
-        }
-        .matchup-navigator button {
-            padding: 5px 10px;
-            background-color: #007bff;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .matchup-navigator button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        .left-buttons {
-            display: flex;
-            align-items: center;
-        }
-        .right-buttons {
-            display: flex;
-            align-items: center;
-        }
+.matchup-navigation {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column; /* Adjusted to vertical layout */
+  align-items: center;
+}
+.matchup-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.matchup-display img {
+  max-width: 50px;
+  height: auto;
+}
+.matchup-navigator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%; /* Occupy full width */
+}
+.matchup-navigator select {
+  margin-right: 10px;
+}
+.matchup-navigator button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.matchup-navigator button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+.left-buttons {
+  display: flex;
+  align-items: center;
+}
+.right-buttons {
+  display: flex;
+  align-items: center;
+}
