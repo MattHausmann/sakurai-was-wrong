@@ -1,13 +1,7 @@
-// Matchup.js
+// MatchupContainer.js
 import React, { useState, useEffect } from "react";
-import LabeledCharacterPortrait from "./CharacterPortrait";
-import MatchupSlider from "./MatchupSlider";
-import OverlayComponent from './OverlayComponent';
-
-//import Navigation from './Navigation';
+import MatchupContainerView from "./MatchupContainerView";
 import wins from "./wins.json";
-
-import MatchupNavigator from "./MatchupNavigator";
 
 let possibleMatchups = {};
 const MATCHUP_THRESHOLD = 200;
@@ -41,7 +35,7 @@ function getWins(videogameId, left, right) {
 
 //first, if the videogameId changes,you need to create a new matchup with the new videogameId
 //then if the videogameId, leftCharacter, or rightCharacter changes,
-const Matchup = ({ videogameId, left, right, quizMode }) => {
+const MatchupContainer = ({ videogameId, left, right, quizMode }) => {
   const [leftCharacterName, setLeftCharacterName] = useState(left);
   const [rightCharacterName, setRightCharacterName] = useState(right);
 
@@ -54,6 +48,11 @@ const Matchup = ({ videogameId, left, right, quizMode }) => {
 
   const [sliderValue, setSliderValue] = useState(leftWins);
 
+  const newRandomMatchup = (videogameId, leftChar, rightChar) => {
+    let [left, right] = randomMatchupNames(videogameId, leftChar, rightChar);
+    setLeftCharacterName(left);
+    setRightCharacterName(right);
+  };
 
 
   useEffect(() => {
@@ -82,34 +81,16 @@ const Matchup = ({ videogameId, left, right, quizMode }) => {
   console.log(getWins(videogameId, leftCharacterName, rightCharacterName));
 
   return (
-    <div className="matchup-container">
-      <div className="top-row">
-			<LabeledCharacterPortrait
-			  videogameId={videogameId}
-			  name={leftCharacterName}
-			/>
-			<MatchupSlider
-			  winsL={leftWins}
-			  winsR={rightWins}
-			  quizMode={quizMode}
-			  videogameId={videogameId}
-			  leftCharacter={leftCharacterName}
-			  rightCharacter={rightCharacterName}
-			/>
-			<LabeledCharacterPortrait
-			  videogameId={videogameId}
-			  name={rightCharacterName}
-			/>
-	  </div>
-      <div className="bottom-row">
-        <MatchupNavigator
-          videogameId={videogameId}
-          leftCharacter={leftCharacterName}
-          rightCharacter={rightCharacterName}
-        />
-      </div>
-    </div>
+   <MatchupContainerView
+      videogameId={videogameId}
+      leftCharacterName={leftCharacterName}
+      rightCharacterName={rightCharacterName}
+      leftWins={leftWins}
+      rightWins={rightWins}
+      quizMode={quizMode}
+      newRandomMatchup={newRandomMatchup}
+    />
   );
 };
 
-export default Matchup;
+export default MatchupContainer;

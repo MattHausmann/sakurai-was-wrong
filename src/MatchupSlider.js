@@ -80,11 +80,11 @@ const MatchupSlider = ({
         )}
       </>
       <div className="percentContainer">
-        <span class="left-percent">
+        <span className="left-percent">
           {Math.floor((sliderValue * 100) / (leftWins + rightWins))}
         </span>
-        <span class="percent-divider">:</span>
-        <span class="right-percent">
+        <span className="percent-divider">:</span>
+        <span className="right-percent">
           {Math.ceil(
             ((leftWins + rightWins - sliderValue) * 100) /
               (leftWins + rightWins)
