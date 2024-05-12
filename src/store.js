@@ -218,6 +218,8 @@ let initialState = {
   orderBy: "Left Win %",
   quizMode: false,
   currentIndex: random({ minimumGames: 200, orderBy: "Evenness" }),
+
+  quizResults: [],
 };
 
 while (
@@ -288,6 +290,17 @@ const reducer = (prevState = initialState, action) => {
       return {
         ...prevState,
         currentIndex: random(prevState),
+      };
+    // quiz muts
+    case "pushQuizResult":
+      return {
+        ...prevState,
+        quizResults: [...prevState.quizResults, action.result],
+      };
+    case "toggleQuizMode":
+      return {
+        ...prevState,
+        quizMode: action.val,
       };
     default:
       return prevState;
