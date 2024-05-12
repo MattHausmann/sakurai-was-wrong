@@ -5,7 +5,6 @@ import MatchupContainer from "./MatchupContainer";
 import ScoreDisplay from "./ScoreDisplay";
 import OverlayComponent from "./OverlayComponent";
 
-// import "./store.js";
 import "./App.css";
 
 const App = () => {

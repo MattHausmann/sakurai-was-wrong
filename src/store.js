@@ -17,7 +17,6 @@ const getLoserWins = (matchup) => {
 };
 
 const getTotalGames = (matchup) => {
-  console.log("matchup", matchup);
   let leftWins = wins[matchup.videogameId][matchup.left][matchup.right];
   let rightWins = wins[matchup.videogameId][matchup.right][matchup.left];
 
@@ -114,7 +113,6 @@ for (let sortBy in labeledComparators) {
 //seenMatchups object, guessedMatchups object, bestScores object
 
 //every time we change minimumGames
-
 const prev = (state) => {
   let targetPrev = state.currentIndex - 1;
   let currentList = sortedMatchupLists[state.orderBy];
@@ -190,25 +188,28 @@ const last = (state) => {
     i -= 1;
   }
 
-  return i;
-};
+	return i;
+}
+console.log("defined first, next, last");
+const random = function(state) {
+	var enoughGames = false;
+	let leftOkay = !state.requiredLeft;
+	let rightOkay = !state.requiredRight;
 
-const random = (state) => {
-  let enoughGames = false;
-  let leftOkay = !state.requiredLeft;
-  let rightOkay = !state.requiredRight;
+	let i = 0;
+	while(!enoughGames || !leftOkay || !rightOkay) {
+		let i = Math.floor(Math.random(unsortedMatchupList.length));
+		let matchup = unsortedMatchupList[i];
+		
+		enoughGames = getTotalGames(matchup) >= state.minimumGames;
+		leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
+		rightOkay = !state.requiredRight || state.requiredRight == matchup.right;
+	}
+	console.log("out of while loop");
+	return i;
+}
 
-  let i = 0;
-  while (!enoughGames || !leftOkay || !rightOkay) {
-    let i = Math.floor(Math.random(unsortedMatchupList.length));
-    let matchup = unsortedMatchupList[i];
-    let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-    let rightOkay = state.requiredRight || state.requiredRight == matchup.right;
-  }
-  return i;
-};
-
+console.log("defined random");
 let initialState = {
   minimumGames: 200,
   selectedGames: [],
@@ -221,13 +222,21 @@ let initialState = {
 };
 
 while (
-  getTotalGames(sortedMatchupLists[initialState.currentIndex]) <
+  getTotalGames(sortedMatchupLists[initialState.orderBy][initialState.currentIndex]) <
   initialState.minimumGames
 ) {
   initialState.currentIndex = Math.floor(
     Math.random() * sortedMatchupLists[initialState.orderBy].length
   );
 }
+console.log("defined initialState");
+while(getTotalGames(sortedMatchupLists[initialState.orderBy][initialState.currentIndex]) < initialState.minimumGames) {
+  initialState.currentIndex = Math.floor(Math.random() * sortedMatchupLists[initialState.orderBy].length);
+}
+
+let state = initialState;
+
+
 
 const reducer = (prevState = initialState, action) => {
   switch (action.type) {
