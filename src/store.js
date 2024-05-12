@@ -1,7 +1,9 @@
-import wins from './wins.json';
+//import wins from './wins.json';
 import { createStore } from 'redux';
+import wins from './wins.json';
 
 console.log('in store.js');
+
 
 
 const getWinnerWins = function(matchup) {
@@ -88,6 +90,7 @@ const labeledComparators={
 
 let sortedMatchupLists = {};
 for(let sortBy in labeledComparators) {
+	console.log("sorting by " + sortBy);
 	sortedMatchupLists[sortBy] = [...unsortedMatchupList].sort(labeledComparators[sortBy]);
 }
 
@@ -109,7 +112,7 @@ for(let sortBy in labeledComparators) {
 //seenMatchups object, guessedMatchups object, bestScores object
 
 //every time we change minimumGames
-
+console.log("about to define prev");
 const prev = function(state) {
 	let targetPrev = state.currentIndex - 1;
 	let currentList = sortedMatchupLists[state.orderBy];
@@ -128,7 +131,7 @@ const prev = function(state) {
 
 	return targetPrev;
 }
-
+console.log("defined prev");
 const next = function(state) {
 	let targetNext = state.currentIndex + 1;
 	let currentList = sortedMatchupLists[state.orderBy];
@@ -184,24 +187,27 @@ const last = function(state) {
 
 	return i;
 }
-
+console.log("defined first, next, last");
 const random = function(state) {
-	let enoughGames = false;
+	var enoughGames = false;
 	let leftOkay = !state.requiredLeft;
 	let rightOkay = !state.requiredRight;
 
 	let i = 0;
 	while(!enoughGames || !leftOkay || !rightOkay) {
+		console.log(`${enoughGames}:${leftOkay}:${rightOkay}`);		
 		let i = Math.floor(Math.random(unsortedMatchupList.length));
 		let matchup = unsortedMatchupList[i];
-		let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-		let leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-		let rightOkay = state.requiredRight || state.requiredRight == matchup.right;
+		
+		enoughGames = getTotalGames(matchup) >= state.minimumGames;
+		leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
+		rightOkay = !state.requiredRight || state.requiredRight == matchup.right;
 	}
+	console.log("out of while loop");
 	return i;
 }
 
-
+console.log("defined random");
 let initialState = {
 	minimumGames:200,
 	selectedGames:[],
@@ -213,7 +219,8 @@ let initialState = {
 	currentIndex:random({minimumGames:200, orderBy:"Evenness"}),
 }
 
-while(getTotalGames(sortedMatchupLists[initialState.currentId]) < initialState.minimumGames) {
+console.log("defined initialState");
+while(getTotalGames(sortedMatchupLists[initialState.orderBy][initialState.currentIndex]) < initialState.minimumGames) {
   initialState.currentIndex = Math.floor(Math.random() * sortedMatchupLists[initialState.orderBy].length);
 }
 
@@ -273,8 +280,8 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-// console.log(reducer);
-const store = createStore({ reducer });
-// console.log(store);
+console.log(reducer);
+const store = createStore( reducer, initialState );
+console.log(store);
 export default store;
 
