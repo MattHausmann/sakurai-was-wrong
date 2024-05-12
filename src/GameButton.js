@@ -1,4 +1,4 @@
-// src/components/GameButton.js
+// GameButton.js
 import React from 'react';
 
 const GameButton = ({ gameId, gameName, isSelected, onClick }) => {

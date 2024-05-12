@@ -63,6 +63,7 @@ const MatchupContainerView = (props) => {
           videogameId={props.videogameId}
           leftCharacter={props.leftCharacterName}
           rightCharacter={props.rightCharacterName}
+          newRandomMatchup={props.newRandomMatchup}
         />
       </div>
     </div>

@@ -1,4 +1,4 @@
-// src/components/GameSelect.js
+// GameSelect.js
 import React from "react";
 import GameButton from "./GameButton"; // Import the GameButton component
 

@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import LabeledCharacterPortrait from './CharacterPortrait';
-import MatchupSlider from './MatchupSlider';
-import wins from './wins.json';
+import React, { useState, useEffect } from "react";
+import LabeledCharacterPortrait from "./CharacterPortrait";
+import MatchupSlider from "./MatchupSlider";
+import wins from "./wins.json";
 
-const possibleMatchups = {}
+const possibleMatchups = {};
 const MATCHUP_THRESHOLD = 200;
-
-
 
 for (let videogameId of [1, 1386]) {
   possibleMatchups[videogameId] = {};
@@ -48,7 +46,6 @@ for (let videogameId of [1, 1386]) {
     }
   }
 }
-
 
 function compareByWinnerWinPercent(a, b) {
   let aWins = wins[a[0]][a[1]][a[2]];
@@ -134,81 +131,48 @@ for (let videogameId of [1, 1386]) {
   console.log(unsortedMatchupsBothSides);
 }
 
-const MatchupNavigator = () => {
+const MatchupNavigator = ({
+  newRandomMatchup,
+  videogameId,
+  leftCharacter,
+  rightCharacter,
+}) => {
   return (
     <div className="matchup-navigator">
       <div className="left-buttons">
         <button disabled>First</button>
         <button disabled>Previous</button>
       </div>
-function randomMatchupNames(videogameId, oldFirst, oldLast) {
-  let rolling = true;
-  let firsts = {};
-  let randomFirst = "";
-  let lasts = {};
-  let randomLast = "";
-  while (rolling) {
-    firsts = Object.keys(possibleMatchups[videogameId]);
-    randomFirst = firsts[Math.floor(Math.random() * firsts.length)];
-    lasts = possibleMatchups[videogameId][randomFirst];
-    randomLast = lasts[Math.floor(Math.random() * lasts.length)];
-    rolling = randomFirst == oldFirst && randomLast == oldLast;
-    rolling = rolling || (randomFirst == oldLast && randomLast == oldFirst);
-  }
-  if (Math.random() < 0.5) {
-    return [randomLast, randomFirst];
-  }
-  return [randomFirst, randomLast];
-}
 
+      <div className="matchup-navigator">
+        <div className="navigator-top-row">
+          <div className="left-buttons">
+            <button disabled>First</button>
+            <button disabled>Previous</button>
+          </div>
 
-const MatchupNavigator = ({videogameId, leftCharacter, rightCharacter, sortMethod}) => {
-	
-	const[leftCharacterName, setLeftCharacterName] = useState(leftCharacter);
-	const[rightCharacterName, setRightCharacterName] = useState(rightCharacter);
-	
-
-	const newRandomMatchup = ( videogameId, leftChar, rightChar ) => {
-		let [left, right] = randomMatchupNames(videogameId, leftChar, rightChar);
-		setLeftCharacterName(left);
-		setRightCharacterName(right);
-	};
-
-	if(!leftCharacterName || !rightCharacterName) {
-		newRandomMatchup(videogameId, leftCharacterName, rightCharacterName);
-	}
-	
-	console.log(leftCharacterName);
-	console.log(rightCharacterName);
-	
-	
-	return (
-	        <div className="matchup-navigator">
-				<div className="navigator-top-row">				
-					<div className="left-buttons">
-						<button disabled>First</button>
-						<button disabled>Previous</button>
-					</div>
-
-
-					<div>
-						<select>
-							<option value="Total Games">Total Games</option>
-
-						</select>
-					</div>
-					<div>
-						<button>Next</button>
-						<button>Last</button>
-					</div>
-				</div>
-				<div className="navigator-bottom-row">
-					<button onClick={() => { newRandomMatchup(videogameId, leftCharacter, rightCharacter);}}>						
-						New
-					</button>
-				</div>
-			</div>
-	);		
+          <div>
+            <select>
+              <option value="Total Games">Total Games</option>
+            </select>
+          </div>
+          <div>
+            <button>Next</button>
+            <button>Last</button>
+          </div>
+        </div>
+        <div className="navigator-bottom-row">
+          <button
+            onClick={() => {
+              newRandomMatchup(videogameId, leftCharacter, rightCharacter);
+            }}
+          >
+            New
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default MatchupNavigator;
