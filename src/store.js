@@ -210,6 +210,8 @@ const random = function(state) {
 }
 
 console.log("defined random");
+
+
 let initialState = {
   minimumGames: 200,
   selectedGames: [],
@@ -220,6 +222,8 @@ let initialState = {
   quizMode: false,
   currentIndex: random({ minimumGames: 200, orderBy: "Evenness" }),
 };
+
+initialState.matchup = unsortedMatchupList[initialState.currentIndex];
 
 while (
   getTotalGames(sortedMatchupLists[initialState.orderBy][initialState.currentIndex]) <
