@@ -1,11 +1,7 @@
 // MatchupContainer.js
 import React, { useState, useEffect } from "react";
-import LabeledCharacterPortrait from "./CharacterPortrait";
-import MatchupSlider from "./MatchupSlider";
-//import Navigation from './Navigation';
+import MatchupContainerView from "./MatchupContainerView";
 import wins from "./wins.json";
-
-import MatchupNavigator from "./MatchupNavigator";
 
 let possibleMatchups = {};
 const MATCHUP_THRESHOLD = 200;
@@ -113,7 +109,7 @@ const MatchupContainer = ({ videogameId, left, right, quizMode }) => {
 
   const [sliderValue, setSliderValue] = useState(leftWins);
 
-  const newRandomMatchup = ( videogameId, leftChar, rightChar ) => {
+  const newRandomMatchup = (videogameId, leftChar, rightChar) => {
     let [left, right] = randomMatchupNames(videogameId, leftChar, rightChar);
     setLeftCharacterName(left);
     setRightCharacterName(right);
@@ -152,34 +148,15 @@ const MatchupContainer = ({ videogameId, left, right, quizMode }) => {
   console.log(getWins(videogameId, leftCharacterName, rightCharacterName));
 
   return (
-    <div className="matchup-container">
-      <div className="top-row">
-        <LabeledCharacterPortrait
-          videogameId={videogameId}
-          name={leftCharacterName}
-        />
-        <MatchupSlider
-          winsL={leftWins}
-          winsR={rightWins}
-          quizMode={quizMode}
-          newRandomMatchup={newRandomMatchup}
-          videogameId={videogameId}
-          leftCharacter={leftCharacterName}
-          rightCharacter={rightCharacterName}
-        />
-        <LabeledCharacterPortrait
-          videogameId={videogameId}
-          name={rightCharacterName}
-        />
-      </div>
-      <div className="bottom-row">
-        <MatchupNavigator
-          videogameId={videogameId}
-          leftCharacter={leftCharacterName}
-          rightCharacter={rightCharacterName}
-        />
-      </div>
-    </div>
+    <MatchupContainerView
+      videogameId={videogameId}
+      leftCharacterName={leftCharacterName}
+      rightCharacterName={rightCharacterName}
+      leftWins={leftWins}
+      rightWins={rightWins}
+      quizMode={quizMode}
+      newRandomMatchup={newRandomMatchup}
+    />
   );
 };
 
