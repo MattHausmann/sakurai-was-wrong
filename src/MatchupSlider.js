@@ -91,13 +91,6 @@ const MatchupSlider = ({
           )}
         </span>
       </div>
-      <button
-        onClick={() => {
-          newRandomMatchup(videogameId, leftCharacter, rightCharacter);
-        }}
-      >
-        New
-      </button>
     </div>
   );
 };

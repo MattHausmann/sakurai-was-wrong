@@ -115,12 +115,6 @@ const MatchupContainer = ({ videogameId, left, right, quizMode }) => {
     setRightCharacterName(right);
   };
 
-  useEffect(() => {
-    console.log("videogameId just changed");
-    let [left, right] = randomMatchupNames(videogameId);
-    setLeftCharacterName(left);
-    setRightCharacterName(right);
-  }, [videogameId, quizMode]);
 
   useEffect(() => {
     let [winsL, winsR] = getWins(
@@ -148,7 +142,7 @@ const MatchupContainer = ({ videogameId, left, right, quizMode }) => {
   console.log(getWins(videogameId, leftCharacterName, rightCharacterName));
 
   return (
-    <MatchupContainerView
+   <MatchupContainerView
       videogameId={videogameId}
       leftCharacterName={leftCharacterName}
       rightCharacterName={rightCharacterName}
