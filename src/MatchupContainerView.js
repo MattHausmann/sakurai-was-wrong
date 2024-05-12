@@ -1,5 +1,5 @@
 // MatchupContainerView.js
-import React, { useState, useEffect } from "react";
+import React from "react";
 import LabeledCharacterPortrait from "./CharacterPortrait";
 import MatchupNavigator from "./MatchupNavigator";
 import MatchupSlider from "./MatchupSlider";

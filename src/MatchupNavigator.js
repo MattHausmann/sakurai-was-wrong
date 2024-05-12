@@ -20,7 +20,7 @@ function compareByWinnerWinPercent(a, b) {
     bWins = tmp;
   }
   let winPercentDiff = aWins * bLoses - bWins * aLoses;
-  if (winPercentDiff == 0) {
+  if (winPercentDiff === 0) {
     return aWins - bWins;
   }
   return winPercentDiff;
@@ -32,7 +32,7 @@ function compareByLeftWinPercent(a, b) {
   let bLeft = wins[b[0]][b[1]][b[2]];
   let bRight = wins[b[0]][b[2]][b[1]];
   let leftWinPercentDifference = aLeft * bRight - bLeft * aRight;
-  if (leftWinPercentDifference == 0) {
+  if (leftWinPercentDifference === 0) {
     return aLeft + aRight - bLeft - bRight;
   }
   return leftWinPercentDifference;

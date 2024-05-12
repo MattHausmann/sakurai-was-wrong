@@ -41,7 +41,7 @@ for (let videogameId of [1, 1386]) {
 
   //now clean up
   for (let alphabeticallyFirst in possibleMatchups[videogameId]) {
-    if (possibleMatchups[videogameId][alphabeticallyFirst].length == 0) {
+    if (possibleMatchups[videogameId][alphabeticallyFirst].length === 0) {
       delete possibleMatchups[videogameId][alphabeticallyFirst];
     }
   }
@@ -58,8 +58,8 @@ function randomMatchupNames(videogameId, oldFirst, oldLast) {
     randomFirst = firsts[Math.floor(Math.random() * firsts.length)];
     lasts = possibleMatchups[videogameId][randomFirst];
     randomLast = lasts[Math.floor(Math.random() * lasts.length)];
-    rolling = randomFirst == oldFirst && randomLast == oldLast;
-    rolling = rolling || (randomFirst == oldLast && randomLast == oldFirst);
+    rolling = randomFirst === oldFirst && randomLast === oldLast;
+    rolling = rolling || (randomFirst === oldLast && randomLast === oldFirst);
   }
   if (Math.random() < 0.5) {
     return [randomLast, randomFirst];
