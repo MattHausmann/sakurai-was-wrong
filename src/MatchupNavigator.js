@@ -1,5 +1,6 @@
-// Matchup.js
+// MatchupNavigator.js
 import React from "react";
+import "./MatchupNavigator.css";
 import wins from "./wins.json";
 
 function compareByWinnerWinPercent(a, b) {
@@ -86,12 +87,7 @@ for (let videogameId of [1, 1386]) {
   console.log(unsortedMatchupsBothSides);
 }
 
-const MatchupNavigator = ({
-  videogameId,
-  leftCharacter,
-  rightCharacter,
-  sortMethod,
-}) => {
+const MatchupNavigator = () => {
   return (
     <div className="matchup-navigator">
       <div className="left-buttons">
@@ -104,7 +100,7 @@ const MatchupNavigator = ({
           <option value="Total Games">Total Games</option>
         </select>
       </div>
-      <div>
+      <div className="right-buttons">
         <button>Next</button>
         <button>Last</button>
       </div>
