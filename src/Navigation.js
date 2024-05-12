@@ -2,6 +2,7 @@ import React from 'react';
 
 const Navigation = ({videogameId, leftChar, rightChar, orderBy, quizMode}) => {
 
+	
 	return <div className="navigation">
 		<div className = "navButtons">
 			<button id="previous">Previous</button>
