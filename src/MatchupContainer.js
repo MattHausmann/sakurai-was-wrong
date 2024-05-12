@@ -1,4 +1,4 @@
-// Matchup.js
+// MatchupContainer.js
 import React, { useState, useEffect } from "react";
 import LabeledCharacterPortrait from "./CharacterPortrait";
 import MatchupSlider from "./MatchupSlider";
@@ -100,7 +100,7 @@ function getWins(videogameId, left, right) {
 
 //first, if the videogameId changes,you need to create a new matchup with the new videogameId
 //then if the videogameId, leftCharacter, or rightCharacter changes,
-const Matchup = ({ videogameId, left, right, quizMode }) => {
+const MatchupContainer = ({ videogameId, left, right, quizMode }) => {
   const [leftCharacterName, setLeftCharacterName] = useState(left);
   const [rightCharacterName, setRightCharacterName] = useState(right);
 
@@ -183,4 +183,4 @@ const Matchup = ({ videogameId, left, right, quizMode }) => {
   );
 };
 
-export default Matchup;
+export default MatchupContainer;
