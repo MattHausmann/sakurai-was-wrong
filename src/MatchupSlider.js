@@ -1,6 +1,8 @@
 // MatchupSlider.js
 import React, { useState, useEffect } from "react";
 
+import "./MatchupSlider.css";
+
 const MatchupSlider = ({
   winsL,
   winsR,
@@ -52,12 +54,12 @@ const MatchupSlider = ({
               className="winrate-input"
             />
           ) : (
-            <div className="winrate">{leftWins}</div>
+            <div className="winrate-text">{leftWins}</div>
           )}
         </>
 
         <span className="winLoseSeparator">:</span>
-        <div className="loserate">{leftWins + rightWins - sliderValue}</div>
+        <div className="loserate-text">{leftWins + rightWins - sliderValue}</div>
       </div>
       <>
         {quizMode ? (

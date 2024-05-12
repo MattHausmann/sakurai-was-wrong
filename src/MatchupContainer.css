@@ -3,3 +3,37 @@
   flex-direction: column;
   background-color: #555555;
 }
+
+@media (width <= 800px) {
+  .top-row > div {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+.top-row {
+  display: flex;
+}
+
+.labeled-portrait {
+  display: flex;
+  width: 132px;
+  margin: 10px;
+  vertical-align: top;
+}
+
+.labeled-portrait img {
+  display: flex;
+  width: 132px;
+  height: 132px;
+  border: 2px solid #333;
+}
+
+.loading-container {
+  width: 132px;
+  height: 132px;
+  border: 2px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
