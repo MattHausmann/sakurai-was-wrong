@@ -1,5 +1,6 @@
 // MatchupContainer.js
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import MatchupContainerView from "./MatchupContainerView";
 import wins from "./wins.json";
 
@@ -96,7 +97,14 @@ function getWins(videogameId, left, right) {
 
 //first, if the videogameId changes,you need to create a new matchup with the new videogameId
 //then if the videogameId, leftCharacter, or rightCharacter changes,
-const MatchupContainer = ({ videogameId, left, right, quizMode }) => {
+const MatchupContainer = () => {
+  const { matchup, quizMode } = useSelector((state) => state);
+  
+  let {videogameId, left, right} = matchup;
+  console.log(videogameId);
+  console.log(left);
+  console.log(right);
+
   const [leftCharacterName, setLeftCharacterName] = useState(left);
   const [rightCharacterName, setRightCharacterName] = useState(right);
 
