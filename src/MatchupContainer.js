@@ -101,9 +101,6 @@ const MatchupContainer = () => {
   const { matchup, quizMode } = useSelector((state) => state);
   
   let {videogameId, left, right} = matchup;
-  console.log(videogameId);
-  console.log(left);
-  console.log(right);
 
   const [leftCharacterName, setLeftCharacterName] = useState(left);
   const [rightCharacterName, setRightCharacterName] = useState(right);
@@ -140,14 +137,9 @@ const MatchupContainer = () => {
     setLeftWins(newLeftWins);
     setRightWins(newRightWins);
 
-    console.log(`old sliderValue: ${sliderValue}`);
     setSliderValue(leftWins);
   }, [leftCharacterName, rightCharacterName]);
 
-  console.log(
-    `getWins(${videogameId}, ${leftCharacterName}, ${rightCharacterName}):`
-  );
-  console.log(getWins(videogameId, leftCharacterName, rightCharacterName));
 
   return (
    <MatchupContainerView
