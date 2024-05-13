@@ -34,7 +34,7 @@ const compareByLeftWinPercent = (a, b) => {
   let bRightWins = wins[b.videogameId][b.right][b.left];
 
   let leftWinPctDifference = aLeftWins * bRightWins - bLeftWins * aRightWins;
-  if (leftWinPctDifference == 0) {
+  if (leftWinPctDifference === 0) {
     return aLeftWins - bLeftWins;
   }
   return leftWinPctDifference;
@@ -48,7 +48,7 @@ const compareByWinnerWinPercent = (a, b) => {
   //awins/aloses > bwins/bloses but with cross-multiplication
   let winnerWinPctDifference =
     aWinnerWins * bLoserWins - bWinnerWins * aLoserWins;
-  if (winnerWinPctDifference == 0) {
+  if (winnerWinPctDifference === 0) {
     return aWinnerWins - bWinnerWins;
   }
   return winnerWinPctDifference;
@@ -61,7 +61,7 @@ const compareByLoserWinPercent = (a, b) => {
   //aLoses/aWins > bLoses/bWins but with cross-multiplication
   let loserWinPctDifference =
     bWinnerWins * aLoserWins - aWinnerWins * bLoserWins;
-  if (loserWinPctDifference == 0) {
+  if (loserWinPctDifference === 0) {
     return aLoserWins - bLoserWins;
   }
   return loserWinPctDifference;
@@ -126,8 +126,8 @@ const prev = (state) => {
   while (targetPrev >= 0 && (!enoughGames || !leftOkay || !rightOkay)) {
     let matchup = currentList[targetPrev];
     let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-    let rightOkay = state.requiredRight || state.requiredRight == matchup.right;
+    let leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
+    let rightOkay = state.requiredRight || state.requiredRight === matchup.right;
     targetPrev -= 1;
   }
 
@@ -148,8 +148,8 @@ const next = (state) => {
   ) {
     let matchup = currentList[targetNext];
     let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-    let rightOkay = state.requiredRight || state.requiredRight == matchup.right;
+    let leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
+    let rightOkay = state.requiredRight || state.requiredRight === matchup.right;
     targetNext += 1;
   }
   return targetNext;
@@ -166,8 +166,8 @@ const first = (state) => {
   while (i < currentList.length && (!enoughGames || !leftOkay || !rightOkay)) {
     let matchup = currentList[i];
     let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-    let rightOkay = state.requiredRight || state.requiredRight == matchup.right;
+    let leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
+    let rightOkay = state.requiredRight || state.requiredRight === matchup.right;
     i += 1;
   }
 
@@ -185,8 +185,8 @@ const last = (state) => {
   while (i >= 0 && (!enoughGames || !leftOkay || !rightOkay)) {
     let matchup = currentList[i];
     let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-    let rightOkay = state.requiredRight || state.requiredRight == matchup.right;
+    let leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
+    let rightOkay = state.requiredRight || state.requiredRight === matchup.right;
     i -= 1;
   }
 
@@ -208,16 +208,16 @@ const firstMatchupAtOrAboveThreshold = function(threshold) {
 		console.log(totalGamesList[m]);
 		let totalGames = getTotalGames(totalGamesList[m]);
 		if(totalGames < threshold) {
-			if(b+1==e) {
+			if(b+1===e) {
 				return seekFirstMatchupAtThreshold(totalGamesList,e);
 			}
 			b=m
 		} if(threshold <totalGames) {
-			if(b+1==e){
+			if(b+1===e){
 				return seekFirstMatchupAtThreshold(totalGamesList,e);
 			}
 			e=m;
-		} if(threshold == totalGames) {
+		} if(threshold === totalGames) {
 			return seekFirstMatchupAtThreshold(totalGamesList,m);
 		}
 	}
@@ -225,7 +225,7 @@ const firstMatchupAtOrAboveThreshold = function(threshold) {
 
 const seekFirstMatchupAtThreshold = function(list, index) {
 	let goalGames = getTotalGames(list[index]);
-	while(index>=0 && getTotalGames(list[index]) == goalGames) {
+	while(index>=0 && getTotalGames(list[index]) === goalGames) {
 			index -= 1;
 	}
 	console.log(index+1);
