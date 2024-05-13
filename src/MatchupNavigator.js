@@ -168,7 +168,6 @@ const MatchupNavigator = ({
           <button
             onClick={() => {
               dispatch({ type: "random" });
-              // newRandomMatchup(videogameId, leftCharacter, rightCharacter);
             }}
           >
             New

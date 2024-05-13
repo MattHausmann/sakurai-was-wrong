@@ -192,9 +192,10 @@ const last = (state) => {
 };
 
 const randomMatchup = function (state) {
-  return sortedMatchupLists["Total Games"][
-    Math.floor(Math.random() * sortedMatchupLists["Total Games"].length)
-  ];
+  const newIndex = Math.floor(
+    Math.random() * sortedMatchupLists["Total Games"].length
+  );
+  return [sortedMatchupLists["Total Games"][newIndex], newIndex];
 };
 
 let initialState = {
@@ -277,10 +278,18 @@ const reducer = (prevState = initialState, action) => {
         ...prevState,
         currentIndex: next(prevState),
       };
-    case "random":
+    case "random": {
+      let [matchup, newIndex] = randomMatchup(prevState);
       return {
         ...prevState,
-        matchup: randomMatchup(prevState),
+        matchup: matchup,
+        currentIndex: newIndex,
+      };
+    }
+    case "setOrderBy":
+      return {
+        ...prevState,
+        orderBy: action.orderBy,
       };
     // quiz muts
     case "pushQuizResult":
