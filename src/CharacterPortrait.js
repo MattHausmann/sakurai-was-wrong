@@ -1,59 +1,74 @@
 // CharacterPortrait.js
 import React, { useState, useEffect } from "react";
+import { useSelector } from 'react-redux';
 
-const LabeledCharacterPortrait = ({ videogameId, name, onLoad }) => {
+const LabeledCharacterPortrait = ({side}) => {
+	console.log(side);
+	
+	let { matchup } = useSelector((state) => state);
+	console.log(matchup);
   let [loading, setLoading] = useState(true);
 
-  let resolvedName = name;
-  //directory names can't end in periods
-  if (name === "R.O.B.") {
-    resolvedName = "R.O.B";
-  }
-  if (name === "Bowser Jr.") {
-    resolvedName = "Bowser Jr";
-  }
-  if (name === "Sheik / Zelda") {
-    resolvedName = "SheikZelda";
-  }
-  if (name === "Daisy") {
-    resolvedName = "Peach";
-  }
-  if (name === "Dark Samus") {
-    resolvedName = "Samus";
-  }
-  if (name === "Dark Pit") {
-    resolvedName = "Pit";
+	const fromNameToResolvedName = {
+		"R.O.B.":"R.O.B",
+		"Bowser Jr.":"Bowser Jr",
+		"Sheik / Zelda" : "Sheik & Zelda",
+		"Daisy" : "Peach",
+		"Dark Samus": "Samus",
+		"Dark Pit": "Pit",
+		"Richter": "Simon Belmont"
+	};
+
+	
+	const getResolvedName = () => {
+		let name=matchup.left;
+		if(side=='right') {
+			name = matchup.right;
+		}
+		if(name in fromNameToResolvedName) {
+			return fromNameToResolvedName[name];
+		}
+		return name;
+	}
+
+  
+  const getBaseImagePath = () => {
+		let resolvedName = getResolvedName();		
+		let videogameId = matchup.videogameId;
+		
+		return `./characters/${videogameId}/${resolvedName}/image.png`;
   }
 
-  const baseImagePath = `./characters/${videogameId}/${resolvedName}/image.png`;
   useEffect(() => {
     setLoading(true);
     const handleImageLoad = () => {
       setLoading(false);
-      if (onLoad) {
-        onLoad();
-      }
     };
+	
+	const baseImagePath = getBaseImagePath();
+	console.log(baseImagePath);
+
 
     // Create a new image element directly
     const imageElement = new Image();
     imageElement.src = baseImagePath;
     imageElement.onload = handleImageLoad;
-  }, [name, videogameId]);
+  }, [matchup]);
 
   if (loading) {
     return (
       <div className="labeled-portrait">
         <div className="loading-container">Loading...</div>
-        <p>{resolvedName}</p>
+        <p>{getResolvedName()}</p>
       </div>
     );
   }
 
+
   return (
     <div className="labeled-portrait">
-      <img src={baseImagePath} alt={resolvedName} />
-      <p>{resolvedName}</p>
+      <img src={getBaseImagePath()} alt={getResolvedName()} />
+      <p>{getResolvedName()}</p>
     </div>
   );
 };

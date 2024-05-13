@@ -14,14 +14,8 @@ const MatchupContainerView = (props) => {
     return (
       <div className="matchup-container">
         <div className="top-row">
-          <LabeledCharacterPortrait
-            videogameId={props.videogameId}
-            name={props.leftCharacterName}
-          />
-          <LabeledCharacterPortrait
-            videogameId={props.videogameId}
-            name={props.rightCharacterName}
-          />
+          <LabeledCharacterPortrait side="left"/>
+          <LabeledCharacterPortrait side="right"/>
         </div>
 
           <MatchupSlider
@@ -40,10 +34,7 @@ const MatchupContainerView = (props) => {
   return (
     <div className="matchup-container">
       <div className="top-row">
-        <LabeledCharacterPortrait
-          videogameId={props.videogameId}
-          name={props.leftCharacterName}
-        />
+        <LabeledCharacterPortrait side="left"/>
         <MatchupSlider
           winsL={props.leftWins}
           winsR={props.rightWins}
@@ -53,10 +44,8 @@ const MatchupContainerView = (props) => {
           leftCharacter={props.leftCharacterName}
           rightCharacter={props.rightCharacterName}
         />
-        <LabeledCharacterPortrait
-          videogameId={props.videogameId}
-          name={props.rightCharacterName}
-        />
+        <LabeledCharacterPortrait side="right"/>
+
       </div>
       <div className="bottom-row">
         <MatchupNavigator
