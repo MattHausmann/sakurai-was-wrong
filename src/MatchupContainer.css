@@ -16,7 +16,9 @@
 }
 
 .labeled-portrait {
+  align-items: center;
   display: flex;
+  flex-direction: column;
   width: 132px;
   margin: 10px;
   vertical-align: top;

@@ -1,58 +1,47 @@
 // CharacterPortrait.js
 import React, { useState, useEffect } from "react";
 
-const LabeledCharacterPortrait = ({ videogameId, name, onLoad }) => {
+const LabeledCharacterPortrait = ({ videogameId, name }) => {
   let [loading, setLoading] = useState(true);
+  let [baseImagePath, setBaseImagePath] = useState(
+    `./characters/${videogameId}/${name}/image.png`
+  );
+  let [resolvedName, setResolvedName] = useState(name);
 
-  let resolvedName = name;
-  //directory names can't end in periods
-  if (name === "R.O.B.") {
-    resolvedName = "R.O.B";
-  }
-  if (name === "Bowser Jr.") {
-    resolvedName = "Bowser Jr";
-  }
-  if (name === "Sheik / Zelda") {
-    resolvedName = "SheikZelda";
-  }
-  if (name === "Daisy") {
-    resolvedName = "Peach";
-  }
-  if (name === "Dark Samus") {
-    resolvedName = "Samus";
-  }
-  if (name === "Dark Pit") {
-    resolvedName = "Pit";
-  }
+  useEffect(() => {
+    //directory names can't end in periods
+    if (name === "R.O.B.") {
+      setResolvedName("R.O.B");
+    }
+    if (name === "Bowser Jr.") {
+      setResolvedName("Bowser Jr");
+    }
+    if (name === "Sheik / Zelda") {
+      setResolvedName("SheikZelda");
+    }
+    if (name === "Daisy") {
+      setResolvedName("Daisy");
+    }
+    if (name === "Dark Samus") {
+      setResolvedName("Samus");
+    }
+    if (name === "Dark Pit") {
+      setResolvedName("Pit");
+    }
+  }, [name]);
 
-  const baseImagePath = `./characters/${videogameId}/${resolvedName}/image.png`;
   useEffect(() => {
     setLoading(true);
-    const handleImageLoad = () => {
-      setLoading(false);
-      if (onLoad) {
-        onLoad();
-      }
-    };
-
-    // Create a new image element directly
-    const imageElement = new Image();
-    imageElement.src = baseImagePath;
-    imageElement.onload = handleImageLoad;
-  }, [name, videogameId]);
-
-  if (loading) {
-    return (
-      <div className="labeled-portrait">
-        <div className="loading-container">Loading...</div>
-        <p>{resolvedName}</p>
-      </div>
-    );
-  }
+    setBaseImagePath(`./characters/${videogameId}/${resolvedName}/image.png`);
+  }, [resolvedName, videogameId]);
 
   return (
     <div className="labeled-portrait">
-      <img src={baseImagePath} alt={resolvedName} />
+      <img
+        src={baseImagePath}
+        alt={loading ? "Loading..." : resolvedName}
+        onLoad={() => setLoading(false)}
+      />
       <p>{resolvedName}</p>
     </div>
   );
