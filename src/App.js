@@ -34,7 +34,6 @@ const App = () => {
           selectGame={handleGameSelect}
         />
         <Switch
-          defaultChecked
           onChange={(e) => {
             dispatch({ type: "toggleQuizMode", val: e.target.checked });
           }}

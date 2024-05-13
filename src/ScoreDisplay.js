@@ -9,7 +9,7 @@ const ScoreDisplay = ({ score }) => {
     <div className="quizResults">
       <h4>Score: {score}</h4>
       <div className="quizResultsList">
-        {quizResults.map((result, index) => (
+        {quizResults.seen.map((result, index) => (
           <div>result {index}</div>
         ))}
       </div>

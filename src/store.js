@@ -207,11 +207,7 @@ let initialState = {
   quizMode: false,
   // currentIndex: random({ minimumGames: 200, orderBy: "Evenness" }),
   currentIndex: 1,
-  quizResults: [],
-};
-
-
-  quizResults: { guessed: {}, seen: {}, bestScores: {} },
+  quizResults: { guessed: [], seen: [], bestScores: [] },
 };
 initialState.matchup = unsortedMatchupList[initialState.currentIndex];
 
@@ -285,17 +281,6 @@ const reducer = (prevState = initialState, action) => {
       return {
         ...prevState,
         matchup: randomMatchup(prevState),
-      };
-    // quiz muts
-    case "pushQuizResult":
-      return {
-        ...prevState,
-        quizResults: [...prevState.quizResults, action.result],
-      };
-    case "toggleQuizMode":
-      return {
-        ...prevState,
-        quizMode: action.val,
       };
     // quiz muts
     case "pushQuizResult":
