@@ -1,9 +1,10 @@
 // App.js
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import GameSelect from "./GameSelect";
 import MatchupContainer from "./MatchupContainer";
 import ScoreDisplay from "./ScoreDisplay";
-import OverlayComponent from "./OverlayComponent";
+import Switch from "@mui/material/Switch";
 
 import "./App.css";
 
@@ -13,6 +14,9 @@ const App = () => {
     { id: "1", name: "Melee" },
     { id: "1386", name: "Ultimate" },
   ];
+
+  const dispatch = useDispatch();
+  const quizMode = useSelector((state) => state.quizMode);
 
   const [videogameId, setVideogameId] = useState("1");
 
@@ -29,7 +33,14 @@ const App = () => {
           videogameId={videogameId}
           selectGame={handleGameSelect}
         />
-        <MatchupContainer videogameId={videogameId} quizMode={false} />
+        <Switch
+          defaultChecked
+          onChange={(e) => {
+            dispatch({ type: "toggleQuizMode", val: e.target.checked });
+          }}
+          value={quizMode}
+        />
+        <MatchupContainer videogameId={videogameId} quizMode={quizMode} />
       </div>
       <div className="right-column">
         <ScoreDisplay score={100} />
