@@ -4,35 +4,23 @@ import LabeledCharacterPortrait from "./CharacterPortrait";
 import MatchupNavigator from "./MatchupNavigator";
 import MatchupSlider from "./MatchupSlider";
 import useDimensions from "./hooks/useDimensions";
+import { useSelector } from "react-redux";
 
 import "./MatchupContainer.css";
 
-const MatchupContainerView = (props) => {
+const MatchupContainerView = () => {
+	let {matchup} = useSelector((state) => state);
   const dimensions = useDimensions();
 
   if (dimensions.width < 800) {
     return (
       <div className="matchup-container">
         <div className="top-row">
-          <LabeledCharacterPortrait
-            videogameId={props.videogameId}
-            name={props.leftCharacterName}
-          />
-          <LabeledCharacterPortrait
-            videogameId={props.videogameId}
-            name={props.rightCharacterName}
-          />
+          <LabeledCharacterPortrait orientation='left'/>
+          <LabeledCharacterPortrait orientation='right'/>
         </div>
 
-          <MatchupSlider
-            winsL={props.leftWins}
-            winsR={props.rightWins}
-            quizMode={props.quizMode}
-            newRandomMatchup={props.newRandomMatchup}
-            videogameId={props.videogameId}
-            leftCharacter={props.leftCharacterName}
-            rightCharacter={props.rightCharacterName}
-          />
+          <MatchupSlider/>
         </div>
     );
   }
@@ -40,31 +28,12 @@ const MatchupContainerView = (props) => {
   return (
     <div className="matchup-container">
       <div className="top-row">
-        <LabeledCharacterPortrait
-          videogameId={props.videogameId}
-          name={props.leftCharacterName}
-        />
-        <MatchupSlider
-          winsL={props.leftWins}
-          winsR={props.rightWins}
-          quizMode={props.quizMode}
-          newRandomMatchup={props.newRandomMatchup}
-          videogameId={props.videogameId}
-          leftCharacter={props.leftCharacterName}
-          rightCharacter={props.rightCharacterName}
-        />
-        <LabeledCharacterPortrait
-          videogameId={props.videogameId}
-          name={props.rightCharacterName}
-        />
+        <LabeledCharacterPortrait orientation='left'/>
+        <MatchupSlider/>
+        <LabeledCharacterPortrait orientation='right'/>
       </div>
       <div className="bottom-row">
-        <MatchupNavigator
-          videogameId={props.videogameId}
-          leftCharacter={props.leftCharacterName}
-          rightCharacter={props.rightCharacterName}
-          newRandomMatchup={props.newRandomMatchup}
-        />
+        <MatchupNavigator/>
       </div>
     </div>
   );

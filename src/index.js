@@ -6,6 +6,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import store from "./store";
 
+console.log('in index.js');
 
 
 // As of React 18

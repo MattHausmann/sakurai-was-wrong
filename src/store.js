@@ -1,4 +1,4 @@
-import wins from './wins.json';
+import wins from "./wins.json";
 import { createStore } from "redux";
 
 console.log("in store.js");
@@ -53,7 +53,10 @@ const compareByWinnerWinPercent = (a, b) => {
   }
   return winnerWinPctDifference;
 };
+
 const compareByLoserWinPercent = (a, b) => {
+	if(!a) {console.log(a);}
+	if(!b) {console.log(b);}
   let aWinnerWins = getWinnerWins(a);
   let aLoserWins = getLoserWins(a);
   let bWinnerWins = getWinnerWins(b);
@@ -96,6 +99,8 @@ for (let sortBy in labeledComparators) {
   );
 }
 
+
+
 //ok so now we have a bunch of sorted matchup lists and the comparators we used to sort them
 //we need to use this to enable first/prev/next/last/random
 //whenever we change sort methods we look up the appropriate list at sortedMatchupLists[sortBy]
@@ -133,24 +138,28 @@ const prev = (state) => {
 };
 
 const next = (state) => {
-  let targetNext = state.currentIndex + 1;
-  let currentList = sortedMatchupLists[state.orderBy];
-
+	console.log('in next');
+	let sortMethod = state.orderBy;
+	let cmp = labeledComparators[sortMethod];
+	let currentList = sortedMatchupLists[sortMethod];
+	let currentIndex = binarySearchListForObjectWithComparator(currentList, state.matchup, cmp);
+	let targetNext = currentIndex;
+	
   let enoughGames = false;
   let leftOkay = !state.requiredLeft;
   let rightOkay = !state.requiredRight;
-
   while (
     targetNext < currentList.length &&
     (!enoughGames || !leftOkay || !rightOkay)
   ) {
+	targetNext += 1;
     let matchup = currentList[targetNext];
-    let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-    let rightOkay = state.requiredRight || state.requiredRight == matchup.right;
-    targetNext += 1;
+    enoughGames = getTotalGames(matchup) >= state.minimumGames;
+    leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
+    rightOkay = !state.requiredRight || state.requiredRight == matchup.right;
   }
-  return targetNext;
+  console.log(currentIndex, currentList[currentIndex], targetNext, currentList[targetNext]);
+  return currentList[targetNext];
 };
 
 const first = (state) => {
@@ -188,29 +197,82 @@ const last = (state) => {
     i -= 1;
   }
 
-	return i;
-}
+  return i;
+};
 console.log("defined first, next, last");
-const random = function(state) {
-	var enoughGames = false;
-	let leftOkay = !state.requiredLeft;
-	let rightOkay = !state.requiredRight;
 
-	let i = 0;
-	while(!enoughGames || !leftOkay || !rightOkay) {
-		let i = Math.floor(Math.random(unsortedMatchupList.length));
-		let matchup = unsortedMatchupList[i];
-		
-		enoughGames = getTotalGames(matchup) >= state.minimumGames;
-		leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-		rightOkay = !state.requiredRight || state.requiredRight == matchup.right;
+const firstMatchupAtOrAboveThreshold = function(threshold) {
+	let listName = "Total Games";
+	let totalGamesList = sortedMatchupLists[listName];
+	
+	let b = 0;
+	let e = totalGamesList.length-1;
+	console.log(totalGamesList)
+	
+	while(b < e) {
+		let m = Math.floor((b+e)/2);
+		let totalGames = getTotalGames(totalGamesList[m]);
+		if(totalGames < threshold) {
+			if(b+1==e) {
+				return seekFirstMatchupAtThreshold(totalGamesList,e);
+			}
+			b=m
+		} if(threshold <totalGames) {
+			if(b+1==e){
+				return seekFirstMatchupAtThreshold(totalGamesList,e);
+			}
+			e=m;
+		} if(threshold == totalGames) {
+			return seekFirstMatchupAtThreshold(totalGamesList,m);
+		}
 	}
-	console.log("out of while loop");
-	return i;
 }
 
-console.log("defined random");
+const seekFirstMatchupAtThreshold = function(list, index) {
+	let goalGames = getTotalGames(list[index]);
+	while(index>=0 && getTotalGames(list[index]) == goalGames) {
+			index -= 1;
+	}
+	console.log(index+1);
+	return list[index+1];
+	
+}
+const binarySearchListForObjectWithComparator = function(list, goal, comparator) {
+	let m = Math.floor(list.length/2);
+	let b = 0;
+	let e = list.length-1;
+	
+	while(comparator(goal,list[m])) {
+		let cmp = comparator(goal,list[m]);
+		if(cmp > 0) {
+			b=m;
+		}
+		if(cmp < 0) {
+			e=m;
+		}
+		m = Math.floor((b+e)/2);
+	}
+	return m;
+}
 
+
+const random = function (state) {
+  var enoughGames = false;
+  let leftOkay = !state.requiredLeft;
+  let rightOkay = !state.requiredRight;
+
+  let i = 0;
+  while (!enoughGames || !leftOkay || !rightOkay) {
+    let i = Math.floor(Math.random(unsortedMatchupList.length));
+    let matchup = unsortedMatchupList[i];
+
+    enoughGames = getTotalGames(matchup) >= state.minimumGames;
+    leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
+    rightOkay = !state.requiredRight || state.requiredRight == matchup.right;
+  }
+  console.log("out of while loop");
+  return i;
+};
 
 let initialState = {
   minimumGames: 200,
@@ -220,28 +282,52 @@ let initialState = {
   bestScores: {},
   orderBy: "Left Win %",
   quizMode: false,
-  currentIndex: random({ minimumGames: 200, orderBy: "Evenness" }),
+
+  quizResults: [],
 };
 
-initialState.matchup = unsortedMatchupList[initialState.currentIndex];
+//searches for a matchup by minimum games
+let firstMatchup = firstMatchupAtOrAboveThreshold(16782);
 
-while (
-  getTotalGames(sortedMatchupLists[initialState.orderBy][initialState.currentIndex]) <
-  initialState.minimumGames
-) {
-  initialState.currentIndex = Math.floor(
-    Math.random() * sortedMatchupLists[initialState.orderBy].length
-  );
-}
-console.log("defined initialState");
-while(getTotalGames(sortedMatchupLists[initialState.orderBy][initialState.currentIndex]) < initialState.minimumGames) {
-  initialState.currentIndex = Math.floor(Math.random() * sortedMatchupLists[initialState.orderBy].length);
-}
+console.log(`${firstMatchup.videogameId}:${firstMatchup.left}:${firstMatchup.right}`);
+
+let list=sortedMatchupLists["Left Win %"];
+let lopsidedComparator = labeledComparators["Lopsidedness"];
+let goalMatchup = {videogameId:"1386",left:"Daisy",right:"Wolf"};
+let lopsidednessIndex = binarySearchListForObjectWithComparator(list,goalMatchup,lopsidedComparator);
+console.log(lopsidednessIndex);
+let totalGamesList = sortedMatchupLists["Total Games"];
+let totalGamesIndex = binarySearchListForObjectWithComparator(totalGamesList,firstMatchup,compareByTotalGames);
+let matchupsPossible = totalGamesList.length-totalGamesIndex;
+totalGamesIndex = totalGamesIndex + Math.floor(Math.random()*matchupsPossible);
+
+
+
+initialState.matchup=goalMatchup;
+console.log(initialState);
+let newMatchup = next(initialState);
+initialState.matchup=newMatchup;
+console.log(initialState);
+
+newMatchup = next(initialState);
+initialState.matchup=newMatchup;
+console.log(initialState);
+
+newMatchup = next(initialState);
+initialState.matchup=newMatchup;
+console.log(initialState);
+
+newMatchup = next(initialState);
+initialState.matchup=newMatchup;
+console.log(initialState);
+
+
+
+//initialState.matchup = newMatchup;
+console.log(lopsidednessIndex);
 
 let state = initialState;
-
-
-
+state.matchup = goalMatchup;
 const reducer = (prevState = initialState, action) => {
   switch (action.type) {
     case "setGameId":
@@ -272,7 +358,7 @@ const reducer = (prevState = initialState, action) => {
     case "next":
       return {
         ...prevState,
-        currentIndex: next(prevState),
+        matchup: next(prevState),
       };
     case "first":
       return {
@@ -289,10 +375,25 @@ const reducer = (prevState = initialState, action) => {
         ...prevState,
         currentIndex: random(prevState),
       };
+    // quiz muts
+    case "pushQuizResult":
+      return {
+        ...prevState,
+        quizResults: [...prevState.quizResults, action.result],
+      };
+    case "toggleQuizMode":
+      return {
+        ...prevState,
+        quizMode: action.val,
+      };
     default:
       return prevState;
   }
 };
 
-const store = createStore(reducer, initialState);
+const store = createStore(
+  reducer,
+  initialState,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 export default store;

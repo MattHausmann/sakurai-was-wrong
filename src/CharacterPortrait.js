@@ -1,10 +1,23 @@
 // CharacterPortrait.js
 import React, { useState, useEffect } from "react";
+import { useSelector } from 'react-redux';
 
-const LabeledCharacterPortrait = ({ videogameId, name, onLoad }) => {
+const LabeledCharacterPortrait = ({ orientation }) => {
+	
   let [loading, setLoading] = useState(true);
+  let {matchup} = useSelector((state) => state);
+  
+  let videogameId = matchup.videogameId;
 
+  let name=''
+  if(orientation == 'right') {
+	  name = matchup.right;
+  } else {
+	  name = matchup.left;
+  }
+  
   let resolvedName = name;
+  
   //directory names can't end in periods
   if (name === "R.O.B.") {
     resolvedName = "R.O.B";
@@ -30,9 +43,6 @@ const LabeledCharacterPortrait = ({ videogameId, name, onLoad }) => {
     setLoading(true);
     const handleImageLoad = () => {
       setLoading(false);
-      if (onLoad) {
-        onLoad();
-      }
     };
 
     // Create a new image element directly
