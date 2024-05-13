@@ -1,4 +1,4 @@
-import wins from './wins.json';
+import wins from "./wins.json";
 import { createStore } from "redux";
 
 console.log("in store.js");
@@ -188,28 +188,15 @@ const last = (state) => {
     i -= 1;
   }
 
-	return i;
-}
-console.log("defined first, next, last");
-const random = function(state) {
-	var enoughGames = false;
-	let leftOkay = !state.requiredLeft;
-	let rightOkay = !state.requiredRight;
+  return i;
+};
 
-	let i = 0;
-	while(!enoughGames || !leftOkay || !rightOkay) {
-		let i = Math.floor(Math.random(unsortedMatchupList.length));
-		let matchup = unsortedMatchupList[i];
-		
-		enoughGames = getTotalGames(matchup) >= state.minimumGames;
-		leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-		rightOkay = !state.requiredRight || state.requiredRight == matchup.right;
-	}
-	console.log("out of while loop");
-	return i;
-}
+const randomMatchup = function (state) {
+  return sortedMatchupLists["Total Games"][
+    Math.floor(Math.random() * sortedMatchupLists["Total Games"].length)
+  ];
+};
 
-console.log("defined random");
 let initialState = {
   minimumGames: 200,
   selectedGames: [],
@@ -218,25 +205,36 @@ let initialState = {
   bestScores: {},
   orderBy: "Left Win %",
   quizMode: false,
-  currentIndex: random({ minimumGames: 200, orderBy: "Evenness" }),
-};
+  // currentIndex: random({ minimumGames: 200, orderBy: "Evenness" }),
+  currentIndex: 1,
 
+  quizResults: { guessed: {}, seen: {}, bestScores: {} },
+};
+initialState.matchup = unsortedMatchupList[initialState.currentIndex];
+
+console.log(sortedMatchupLists);
+console.log(initialState.orderBy);
 while (
-  getTotalGames(sortedMatchupLists[initialState.orderBy][initialState.currentIndex]) <
-  initialState.minimumGames
+  getTotalGames(
+    sortedMatchupLists[initialState.orderBy][initialState.currentIndex]
+  ) < initialState.minimumGames
 ) {
   initialState.currentIndex = Math.floor(
     Math.random() * sortedMatchupLists[initialState.orderBy].length
   );
 }
 console.log("defined initialState");
-while(getTotalGames(sortedMatchupLists[initialState.orderBy][initialState.currentIndex]) < initialState.minimumGames) {
-  initialState.currentIndex = Math.floor(Math.random() * sortedMatchupLists[initialState.orderBy].length);
+while (
+  getTotalGames(
+    sortedMatchupLists[initialState.orderBy][initialState.currentIndex]
+  ) < initialState.minimumGames
+) {
+  initialState.currentIndex = Math.floor(
+    Math.random() * sortedMatchupLists[initialState.orderBy].length
+  );
 }
 
 let state = initialState;
-
-
 
 const reducer = (prevState = initialState, action) => {
   switch (action.type) {
@@ -283,12 +281,27 @@ const reducer = (prevState = initialState, action) => {
     case "random":
       return {
         ...prevState,
-        currentIndex: random(prevState),
+        matchup: randomMatchup(prevState),
+      };
+    // quiz muts
+    case "pushQuizResult":
+      return {
+        ...prevState,
+        quizResults: [...prevState.quizResults, action.result],
+      };
+    case "toggleQuizMode":
+      return {
+        ...prevState,
+        quizMode: action.val,
       };
     default:
       return prevState;
   }
 };
 
-const store = createStore(reducer, initialState);
+const store = createStore(
+  reducer,
+  initialState,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 export default store;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import LabeledCharacterPortrait from "./CharacterPortrait";
 import MatchupSlider from "./MatchupSlider";
 import wins from "./wins.json";
@@ -137,6 +138,8 @@ const MatchupNavigator = ({
   leftCharacter,
   rightCharacter,
 }) => {
+  const dispatch = useDispatch();
+
   return (
     <div className="matchup-navigator">
       <div className="left-buttons">
@@ -164,7 +167,8 @@ const MatchupNavigator = ({
         <div className="navigator-bottom-row">
           <button
             onClick={() => {
-              newRandomMatchup(videogameId, leftCharacter, rightCharacter);
+              dispatch({ type: "random" });
+              // newRandomMatchup(videogameId, leftCharacter, rightCharacter);
             }}
           >
             New
