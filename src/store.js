@@ -251,12 +251,6 @@ const binarySearchListForObjectWithComparator = function(list, goal, comparator)
 	return m;
 }
 
-
-const random = function (state) {
-  var enoughGames = false;
-  let leftOkay = !state.requiredLeft;
-  let rightOkay = !state.requiredRight;
-
 const randomMatchup = function (state) {
   const newIndex = Math.floor(
     Math.random() * sortedMatchupLists["Total Games"].length
