@@ -3,9 +3,6 @@ import { useDispatch } from 'react-redux';
 import "./NavigationOverlay.css";
 
 const NavigationOverlay = ({children}) => {
-	console.log(children);
-	console.log(children.props.side);
-	console.log(children.props.newRandomMatchup);
 	const dispatch = useDispatch();
 	return(
 		<div className="container">

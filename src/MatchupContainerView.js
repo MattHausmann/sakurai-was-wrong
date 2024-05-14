@@ -37,16 +37,12 @@ const MatchupContainerView = () => {
   return (
 		<div className="matchup-container">
 		  <div className="top-row">
-			<NavigationOverlay>
-				<LabeledCharacterPortrait side="left"/>
-			</NavigationOverlay>
-					<MatchupSlider 
-						winsL={wins[videogameId][left][right]}
-						winsR={wins[videogameId][right][left]}
-					/>
-			<NavigationOverlay>
-				<LabeledCharacterPortrait side="right"/>
-			</NavigationOverlay>
+			<LabeledCharacterPortrait side="left"/>
+				<MatchupSlider 
+					winsL={wins[videogameId][left][right]}
+					winsR={wins[videogameId][right][left]}
+				/>
+			<LabeledCharacterPortrait side="right"/>
 		  </div>
 		</div>
   );

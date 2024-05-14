@@ -22,6 +22,7 @@ const LabeledCharacterPortrait = ({ side }) => {
   }, []);
 
   useEffect(() => {
+	  setLoading(true);
     let name = matchup.left;
     if (side === "right") {
       name = matchup.right;
@@ -32,13 +33,18 @@ const LabeledCharacterPortrait = ({ side }) => {
     setResolvedName(name);
     setBaseImagePath(`./characters/${matchup.videogameId}/${name}/image.png`);
   }, [fromNameToResolvedName, matchup, side]);
+  
+  
 
   return (
     <div className="labeled-portrait">
+	{loading && <div className="imageLoading">Loading!</div>}
       <img
         src={baseImagePath}
         alt={loading ? "Loading..." : resolvedName}
         onLoad={() => setLoading(false)}
+		style={{display: loading?"none":"block"}}
+		
       />
       <p>{resolvedName}</p>
     </div>

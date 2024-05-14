@@ -296,10 +296,11 @@ let totalGamesIndex = binarySearchListForObjectWithComparator(
   compareByTotalGames
 );
 let matchupsPossible = totalGamesList.length - totalGamesIndex;
-totalGamesIndex =
-  totalGamesIndex + Math.floor(Math.random() * matchupsPossible);
+totalGamesIndex =  totalGamesIndex + Math.floor(Math.random() * matchupsPossible);
 
 initialState.matchup = totalGamesList[totalGamesIndex];
+
+initialState.seenMatchups = {[[initialState.matchup.left, initialState.matchup.right].sort().join("")]:true};
 
 let state = initialState;
 
@@ -368,7 +369,7 @@ const reducer = (prevState = initialState, action) => {
         matchup: newMatchup,
         seenMatchups: {
           ...prevState.seenMatchups,
-          [[prevState.matchup.left, prevState.matchup.right].sort().join("")]: true,
+          [[newMatchup.left, newMatchup.right].sort().join("")]: true,
         },
       };
     }
