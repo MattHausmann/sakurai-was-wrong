@@ -31,11 +31,13 @@
   border: 2px solid #333;
 }
 
-.loading-container {
-  width: 132px;
-  height: 132px;
-  border: 2px solid #333;
-  display: flex;
+.pie-chart-container {
   align-items: center;
+  display: flex;
   justify-content: center;
+  padding-left: 50px;
+
+  svg {
+    margin: auto;
+  }
 }
