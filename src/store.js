@@ -283,7 +283,7 @@ let initialState = {
 };
 
 //searches for a matchup by minimum games
-let firstMatchup = firstMatchupAtOrAboveThreshold(15000);
+let firstMatchup = firstMatchupAtOrAboveThreshold(1000);
 
 console.log(`${firstMatchup.videogameId}:${firstMatchup.left}:${firstMatchup.right}`);
 

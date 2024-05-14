@@ -1,18 +1,12 @@
 // MatchupSlider.js
 import React, { useState, useEffect } from "react";
-
+import { useSelector } from 'react-redux';
 import "./MatchupSlider.css";
 
-const MatchupSlider = ({
-  winsL,
-  winsR,
-  newRandomMatchup,
-  leftCharacter,
-  rightCharacter,
-  onChange,
-  videogameId,
-  quizMode,
-}) => {
+const MatchupSlider = ({winsL,winsR}) => {
+	
+	const quizMode = useSelector((state) => state.quizMode);
+	
   const [sliderValue, setSliderValue] = useState(winsL);
 
   const [leftWins, setLeftWins] = useState(winsL);
@@ -24,9 +18,6 @@ const MatchupSlider = ({
     }
     let newLeftWins = Math.floor(e.target.value);
     setSliderValue(newLeftWins);
-    if (onChange) {
-      onChange(e);
-    }
   };
 
   useEffect(() => {

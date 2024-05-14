@@ -4,11 +4,18 @@ import LabeledCharacterPortrait from "./CharacterPortrait";
 import MatchupNavigator from "./MatchupNavigator";
 import MatchupSlider from "./MatchupSlider";
 import useDimensions from "./hooks/useDimensions";
+import { useSelector } from 'react-redux';
+import wins from './wins.json';
 
 import "./MatchupContainer.css";
 
-const MatchupContainerView = (props) => {
+const MatchupContainerView = () => {
   const dimensions = useDimensions();
+  
+  const {matchup} = useSelector((state) => state);
+  const {videogameId, left, right} = matchup;
+  
+  const newRandomMatchup = () => {};
 
   if (dimensions.width < 800) {
     return (
@@ -19,14 +26,8 @@ const MatchupContainerView = (props) => {
         </div>
 
           <MatchupSlider
-            winsL={props.leftWins}
-            winsR={props.rightWins}
-            quizMode={props.quizMode}
-            newRandomMatchup={props.newRandomMatchup}
-            videogameId={props.videogameId}
-            leftCharacter={props.leftCharacterName}
-            rightCharacter={props.rightCharacterName}
-          />
+            winsL={wins[videogameId][left][right]}
+            winsR={wins[videogameId][right][left]}/>
         </div>
     );
   }
@@ -35,24 +36,15 @@ const MatchupContainerView = (props) => {
     <div className="matchup-container">
       <div className="top-row">
         <LabeledCharacterPortrait side="left"/>
-        <MatchupSlider
-          winsL={props.leftWins}
-          winsR={props.rightWins}
-          quizMode={props.quizMode}
-          newRandomMatchup={props.newRandomMatchup}
-          videogameId={props.videogameId}
-          leftCharacter={props.leftCharacterName}
-          rightCharacter={props.rightCharacterName}
-        />
+        <MatchupSlider 
+			winsL={wins[videogameId][left][right]}
+			winsR={wins[videogameId][right][left]}/>
         <LabeledCharacterPortrait side="right"/>
 
       </div>
       <div className="bottom-row">
         <MatchupNavigator
-          videogameId={props.videogameId}
-          leftCharacter={props.leftCharacterName}
-          rightCharacter={props.rightCharacterName}
-          newRandomMatchup={props.newRandomMatchup}
+          newRandomMatchup={newRandomMatchup}
         />
       </div>
     </div>

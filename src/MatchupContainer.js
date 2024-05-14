@@ -142,15 +142,7 @@ const MatchupContainer = () => {
 
 
   return (
-   <MatchupContainerView
-      videogameId={videogameId}
-      leftCharacterName={leftCharacterName}
-      rightCharacterName={rightCharacterName}
-      leftWins={leftWins}
-      rightWins={rightWins}
-      quizMode={quizMode}
-      newRandomMatchup={newRandomMatchup}
-    />
+   <MatchupContainerView newRandomMatchup={newRandomMatchup} />
   );
 };
 
