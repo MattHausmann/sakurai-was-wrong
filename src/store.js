@@ -256,14 +256,18 @@ const binarySearchListForObjectWithComparator = function (
 };
 
 const randomMatchup = function (state) {
-  const newIndex = Math.floor(
-    Math.random() * sortedMatchupLists["Total Games"].length
-  );
-  return sortedMatchupLists["Total Games"][newIndex];
+	const matchup0 = firstMatchupAtOrAboveThreshold(state.minimumGames);
+	const sort = "Total Games";
+	const list = sortedMatchupLists[sort];
+	const comp = labeledComparators[sort];
+	const index0 = binarySearchListForObjectWithComparator(list, matchup0, comp);
+	const numMatchups = list.length - index0;
+	const newIndex = index0 + Math.floor(Math.random() * numMatchups);
+	return list[newIndex];
 };
 
 let initialState = {
-  minimumGames: 200,
+  minimumGames: 1000,
   selectedGames: [],
   seenMatchups: {},
   guessedMatchups: {},
