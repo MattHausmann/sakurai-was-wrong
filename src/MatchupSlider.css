@@ -4,13 +4,14 @@
   flex: 1;
 }
 
-/* #slider-input { */
-/*   width: 300px; */
-/* } */
+.percentContainer {
+	justify-content:center;
+	display:flex;
+}
 
-/* #slider-meter { */
-/*   width: 300px; */
-/* } */
+#slider-meter {
+	width:300px;
+}
 
 .text-above-slider {
   align-items: center;
@@ -19,11 +20,11 @@
   font-size: 4.5em;
   justify-content: center;
 
-  .winrate-text {
+  .left-percent {
     color: #87b38d;
   }
 
-  .loserate-text {
+  .right-percent {
     color: #cc76a1;
   }
 }

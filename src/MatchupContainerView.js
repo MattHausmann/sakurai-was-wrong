@@ -7,6 +7,8 @@ import useDimensions from "./hooks/useDimensions";
 import { useSelector } from 'react-redux';
 import wins from './wins.json';
 
+import NavigationOverlay from './NavigationOverlay';
+
 import "./MatchupContainer.css";
 
 const MatchupContainerView = () => {
@@ -33,21 +35,20 @@ const MatchupContainerView = () => {
   }
 
   return (
-    <div className="matchup-container">
-      <div className="top-row">
-        <LabeledCharacterPortrait side="left"/>
-        <MatchupSlider 
-			winsL={wins[videogameId][left][right]}
-			winsR={wins[videogameId][right][left]}/>
-        <LabeledCharacterPortrait side="right"/>
-
-      </div>
-      <div className="bottom-row">
-        <MatchupNavigator
-          newRandomMatchup={newRandomMatchup}
-        />
-      </div>
-    </div>
+		<div className="matchup-container">
+		  <div className="top-row">
+			<NavigationOverlay>
+				<LabeledCharacterPortrait side="left"/>
+			</NavigationOverlay>
+					<MatchupSlider 
+						winsL={wins[videogameId][left][right]}
+						winsR={wins[videogameId][right][left]}
+					/>
+			<NavigationOverlay>
+				<LabeledCharacterPortrait side="right"/>
+			</NavigationOverlay>
+		  </div>
+		</div>
   );
 };
 

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import MatchupContainerView from "./MatchupContainerView";
+import NavigationOverlay from "./NavigationOverlay";
 import wins from "./wins.json";
 
 let possibleMatchups = {};
@@ -101,7 +102,6 @@ const MatchupContainer = () => {
   const { matchup, quizMode } = useSelector((state) => state);
   
   let {videogameId, left, right} = matchup;
-
   const [leftCharacterName, setLeftCharacterName] = useState(left);
   const [rightCharacterName, setRightCharacterName] = useState(right);
 
@@ -142,7 +142,9 @@ const MatchupContainer = () => {
 
 
   return (
-   <MatchupContainerView newRandomMatchup={newRandomMatchup} />
+	<NavigationOverlay>
+		<MatchupContainerView/>
+	</NavigationOverlay>
   );
 };
 

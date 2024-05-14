@@ -204,8 +204,6 @@ const firstMatchupAtOrAboveThreshold = function(threshold) {
 
 	while(b < e) {
 		let m = Math.floor((b+e)/2);
-		console.log(m);
-		console.log(totalGamesList[m]);
 		let totalGames = getTotalGames(totalGamesList[m]);
 		if(totalGames < threshold) {
 			if(b+1===e) {
@@ -238,7 +236,6 @@ const binarySearchListForObjectWithComparator = function(list, goal, comparator)
 	let e = list.length-1;
 
 	while(comparator(goal,list[m])) {
-		console.log(b,m,e,list[m],goal);
 		let cmp = comparator(goal,list[m]);
 		if(cmp > 0) {
 			b=m;
@@ -255,7 +252,7 @@ const randomMatchup = function (state) {
   const newIndex = Math.floor(
     Math.random() * sortedMatchupLists["Total Games"].length
   );
-  return [sortedMatchupLists["Total Games"][newIndex], newIndex];
+  return sortedMatchupLists["Total Games"][newIndex];
 };
 
 let initialState = {
@@ -273,12 +270,10 @@ let initialState = {
 //searches for a matchup by minimum games
 let firstMatchup = firstMatchupAtOrAboveThreshold(1000);
 
-console.log(`${firstMatchup.videogameId}:${firstMatchup.left}:${firstMatchup.right}`);
 
 let list=sortedMatchupLists["Lopsidedness"];
 let lopsidedComparator = labeledComparators["Lopsidedness"];
 let lopsidednessIndex = binarySearchListForObjectWithComparator(list,firstMatchup,lopsidedComparator);
-console.log(lopsidednessIndex);
 
 let totalGamesList = sortedMatchupLists["Total Games"];
 let totalGamesIndex = binarySearchListForObjectWithComparator(totalGamesList,firstMatchup,compareByTotalGames);
@@ -287,7 +282,6 @@ totalGamesIndex = totalGamesIndex + Math.floor(Math.random()*matchupsPossible);
 
 initialState.matchup=totalGamesList[totalGamesIndex];
 
-console.log("defined initialState");
 
 
 let state = initialState;
@@ -335,11 +329,26 @@ const reducer = (prevState = initialState, action) => {
         currentIndex: next(prevState),
       };
     case "random": {
-      let [matchup, newIndex] = randomMatchup(prevState);
+		console.log("in random");
+		console.log(action.side);
+		
+		let newMatchup = randomMatchup(prevState);
+		if(action.side) {
+			if(action.side == 'left') {
+				while(newMatchup.left != prevState.matchup.left) {
+					newMatchup = randomMatchup(prevState);
+				}
+			}
+			if(action.side == 'right') {
+				while(newMatchup.right != prevState.matchup.right) {
+					newMatchup = randomMatchup(prevState)
+				}
+			}
+		}
+	  
       return {
         ...prevState,
-        matchup: matchup,
-        currentIndex: newIndex,
+        matchup: newMatchup,
       };
     }
     case "setOrderBy":

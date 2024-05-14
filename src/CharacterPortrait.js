@@ -14,10 +14,10 @@ const LabeledCharacterPortrait = ({ side }) => {
       "R.O.B.": "R.O.B",
       "Bowser Jr.": "Bowser Jr",
       "Sheik / Zelda": "Sheik & Zelda",
-      Daisy: "Peach",
+      "Daisy": "Peach",
       "Dark Samus": "Samus",
       "Dark Pit": "Pit",
-      Richter: "Simon Belmont",
+      "Richter": "Simon Belmont",
     };
   }, []);
 
