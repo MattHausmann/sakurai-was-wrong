@@ -10,7 +10,7 @@ const ScoreDisplay = ({ score }) => {
       <h4>Score: {score}</h4>
       <div className="quizResultsList">
         {Object.entries(seenMatchups).map(([key, value]) => (
-          <div>result {key}</div>
+          <div>{key}</div>
         ))}
       </div>
     </div>
