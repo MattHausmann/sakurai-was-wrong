@@ -34,7 +34,7 @@ const compareByLeftWinPercent = (a, b) => {
   let bRightWins = wins[b.videogameId][b.right][b.left];
 
   let leftWinPctDifference = aLeftWins * bRightWins - bLeftWins * aRightWins;
-  if (leftWinPctDifference == 0) {
+  if (leftWinPctDifference === 0) {
     return aLeftWins - bLeftWins;
   }
   return leftWinPctDifference;
@@ -48,7 +48,7 @@ const compareByWinnerWinPercent = (a, b) => {
   //awins/aloses > bwins/bloses but with cross-multiplication
   let winnerWinPctDifference =
     aWinnerWins * bLoserWins - bWinnerWins * aLoserWins;
-  if (winnerWinPctDifference == 0) {
+  if (winnerWinPctDifference === 0) {
     return aWinnerWins - bWinnerWins;
   }
   return winnerWinPctDifference;
@@ -61,7 +61,7 @@ const compareByLoserWinPercent = (a, b) => {
   //aLoses/aWins > bLoses/bWins but with cross-multiplication
   let loserWinPctDifference =
     bWinnerWins * aLoserWins - aWinnerWins * bLoserWins;
-  if (loserWinPctDifference == 0) {
+  if (loserWinPctDifference === 0) {
     return aLoserWins - bLoserWins;
   }
   return loserWinPctDifference;
@@ -126,8 +126,8 @@ const prev = (state) => {
   while (targetPrev >= 0 && (!enoughGames || !leftOkay || !rightOkay)) {
     let matchup = currentList[targetPrev];
     let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-    let rightOkay = state.requiredRight || state.requiredRight == matchup.right;
+    let leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
+    let rightOkay = state.requiredRight || state.requiredRight === matchup.right;
     targetPrev -= 1;
   }
 
@@ -148,8 +148,8 @@ const next = (state) => {
   ) {
     let matchup = currentList[targetNext];
     let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-    let rightOkay = state.requiredRight || state.requiredRight == matchup.right;
+    let leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
+    let rightOkay = state.requiredRight || state.requiredRight === matchup.right;
     targetNext += 1;
   }
   return targetNext;
@@ -166,8 +166,8 @@ const first = (state) => {
   while (i < currentList.length && (!enoughGames || !leftOkay || !rightOkay)) {
     let matchup = currentList[i];
     let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-    let rightOkay = state.requiredRight || state.requiredRight == matchup.right;
+    let leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
+    let rightOkay = state.requiredRight || state.requiredRight === matchup.right;
     i += 1;
   }
 
@@ -185,8 +185,8 @@ const last = (state) => {
   while (i >= 0 && (!enoughGames || !leftOkay || !rightOkay)) {
     let matchup = currentList[i];
     let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-    let rightOkay = state.requiredRight || state.requiredRight == matchup.right;
+    let leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
+    let rightOkay = state.requiredRight || state.requiredRight === matchup.right;
     i -= 1;
   }
 
@@ -197,27 +197,27 @@ console.log("defined first, next, last");
 const firstMatchupAtOrAboveThreshold = function(threshold) {
 	let listName = "Total Games";
 	let totalGamesList = sortedMatchupLists[listName];
-	
+
 	let b = 0;
 	let e = totalGamesList.length-1;
 	console.log(totalGamesList)
-	
+
 	while(b < e) {
 		let m = Math.floor((b+e)/2);
 		console.log(m);
 		console.log(totalGamesList[m]);
 		let totalGames = getTotalGames(totalGamesList[m]);
 		if(totalGames < threshold) {
-			if(b+1==e) {
+			if(b+1===e) {
 				return seekFirstMatchupAtThreshold(totalGamesList,e);
 			}
 			b=m
 		} if(threshold <totalGames) {
-			if(b+1==e){
+			if(b+1===e){
 				return seekFirstMatchupAtThreshold(totalGamesList,e);
 			}
 			e=m;
-		} if(threshold == totalGames) {
+		} if(threshold === totalGames) {
 			return seekFirstMatchupAtThreshold(totalGamesList,m);
 		}
 	}
@@ -225,18 +225,18 @@ const firstMatchupAtOrAboveThreshold = function(threshold) {
 
 const seekFirstMatchupAtThreshold = function(list, index) {
 	let goalGames = getTotalGames(list[index]);
-	while(index>=0 && getTotalGames(list[index]) == goalGames) {
+	while(index>=0 && getTotalGames(list[index]) === goalGames) {
 			index -= 1;
 	}
 	console.log(index+1);
 	return list[index+1];
-	
+
 }
 const binarySearchListForObjectWithComparator = function(list, goal, comparator) {
 	let m = Math.floor(list.length/2);
 	let b = 0;
 	let e = list.length-1;
-	
+
 	while(comparator(goal,list[m])) {
 		console.log(b,m,e,list[m],goal);
 		let cmp = comparator(goal,list[m]);
@@ -251,23 +251,11 @@ const binarySearchListForObjectWithComparator = function(list, goal, comparator)
 	return m;
 }
 
-
-const random = function (state) {
-  var enoughGames = false;
-  let leftOkay = !state.requiredLeft;
-  let rightOkay = !state.requiredRight;
-
-  let i = 0;
-  while (!enoughGames || !leftOkay || !rightOkay) {
-    let i = Math.floor(Math.random(unsortedMatchupList.length));
-    let matchup = unsortedMatchupList[i];
-
-    enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    leftOkay = !state.requiredLeft || state.requiredLeft == matchup.left;
-    rightOkay = !state.requiredRight || state.requiredRight == matchup.right;
-  }
-  console.log("out of while loop");
-  return i;
+const randomMatchup = function (state) {
+  const newIndex = Math.floor(
+    Math.random() * sortedMatchupLists["Total Games"].length
+  );
+  return [sortedMatchupLists["Total Games"][newIndex], newIndex];
 };
 
 let initialState = {
@@ -278,7 +266,7 @@ let initialState = {
   bestScores: {},
   orderBy: "Left Win %",
   quizMode: false,
-
+  currentIndex: 1,
   quizResults: [],
 };
 
@@ -346,10 +334,18 @@ const reducer = (prevState = initialState, action) => {
         ...prevState,
         currentIndex: next(prevState),
       };
-    case "random":
+    case "random": {
+      let [matchup, newIndex] = randomMatchup(prevState);
       return {
         ...prevState,
-        currentIndex: random(prevState),
+        matchup: matchup,
+        currentIndex: newIndex,
+      };
+    }
+    case "setOrderBy":
+      return {
+        ...prevState,
+        orderBy: action.orderBy,
       };
     // quiz muts
     case "pushQuizResult":
