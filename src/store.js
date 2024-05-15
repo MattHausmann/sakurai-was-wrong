@@ -347,22 +347,19 @@ const reducer = (prevState = initialState, action) => {
         currentIndex: next(prevState),
       };
     case "random": {
-      console.log("in random");
-      console.log(action.side);
 
       let newMatchup = randomMatchup(prevState);
-      if (action.side) {
-        if (action.side == "left") {
+        if (prevState.lockedSide == "left") {
           while (newMatchup.left !== prevState.matchup.left) {
             newMatchup = randomMatchup(prevState);
           }
         }
-        if (action.side == "right") {
+        if (prevState.lockedSide == "right") {
           while (newMatchup.right !== prevState.matchup.right) {
             newMatchup = randomMatchup(prevState);
           }
         }
-      }
+      
 
       return {
         ...prevState,
@@ -372,7 +369,8 @@ const reducer = (prevState = initialState, action) => {
           [[newMatchup.left, newMatchup.right].sort().join("")]: true,
         },
       };
-    }
+	}
+
     case "setOrderBy":
       return {
         ...prevState,

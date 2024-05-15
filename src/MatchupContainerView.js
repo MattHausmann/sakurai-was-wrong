@@ -3,7 +3,7 @@ import React from "react";
 import LabeledCharacterPortrait from "./CharacterPortrait";
 import MatchupSlider from "./MatchupSlider";
 import useDimensions from "./hooks/useDimensions";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import wins from "./wins.json";
 
@@ -13,6 +13,7 @@ import NavigationOverlay from "./NavigationOverlay";
 import "./MatchupContainer.css";
 
 const MatchupContainerView = () => {
+	const dispatch = useDispatch();
   const dimensions = useDimensions();
 
   const { matchup } = useSelector((state) => state);
@@ -74,6 +75,11 @@ const MatchupContainerView = () => {
         </div>
           <LabeledCharacterPortrait side="right" />
       </div>
+	  <div class="bottom-row">
+		<button onClick={() => {console.log('clicked');dispatch({ type: "first"});}}>First</button>
+		<button onClick={() => {console.log('clicked');dispatch({ type: "prev"});}}>Previous</button>
+		<button onClick={() => {console.log('clicked');dispatch({ type: "random"});}}>New</button>
+	  </div>
     </div>
   );
 };
