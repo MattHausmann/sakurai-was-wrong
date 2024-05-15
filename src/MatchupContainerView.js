@@ -1,38 +1,47 @@
 // MatchupContainerView.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { PieChart } from "@mui/x-charts/PieChart";
 import useDimensions from "./hooks/useDimensions";
 
 import LabeledCharacterPortrait from "./CharacterPortrait";
 import MatchupRecordDisplay from "./MatchupRecordDisplay";
-import MatchupSlider from "./MatchupSlider";
+// import MatchupSlider from "./MatchupSlider";
+import QuizModeSlider from "./QuizModeSlider";
 
 import "./MatchupContainer.css";
 import wins from "./wins.json";
 
 const MatchupContainerView = () => {
   const dimensions = useDimensions();
-
-  const { matchup, quizMode } = useSelector((state) => state);
+  const { matchup, quizMode, winsDisplay } = useSelector((state) => state);
   const { videogameId, left, right } = matchup;
 
-  const newRandomMatchup = () => {};
+  // useEffect(() => {
+  //   if (quizMode) {
+  //     setWinsDisplay([50, 50]);
+  //   } else {
+  //     setWinsDisplay([
+  //       wins[videogameId][left][right],
+  //       wins[videogameId][right][left],
+  //     ]);
+  //   }
+  // }, [videogameId, left, right, quizMode]);
 
-  if (dimensions.width < 800) {
-    return (
-      <div className="matchup-container">
-        <div className="top-row">
-          <LabeledCharacterPortrait side="left" />
-          <LabeledCharacterPortrait side="right" />
-        </div>
-        <MatchupSlider
-          winsL={wins[videogameId][left][right]}
-          winsR={wins[videogameId][right][left]}
-        />
-      </div>
-    );
-  }
+  // if (dimensions.width < 800) {
+  //   return (
+  //     <div className="matchup-container">
+  //       <div className="top-row">
+  //         <LabeledCharacterPortrait side="left" />
+  //         <LabeledCharacterPortrait side="right" />
+  //       </div>
+  //       <MatchupSlider
+  //         winsL={wins[videogameId][left][right]}
+  //         winsR={wins[videogameId][right][left]}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="matchup-container">
@@ -40,8 +49,8 @@ const MatchupContainerView = () => {
         <LabeledCharacterPortrait side="left" />
         <div className="matchup-container-center">
           <MatchupRecordDisplay
-            leftWins={wins[videogameId][left][right]}
-            rightWins={wins[videogameId][right][left]}
+            leftWins={winsDisplay[0]}
+            rightWins={winsDisplay[1]}
           />
           <div className="matchup-graphs">
             <div className="pie-chart-container">
@@ -52,13 +61,13 @@ const MatchupContainerView = () => {
                     data: [
                       {
                         id: 0,
-                        value: wins[videogameId][right][left],
+                        value: winsDisplay[1],
                         label: right,
                         color: "#cc76a1",
                       },
                       {
                         id: 1,
-                        value: wins[videogameId][left][right],
+                        value: winsDisplay[0],
                         label: left,
                         color: "#87b38d",
                       },
@@ -69,11 +78,7 @@ const MatchupContainerView = () => {
                 height={200}
               />
             </div>
-            {quizMode && (
-              <div style={{ width: "100%", display: "flex" }}>
-                TODO: quizMode slider here
-              </div>
-            )}
+            {quizMode && <QuizModeSlider winsDisplay={winsDisplay} />}
           </div>
         </div>
         <LabeledCharacterPortrait side="right" />
