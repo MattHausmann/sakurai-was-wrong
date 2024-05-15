@@ -1,17 +1,15 @@
 // MatchupContainerView.js
 import React from "react";
-import LabeledCharacterPortrait from "./CharacterPortrait";
-import MatchupSlider from "./MatchupSlider";
-import useDimensions from "./hooks/useDimensions";
 import { useSelector } from "react-redux";
-
-import wins from "./wins.json";
-
-import MatchupRecordDisplay from "./MatchupRecordDisplay";
 import { PieChart } from "@mui/x-charts/PieChart";
-import NavigationOverlay from "./NavigationOverlay";
+import useDimensions from "./hooks/useDimensions";
+
+import LabeledCharacterPortrait from "./CharacterPortrait";
+import MatchupRecordDisplay from "./MatchupRecordDisplay";
+import MatchupSlider from "./MatchupSlider";
 
 import "./MatchupContainer.css";
+import wins from "./wins.json";
 
 const MatchupContainerView = () => {
   const dimensions = useDimensions();
