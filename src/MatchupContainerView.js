@@ -37,7 +37,7 @@ const MatchupContainerView = () => {
   return (
     <div className="matchup-container">
       <div className="top-row">
-          <LabeledCharacterPortrait side="left" />
+        <LabeledCharacterPortrait side="left" />
         <div className="matchup-container-center">
           <MatchupRecordDisplay
             leftWins={wins[videogameId][left][right]}
@@ -47,8 +47,6 @@ const MatchupContainerView = () => {
             <div className="pie-chart-container">
               <PieChart
                 slotProps={{ legend: { hidden: true } }}
-                // legend: { classes: ["pie-chart-legend"] } }}
-                // hidden: true } }}
                 series={[
                   {
                     data: [
@@ -78,7 +76,7 @@ const MatchupContainerView = () => {
             )}
           </div>
         </div>
-          <LabeledCharacterPortrait side="right" />
+        <LabeledCharacterPortrait side="right" />
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import MatchupContainerView from "./MatchupContainerView";
 import NavigationOverlay from "./NavigationOverlay";
+
 import wins from "./wins.json";
 
 let possibleMatchups = {};
@@ -100,7 +101,7 @@ function getWins(videogameId, left, right) {
 //then if the videogameId, leftCharacter, or rightCharacter changes,
 const MatchupContainer = () => {
   const { matchup, quizMode } = useSelector((state) => state);
-  
+
   let {videogameId, left, right} = matchup;
   const [leftCharacterName, setLeftCharacterName] = useState(left);
   const [rightCharacterName, setRightCharacterName] = useState(right);
@@ -119,7 +120,6 @@ const MatchupContainer = () => {
     setLeftCharacterName(left);
     setRightCharacterName(right);
   };
-
 
   useEffect(() => {
     let [winsL, winsR] = getWins(
