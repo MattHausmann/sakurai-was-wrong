@@ -102,6 +102,7 @@ const MatchupContainer = () => {
   const { matchup, quizMode } = useSelector((state) => state);
   
   let {videogameId, left, right} = matchup;
+  console.log(matchup);
   const [leftCharacterName, setLeftCharacterName] = useState(left);
   const [rightCharacterName, setRightCharacterName] = useState(right);
 

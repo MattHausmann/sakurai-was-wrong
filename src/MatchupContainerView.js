@@ -87,6 +87,8 @@ const MatchupContainerView = () => {
 		<button onClick={() => {console.log('clicked');dispatch({ type: "first"});}}>First</button>
 		<button onClick={() => {console.log('clicked');dispatch({ type: "prev"});}}>Previous</button>
 		<button onClick={() => {console.log('clicked');dispatch({ type: "random"});}}>New</button>
+		<button onClick={() => {console.log('clicked');dispatch({ type: "next"});}}>Next</button>
+		<button onClick={() => {console.log('clicked');dispatch({ type: "last"});}}>Last</button>
 	  </div>
     </div>
   );
