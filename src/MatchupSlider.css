@@ -12,19 +12,3 @@
 #slider-meter {
 	width:300px;
 }
-
-.text-above-slider {
-  align-items: center;
-  display: flex;
-  flex: 1;
-  font-size: 4.5em;
-  justify-content: center;
-
-  .left-percent {
-    color: #87b38d;
-  }
-
-  .right-percent {
-    color: #cc76a1;
-  }
-}

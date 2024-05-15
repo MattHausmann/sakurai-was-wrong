@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 
 import wins from "./wins.json";
 
+import MatchupRecordDisplay from "./MatchupRecordDisplay";
 import { PieChart } from "@mui/x-charts/PieChart";
 import NavigationOverlay from "./NavigationOverlay";
 
@@ -15,7 +16,7 @@ import "./MatchupContainer.css";
 const MatchupContainerView = () => {
   const dimensions = useDimensions();
 
-  const { matchup } = useSelector((state) => state);
+  const { matchup, quizMode } = useSelector((state) => state);
   const { videogameId, left, right } = matchup;
 
   const newRandomMatchup = () => {};
@@ -38,38 +39,45 @@ const MatchupContainerView = () => {
   return (
     <div className="matchup-container">
       <div className="top-row">
-		<LabeledCharacterPortrait side="left" />
-        <div className="matchup-graphs">
-          <MatchupSlider
-            winsL={wins[videogameId][left][right]}
-            winsR={wins[videogameId][right][left]}
+          <LabeledCharacterPortrait side="left" />
+        <div className="matchup-container-center">
+          <MatchupRecordDisplay
+            leftWins={wins[videogameId][left][right]}
+            rightWins={wins[videogameId][right][left]}
           />
-          <div className="pie-chart-container">
-            <PieChart
-              slotProps={{ legend: { hidden: true } }}
-              // legend: { classes: ["pie-chart-legend"] } }}
-              // hidden: true } }}
-              series={[
-                {
-                  data: [
-                    {
-                      id: 0,
-                      value: wins[videogameId][right][left],
-                      label: right,
-                      color: "#cc76a1",
-                    },
-                    {
-                      id: 1,
-                      value: wins[videogameId][left][right],
-                      label: left,
-                      color: "#87b38d",
-                    },
-                  ],
-                },
-              ]}
-              width={200}
-              height={200}
-            />
+          <div className="matchup-graphs">
+            <div className="pie-chart-container">
+              <PieChart
+                slotProps={{ legend: { hidden: true } }}
+                // legend: { classes: ["pie-chart-legend"] } }}
+                // hidden: true } }}
+                series={[
+                  {
+                    data: [
+                      {
+                        id: 0,
+                        value: wins[videogameId][right][left],
+                        label: right,
+                        color: "#cc76a1",
+                      },
+                      {
+                        id: 1,
+                        value: wins[videogameId][left][right],
+                        label: left,
+                        color: "#87b38d",
+                      },
+                    ],
+                  },
+                ]}
+                width={200}
+                height={200}
+              />
+            </div>
+            {quizMode && (
+              <div style={{ width: "100%", display: "flex" }}>
+                TODO: quizMode slider here
+              </div>
+            )}
           </div>
         </div>
           <LabeledCharacterPortrait side="right" />
