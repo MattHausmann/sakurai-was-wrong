@@ -112,86 +112,84 @@ for (let sortBy in labeledComparators) {
 
 //every time we change minimumGames
 const prev = (state) => {
-  let targetPrev = state.currentIndex - 1;
-  let currentList = sortedMatchupLists[state.orderBy];
+	let list = sortedMatchupLists[state.orderBy];
+	let cmp = labeledComparators[state.orderBy];
+	let currentIndex = binarySearchListForObjectWithComparator(list, state.matchup, cmp);
+	let targetPrev = currentIndex;
 
-  let enoughGames = false;
-  let leftOkay = !state.requiredLeft;
-  let rightOkay = !state.requiredRight;
+	let enoughGames = false;
+	let leftOkay = !state.requiredLeft;
+	let rightOkay = !state.requiredRight;
 
-  while (targetPrev >= 0 && (!enoughGames || !leftOkay || !rightOkay)) {
-    let matchup = currentList[targetPrev];
-    let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
-    let rightOkay =
-      state.requiredRight || state.requiredRight === matchup.right;
-    targetPrev -= 1;
-  }
-
-  return targetPrev;
+	while (targetPrev >= 0 && (!enoughGames || !leftOkay || !rightOkay)) {
+		targetPrev -= 1;
+		let matchup = list[targetPrev];
+		enoughGames = getTotalGames(matchup) >= state.minimumGames;
+		leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
+		rightOkay = !state.requiredRight || state.requiredRight === matchup.right;
+	}
+  return list[targetPrev];
 };
 
 const next = (state) => {
-  let targetNext = state.currentIndex + 1;
-  let currentList = sortedMatchupLists[state.orderBy];
+	let list = sortedMatchupLists[state.orderBy];
+	let cmp = labeledComparators[state.orderBy];
+	let currentIndex = binarySearchListForObjectWithComparator(list, state.matchup, cmp);
+	let targetNext = currentIndex;
 
-  let enoughGames = false;
-  let leftOkay = !state.requiredLeft;
-  let rightOkay = !state.requiredRight;
+	let enoughGames = false;
+	let leftOkay = !state.requiredLeft;
+	let rightOkay = !state.requiredRight;
 
-  while (
-    targetNext < currentList.length &&
-    (!enoughGames || !leftOkay || !rightOkay)
-  ) {
-    let matchup = currentList[targetNext];
-    let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
-    let rightOkay =
-      state.requiredRight || state.requiredRight === matchup.right;
-    targetNext += 1;
-  }
-  return targetNext;
+	while (targetNext <= list.length && (!enoughGames || !leftOkay || !rightOkay)) {
+		targetNext += 1;
+		let matchup = list[targetNext];
+		enoughGames = getTotalGames(matchup) >= state.minimumGames;
+		leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
+		rightOkay = !state.requiredRight || state.requiredRight === matchup.right;
+	}
+  return list[targetNext];
 };
 
 const first = (state) => {
   let currentList = sortedMatchupLists[state.orderBy];
-  let i = 0;
+  let i = -1;
 
   let enoughGames = false;
   let leftOkay = !state.requiredLeft;
   let rightOkay = !state.requiredRight;
 
   while (i < currentList.length && (!enoughGames || !leftOkay || !rightOkay)) {
-    let matchup = currentList[i];
-    let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
-    let rightOkay =
-      state.requiredRight || state.requiredRight === matchup.right;
     i += 1;
+    let matchup = currentList[i];
+    enoughGames = getTotalGames(matchup) >= state.minimumGames;
+    leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
+    rightOkay = !state.requiredRight || state.requiredRight === matchup.right;
   }
 
-  return i;
+  return currentList[i];
 };
 
 const last = (state) => {
   let currentList = sortedMatchupLists[state.orderBy];
-  let i = currentList.length - 1;
+  let i = currentList.length;
 
   let enoughGames = false;
   let leftOkay = !state.requiredLeft;
   let rightOkay = !state.requiredRight;
 
   while (i >= 0 && (!enoughGames || !leftOkay || !rightOkay)) {
-    let matchup = currentList[i];
-    let enoughGames = getTotalGames(matchup) >= state.minimumGames;
-    let leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
-    let rightOkay =
-      state.requiredRight || state.requiredRight === matchup.right;
     i -= 1;
+    let matchup = currentList[i];
+    enoughGames = getTotalGames(matchup) >= state.minimumGames;
+    leftOkay = !state.requiredLeft || state.requiredLeft === matchup.left;
+    rightOkay = !state.requiredRight || state.requiredRight === matchup.right;
   }
 
-  return i;
+  return currentList[i];
 };
+
+
 console.log("defined first, next, last");
 
 const firstMatchupAtOrAboveThreshold = function (threshold) {
@@ -268,7 +266,7 @@ let initialState = {
   bestScores: {},
   currentIndex: 1,
   guessedMatchups: {},
-  minimumGames: 1000,
+  minimumGames: 8000,
   orderBy: "Left Win %",
   quizMode: false,
   quizResults: [],
@@ -329,40 +327,35 @@ const reducer = (prevState = initialState, action) => {
     case "prev":
       return {
         ...prevState,
-        currentIndex: prev(prevState),
+        matchup: prev(prevState),
       };
     case "next":
       return {
         ...prevState,
-        currentIndex: next(prevState),
+        matchup: next(prevState),
       };
     case "first":
       return {
         ...prevState,
-        currentIndex: next(prevState),
+        matchup: first(prevState),
       };
     case "last":
       return {
         ...prevState,
-        currentIndex: next(prevState),
+        matchup: last(prevState),
       };
     case "random": {
-      console.log("in random");
-      console.log(action.side);
-
       let newMatchup = randomMatchup(prevState);
-      if (action.side) {
-        if (action.side == "left") {
+        if (prevState.lockedSide == "left") {
           while (newMatchup.left !== prevState.matchup.left) {
             newMatchup = randomMatchup(prevState);
           }
         }
-        if (action.side == "right") {
+        if (prevState.lockedSide == "right") {
           while (newMatchup.right !== prevState.matchup.right) {
             newMatchup = randomMatchup(prevState);
           }
         }
-      }
 
       return {
         ...prevState,
@@ -375,7 +368,8 @@ const reducer = (prevState = initialState, action) => {
           ? [50, 50]
           : getWinsDisplayForMatchup(newMatchup),
       };
-    }
+	}
+
     case "setOrderBy":
       return {
         ...prevState,

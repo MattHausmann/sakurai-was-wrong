@@ -10,7 +10,6 @@ const NavigationOverlay = ({children}) => {
 				{children}
 			</div>
 			<div className="overlay">
-				<button onClick={() => {console.log('clicked');dispatch({ type: "random", side:children.props.side });}}>New</button>
 		  </div>
 		</div>
 

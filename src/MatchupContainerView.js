@@ -1,18 +1,17 @@
 // MatchupContainerView.js
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { PieChart } from "@mui/x-charts/PieChart";
 import useDimensions from "./hooks/useDimensions";
 
 import LabeledCharacterPortrait from "./CharacterPortrait";
 import MatchupRecordDisplay from "./MatchupRecordDisplay";
-// import MatchupSlider from "./MatchupSlider";
 import QuizModeSlider from "./QuizModeSlider";
 
 import "./MatchupContainer.css";
-import wins from "./wins.json";
 
 const MatchupContainerView = () => {
+  const dispatch = useDispatch();
   const dimensions = useDimensions();
   const { matchup, quizMode, winsDisplay } = useSelector((state) => state);
   const { videogameId, left, right } = matchup;
@@ -82,6 +81,48 @@ const MatchupContainerView = () => {
           </div>
         </div>
         <LabeledCharacterPortrait side="right" />
+      </div>
+      <div class="bottom-row">
+        <button
+          onClick={() => {
+            console.log("clicked");
+            dispatch({ type: "first" });
+          }}
+        >
+          First
+        </button>
+        <button
+          onClick={() => {
+            console.log("clicked");
+            dispatch({ type: "prev" });
+          }}
+        >
+          Previous
+        </button>
+        <button
+          onClick={() => {
+            console.log("clicked");
+            dispatch({ type: "random" });
+          }}
+        >
+          New
+        </button>
+        <button
+          onClick={() => {
+            console.log("clicked");
+            dispatch({ type: "next" });
+          }}
+        >
+          Next
+        </button>
+        <button
+          onClick={() => {
+            console.log("clicked");
+            dispatch({ type: "last" });
+          }}
+        >
+          Last
+        </button>
       </div>
     </div>
   );
