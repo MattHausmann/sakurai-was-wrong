@@ -24,8 +24,6 @@ let initialState = {
 };
 
 //searches for a matchup by minimum games
-let firstMatchup = randomMatchup(initialState);
-
 // let totalGamesList = sortedMatchupLists["Total Games"];
 // let totalGamesIndex = binarySearchListForObjectWithComparator(
 //   totalGamesList,
@@ -35,16 +33,7 @@ let firstMatchup = randomMatchup(initialState);
 // let matchupsPossible = totalGamesList.length - totalGamesIndex;
 // totalGamesIndex =
 // totalGamesIndex + Math.floor(Math.random() * matchupsPossible);
-
 // initialState.matchup = totalGamesList[totalGamesIndex];
-
-initialState.matchup = firstMatchup;
-
-initialState.seenMatchups = {
-  [[initialState.matchup.left, initialState.matchup.right]
-    .sort()
-    .join("")]: true,
-};
 
 const seenMatchupStringify = (newMatchup) => {
   return [[newMatchup.left, newMatchup.right].sort().join("")];
@@ -76,7 +65,9 @@ const mutateStateFromNav = (prevState, newMatchup) => {
   };
 };
 
-let state = initialState;
+let firstMatchup = randomMatchup(initialState);
+initialState = mutateStateFromNav(initialState, firstMatchup);
+
 const reducer = (prevState = initialState, action) => {
   switch (action.type) {
     case "setGameId":
