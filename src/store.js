@@ -1,31 +1,8 @@
 import { createStore } from "redux";
 import { MatchupNavigator, first, prev, next, last, randomMatchup} from './MatchupNavigator';
-console.log("in store.js");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-console.log("defined first, next, last");
-
-
-
-
-
-
 
 let initialState = {
-  minimumGames: 8000,
+  minimumGames: 1000,
   selectedGames: [],
   seenMatchups: {},
   guessedMatchups: {},
@@ -68,50 +45,15 @@ const reducer = (prevState = initialState, action) => {
         ...prevState,
         wins: [prevState.wins[0], action.rightWins],
       };
-    case "prev":
-      return {
-        ...prevState,
-        matchup: prev(prevState),
-      };
-    case "next":
-      return {
-        ...prevState,
-        matchup: next(prevState),
-      };
-    case "first":
-      return {
-        ...prevState,
-        matchup: first(prevState),
-      };
-    case "last":
-      return {
-        ...prevState,
-        matchup: last(prevState),
-      };
-    case "random": {
-
-      let newMatchup = randomMatchup(prevState);
-        if (prevState.lockedSide == "left") {
-          while (newMatchup.left !== prevState.matchup.left) {
-            newMatchup = randomMatchup(prevState);
-          }
-        }
-        if (prevState.lockedSide == "right") {
-          while (newMatchup.right !== prevState.matchup.right) {
-            newMatchup = randomMatchup(prevState);
-          }
-        }
-      
-
-      return {
-        ...prevState,
-        matchup: newMatchup,
-        seenMatchups: {
+	  case "setMatchup":
+	  return {
+		  ...prevState,
+		  matchup:action.matchup,
+		  seenMatchups: {
           ...prevState.seenMatchups,
-          [[newMatchup.left, newMatchup.right].sort().join("")]: true,
+          [[action.matchup.left, action.matchup.right].sort().join("")]: true,
         },
-      };
-	}
+	  };
 
     case "setOrderBy":
       return {

@@ -313,31 +313,35 @@ export function MatchupNavigator() {
 	const {matchup, orderBy, minimumGames, requiredLeft, requiredRight}=useSelector((state)=>state);
 	let options = {matchup, orderBy, minimumGames, requiredLeft, requiredRight};
 	
+	let args = {matchup, orderBy, minimumGames, requiredLeft, requiredRight};
+	
 
 	return (
 		<div class="matchup-navigator">
 			<button 
-				onClick={() => {dispatch({ type: "first"});}}
+				onClick={() => {dispatch({ type: "setMatchup", matchup:first(args)});}}
 				style={{visibility:leftButtonsVisible(options)?'visible':'hidden'}}
 			>
 				First
 			</button>
 			<button 
-				onClick={() => {dispatch({ type: "prev"});}}
+				onClick={() => {dispatch({ type: "setMatchup", matchup:prev(args)});}}
 				style={{visibility:leftButtonsVisible(options)?'visible':'hidden'}}
 			>
 				Previous
 			</button>
 			
-			<button onClick={() => {console.log('clicked');dispatch({ type: "random"});}}>New</button>
+			<button onClick={() => {dispatch({ type: "setMatchup", matchup:randomMatchup(args)});}}>
+				New
+			</button>
 			<button 
-				onClick={() => {dispatch({ type: "next"});}}
+				onClick={() => {dispatch({ type: "setMatchup", matchup:next(args)});}}
 				style={{visibility:rightButtonsVisible(options)?'visible':'hidden'}}
 			>
 				Next
 			</button>
 			<button 
-				onClick={() => {dispatch({ type: "last"});}}
+				onClick={() => {dispatch({ type: "setMatchup", matchup:last(args)});}}
 				style={{visibility:rightButtonsVisible(options)?'visible':'hidden'}}
 			>
 				Last
@@ -345,4 +349,3 @@ export function MatchupNavigator() {
 		</div>
 	);
 }
-
