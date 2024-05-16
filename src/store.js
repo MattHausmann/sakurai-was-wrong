@@ -1,12 +1,6 @@
 import wins from "./wins.json";
 import { createStore } from "redux";
 import {
-  binarySearchListForObjectWithComparator,
-  compareByTotalGames,
-  first,
-  prev,
-  next,
-  last,
   randomMatchup,
 } from "./MatchupNavigator";
 
