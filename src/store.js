@@ -1,41 +1,17 @@
+import wins from "./wins.json";
 import { createStore } from "redux";
-
-const getWinnerWins = (matchup) => {
-  let leftWins = wins[matchup.videogameId][matchup.left][matchup.right];
-  let rightWins = wins[matchup.videogameId][matchup.right][matchup.left];
-  return Math.max(leftWins, rightWins);
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
+import {
+  binarySearchListForObjectWithComparator,
+  compareByTotalGames,
+  first,
+  prev,
+  next,
+  last,
+  randomMatchup,
+} from "./MatchupNavigator";
+console.log("in store.js");
 
 console.log("defined first, next, last");
-
-
-
-
-
-
-const randomMatchup = function (state) {
-  const matchup0 = firstMatchupAtOrAboveThreshold(state.minimumGames);
-  const sort = "Total Games";
-  const list = sortedMatchupLists[sort];
-  const comp = labeledComparators[sort];
-  const index0 = binarySearchListForObjectWithComparator(list, matchup0, comp);
-  const numMatchups = list.length - index0;
-  const newIndex = index0 + Math.floor(Math.random() * numMatchups);
-  return list[newIndex];
-};
 
 let initialState = {
   bestScores: {},
@@ -53,18 +29,19 @@ let initialState = {
 //searches for a matchup by minimum games
 let firstMatchup = randomMatchup(initialState);
 
+// let totalGamesList = sortedMatchupLists["Total Games"];
+// let totalGamesIndex = binarySearchListForObjectWithComparator(
+//   totalGamesList,
+//   firstMatchup,
+//   compareByTotalGames
+// );
+// let matchupsPossible = totalGamesList.length - totalGamesIndex;
+// totalGamesIndex =
+  // totalGamesIndex + Math.floor(Math.random() * matchupsPossible);
 
-let totalGamesList = sortedMatchupLists["Total Games"];
-let totalGamesIndex = binarySearchListForObjectWithComparator(
-  totalGamesList,
-  firstMatchup,
-  compareByTotalGames
-);
-let matchupsPossible = totalGamesList.length - totalGamesIndex;
-totalGamesIndex =
-  totalGamesIndex + Math.floor(Math.random() * matchupsPossible);
+// initialState.matchup = totalGamesList[totalGamesIndex];
 
-initialState.matchup = totalGamesList[totalGamesIndex];
+initialState.matchup = firstMatchup;
 
 initialState.seenMatchups = {
   [[initialState.matchup.left, initialState.matchup.right]
@@ -114,16 +91,16 @@ const reducer = (prevState = initialState, action) => {
       };
     case "random": {
       let newMatchup = randomMatchup(prevState);
-        if (prevState.lockedSide == "left") {
-          while (newMatchup.left !== prevState.matchup.left) {
-            newMatchup = randomMatchup(prevState);
-          }
+      if (prevState.lockedSide == "left") {
+        while (newMatchup.left !== prevState.matchup.left) {
+          newMatchup = randomMatchup(prevState);
         }
-        if (prevState.lockedSide == "right") {
-          while (newMatchup.right !== prevState.matchup.right) {
-            newMatchup = randomMatchup(prevState);
-          }
+      }
+      if (prevState.lockedSide == "right") {
+        while (newMatchup.right !== prevState.matchup.right) {
+          newMatchup = randomMatchup(prevState);
         }
+      }
 
       return {
         ...prevState,
@@ -136,7 +113,7 @@ const reducer = (prevState = initialState, action) => {
           ? [50, 50]
           : getWinsDisplayForMatchup(newMatchup),
       };
-	}
+    }
 
     case "setOrderBy":
       return {
@@ -153,7 +130,9 @@ const reducer = (prevState = initialState, action) => {
       return {
         ...prevState,
         quizMode: action.val,
-        winsDisplay: action.val ? [50, 50] : getWinsDisplayForMatchup(prevState.matchup),
+        winsDisplay: action.val
+          ? [50, 50]
+          : getWinsDisplayForMatchup(prevState.matchup),
       };
     default:
       return prevState;
