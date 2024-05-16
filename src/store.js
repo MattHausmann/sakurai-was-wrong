@@ -1,59 +1,98 @@
+import wins from "./wins.json";
 import { createStore } from "redux";
-import { MatchupNavigator, first, prev, next, last, randomMatchup} from './MatchupNavigator';
+import {
+  binarySearchListForObjectWithComparator,
+  compareByTotalGames,
+  first,
+  prev,
+  next,
+  last,
+  randomMatchup,
+} from "./MatchupNavigator";
 
 let initialState = {
-  minimumGames: 1000,
-  selectedGames: [],
-  seenMatchups: {},
-  guessedMatchups: {},
   bestScores: {},
+  currentIndex: 1,
+  guessedMatchups: {},
+  minimumGames: 1000,
   orderBy: "Left Win %",
   quizMode: false,
-  currentIndex: 1,
   quizResults: [],
+  selectedGames: [],
+  seenMatchups: {},
+  winsDisplay: [0, 0],
 };
+
+const seenMatchupStringify = (newMatchup) => {
+  return [[newMatchup.left, newMatchup.right].sort().join("")];
+};
+const newWinsDisplay = (quizMode, matchup) => {
+  if (quizMode) {
+    let sum =
+      wins[matchup.videogameId][matchup.left][matchup.right] +
+      wins[matchup.videogameId][matchup.right][matchup.left];
+    let halfWins = Math.ceil(sum / 2);
+    return [halfWins, sum - halfWins];
+  } else {
+    return [
+      wins[matchup.videogameId][matchup.left][matchup.right],
+      wins[matchup.videogameId][matchup.right][matchup.left],
+    ];
+  }
+};
+
+const mutateStateFromNav = (prevState, newMatchup) => {
+  return {
+    ...prevState,
+    matchup: newMatchup,
+    seenMatchups: {
+      ...prevState.seenMatchups,
+      [seenMatchupStringify(newMatchup)]: true,
+    },
+    winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
+  };
+};
+
 
 //searches for a matchup by minimum games
 let firstMatchup = randomMatchup(initialState);
 
+// let totalGamesList = sortedMatchupLists["Total Games"];
+// let totalGamesIndex = binarySearchListForObjectWithComparator(
+//   totalGamesList,
+//   firstMatchup,
+//   compareByTotalGames
+// );
+// let matchupsPossible = totalGamesList.length - totalGamesIndex;
+// totalGamesIndex =
+// totalGamesIndex + Math.floor(Math.random() * matchupsPossible);
+
+// initialState.matchup = totalGamesList[totalGamesIndex];
 
 initialState.matchup = firstMatchup;
+initialState.winsDisplay = newWinsDisplay(initialState.quizMode, initialState.matchup);
+initialState.seenMatchups = {
+  [[initialState.matchup.left, initialState.matchup.right]
+    .sort()
+    .join("")]: true,
+};
 
-initialState.seenMatchups = {[[initialState.matchup.left, initialState.matchup.right].sort().join("")]:true};
 
 let state = initialState;
-
 const reducer = (prevState = initialState, action) => {
-  switch (action.type) {
+	switch (action.type) {
     case "setGameId":
       return {
         ...prevState,
         gameId: action.gameId,
       };
-    case "setWins":
+    case "updateWinsDisplay":
       return {
         ...prevState,
-        wins: action.wins,
+        winsDisplay: action.winsDisplay,
       };
-    case "setLeftWins":
-      return {
-        ...prevState,
-        wins: [action.leftWins, prevState.wins[1]],
-      };
-    case "setRightWins":
-      return {
-        ...prevState,
-        wins: [prevState.wins[0], action.rightWins],
-      };
-	  case "setMatchup":
-	  return {
-		  ...prevState,
-		  matchup:action.matchup,
-		  seenMatchups: {
-          ...prevState.seenMatchups,
-          [[action.matchup.left, action.matchup.right].sort().join("")]: true,
-        },
-	  };
+    case "setMatchup":
+      return mutateStateFromNav(prevState, action.matchup);
 
     case "setOrderBy":
       return {
@@ -70,6 +109,7 @@ const reducer = (prevState = initialState, action) => {
       return {
         ...prevState,
         quizMode: action.val,
+        winsDisplay: newWinsDisplay(action.val, prevState.matchup),
       };
     default:
       return prevState;
