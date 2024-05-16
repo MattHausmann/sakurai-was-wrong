@@ -1,26 +1,22 @@
 // MatchupContainer.js
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import LabeledCharacterPortrait from "./CharacterPortrait";
-import { MatchupNavigator, first, prev, next, last, randomMatchup, getWins } from "./MatchupNavigator.js";
-
 import { useSelector, useDispatch } from "react-redux";
-import MatchupRecordDisplay from "./MatchupRecordDisplay";
 import { PieChart } from "@mui/x-charts/PieChart";
 
+import LabeledCharacterPortrait from "./CharacterPortrait";
+import { MatchupNavigator, first, prev, next, last, randomMatchup, getWins } from "./MatchupNavigator.js";
+import MatchupRecordDisplay from "./MatchupRecordDisplay";
+
 import "./MatchupContainer.css";
-import wins from "./wins.json";
 
 let possibleMatchups = {};
 const MATCHUP_THRESHOLD = 200;
-
 
 //first, if the videogameId changes,you need to create a new matchup with the new videogameId
 //then if the videogameId, leftCharacter, or rightCharacter changes,
 const MatchupContainer = () => {
 	const { matchup, quizMode } = useSelector((state) => state);
 	const dispatch = useDispatch();
-
 
   let {videogameId, left, right} = matchup;
 
