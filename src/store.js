@@ -1,12 +1,6 @@
 import wins from "./wins.json";
 import { createStore } from "redux";
 import {
-  binarySearchListForObjectWithComparator,
-  compareByTotalGames,
-  first,
-  prev,
-  next,
-  last,
   randomMatchup,
 } from "./MatchupNavigator";
 
@@ -53,32 +47,9 @@ const mutateStateFromNav = (prevState, newMatchup) => {
   };
 };
 
-
-//searches for a matchup by minimum games
 let firstMatchup = randomMatchup(initialState);
+initialState = mutateStateFromNav(initialState, firstMatchup);
 
-// let totalGamesList = sortedMatchupLists["Total Games"];
-// let totalGamesIndex = binarySearchListForObjectWithComparator(
-//   totalGamesList,
-//   firstMatchup,
-//   compareByTotalGames
-// );
-// let matchupsPossible = totalGamesList.length - totalGamesIndex;
-// totalGamesIndex =
-// totalGamesIndex + Math.floor(Math.random() * matchupsPossible);
-
-// initialState.matchup = totalGamesList[totalGamesIndex];
-
-initialState.matchup = firstMatchup;
-initialState.winsDisplay = newWinsDisplay(initialState.quizMode, initialState.matchup);
-initialState.seenMatchups = {
-  [[initialState.matchup.left, initialState.matchup.right]
-    .sort()
-    .join("")]: true,
-};
-
-
-let state = initialState;
 const reducer = (prevState = initialState, action) => {
 	switch (action.type) {
     case "setGameId":
