@@ -9,9 +9,6 @@ import {
   last,
   randomMatchup,
 } from "./MatchupNavigator";
-console.log("in store.js");
-
-console.log("defined first, next, last");
 
 let initialState = {
   bestScores: {},
@@ -37,7 +34,7 @@ let firstMatchup = randomMatchup(initialState);
 // );
 // let matchupsPossible = totalGamesList.length - totalGamesIndex;
 // totalGamesIndex =
-  // totalGamesIndex + Math.floor(Math.random() * matchupsPossible);
+// totalGamesIndex + Math.floor(Math.random() * matchupsPossible);
 
 // initialState.matchup = totalGamesList[totalGamesIndex];
 
@@ -49,11 +46,19 @@ initialState.seenMatchups = {
     .join("")]: true,
 };
 
-const getWinsDisplayForMatchup = (matchup) => {
-  return [
-    wins[matchup.videogameId][matchup.left][matchup.right],
-    wins[matchup.videogameId][matchup.right][matchup.left],
-  ];
+const newWinsDisplay = (quizMode, matchup) => {
+  if (quizMode) {
+    let sum =
+      wins[matchup.videogameId][matchup.left][matchup.right] +
+      wins[matchup.videogameId][matchup.right][matchup.left];
+    let halfWins = Math.ceil(sum / 2);
+    return [halfWins, sum - halfWins];
+  } else {
+    return [
+      wins[matchup.videogameId][matchup.left][matchup.right],
+      wins[matchup.videogameId][matchup.right][matchup.left],
+    ];
+  }
 };
 
 let state = initialState;
@@ -88,15 +93,16 @@ const reducer = (prevState = initialState, action) => {
       return {
         ...prevState,
         matchup: last(prevState),
+        winsDisplay: newWinsDisplay(prevState.quizMode, prevState.matchup),
       };
     case "random": {
       let newMatchup = randomMatchup(prevState);
-      if (prevState.lockedSide == "left") {
+      if (prevState.lockedSide === "left") {
         while (newMatchup.left !== prevState.matchup.left) {
           newMatchup = randomMatchup(prevState);
         }
       }
-      if (prevState.lockedSide == "right") {
+      if (prevState.lockedSide === "right") {
         while (newMatchup.right !== prevState.matchup.right) {
           newMatchup = randomMatchup(prevState);
         }
@@ -109,9 +115,7 @@ const reducer = (prevState = initialState, action) => {
           ...prevState.seenMatchups,
           [[newMatchup.left, newMatchup.right].sort().join("")]: true,
         },
-        winsDisplay: prevState.quizMode
-          ? [50, 50]
-          : getWinsDisplayForMatchup(newMatchup),
+        winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
       };
     }
 
@@ -130,9 +134,7 @@ const reducer = (prevState = initialState, action) => {
       return {
         ...prevState,
         quizMode: action.val,
-        winsDisplay: action.val
-          ? [50, 50]
-          : getWinsDisplayForMatchup(prevState.matchup),
+        winsDisplay: newWinsDisplay(action.val, prevState.matchup),
       };
     default:
       return prevState;
