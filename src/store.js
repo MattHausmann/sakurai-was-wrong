@@ -72,7 +72,7 @@ const mutateStateFromNav = (prevState, newMatchup) => {
       ...prevState.seenMatchups,
       [seenMatchupStringify(newMatchup)]: true,
     },
-    winsDisplay: newWinsDisplay(prevState.quizMode, prevState.matchup),
+    winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
   };
 };
 
