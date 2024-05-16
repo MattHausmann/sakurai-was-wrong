@@ -46,6 +46,9 @@ initialState.seenMatchups = {
     .join("")]: true,
 };
 
+const seenMatchupStringify = (newMatchup) => {
+  return [[newMatchup.left, newMatchup.right].sort().join("")];
+};
 const newWinsDisplay = (quizMode, matchup) => {
   if (quizMode) {
     let sum =
@@ -59,6 +62,18 @@ const newWinsDisplay = (quizMode, matchup) => {
       wins[matchup.videogameId][matchup.right][matchup.left],
     ];
   }
+};
+
+const mutateStateFromNav = (prevState, newMatchup) => {
+  return {
+    ...prevState,
+    matchup: newMatchup,
+    seenMatchups: {
+      ...prevState.seenMatchups,
+      [seenMatchupStringify(newMatchup)]: true,
+    },
+    winsDisplay: newWinsDisplay(prevState.quizMode, prevState.matchup),
+  };
 };
 
 let state = initialState;
@@ -75,26 +90,14 @@ const reducer = (prevState = initialState, action) => {
         winsDisplay: action.winsDisplay,
       };
     case "prev":
-      return {
-        ...prevState,
-        matchup: prev(prevState),
-      };
+      return mutateStateFromNav(prevState, prev(prevState));
     case "next":
-      return {
-        ...prevState,
-        matchup: next(prevState),
-      };
+      return mutateStateFromNav(prevState, next(prevState));
     case "first":
-      return {
-        ...prevState,
-        matchup: first(prevState),
-      };
-    case "last":
-      return {
-        ...prevState,
-        matchup: last(prevState),
-        winsDisplay: newWinsDisplay(prevState.quizMode, prevState.matchup),
-      };
+      return mutateStateFromNav(prevState, first(prevState));
+    case "last": {
+      return mutateStateFromNav(prevState, last(prevState));
+    }
     case "random": {
       let newMatchup = randomMatchup(prevState);
       if (prevState.lockedSide === "left") {
@@ -113,7 +116,7 @@ const reducer = (prevState = initialState, action) => {
         matchup: newMatchup,
         seenMatchups: {
           ...prevState.seenMatchups,
-          [[newMatchup.left, newMatchup.right].sort().join("")]: true,
+          [seenMatchupStringify(newMatchup)]: true,
         },
         winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
       };
