@@ -195,41 +195,41 @@ const last = (state) => {
 console.log("defined first, next, last");
 
 const firstMatchupAtOrAboveThreshold = function (threshold) {
-  let listName = "Total Games";
-  let totalGamesList = sortedMatchupLists[listName];
+	let listName = "Total Games";
+	let totalGamesList = sortedMatchupLists[listName];
 
-  let b = 0;
-  let e = totalGamesList.length - 1;
-  console.log(totalGamesList);
+	let b = 0;
+	let e = totalGamesList.length - 1;
+	console.log(totalGamesList);
 
-  while (b < e) {
-    let m = Math.floor((b + e) / 2);
-    let totalGames = getTotalGames(totalGamesList[m]);
-    if (totalGames < threshold) {
-      if (b + 1 === e) {
-        return seekFirstMatchupAtThreshold(totalGamesList, e);
-      }
-      b = m;
-    }
-    if (threshold < totalGames) {
-      if (b + 1 === e) {
-        return seekFirstMatchupAtThreshold(totalGamesList, e);
-      }
-      e = m;
-    }
-    if (threshold === totalGames) {
-      return seekFirstMatchupAtThreshold(totalGamesList, m);
-    }
-  }
+	while (b < e) {
+		let m = Math.floor((b + e) / 2);
+		let totalGames = getTotalGames(totalGamesList[m]);
+		if (totalGames < threshold) {
+			if (b + 1 === e) {
+				return seekFirstMatchupAtThreshold(totalGamesList, e);
+			}
+			b = m;
+		}
+		if (threshold < totalGames) {
+			if (b + 1 === e) {
+				return seekFirstMatchupAtThreshold(totalGamesList, e);
+			}
+			e = m;
+		}
+		if (threshold === totalGames) {
+			return seekFirstMatchupAtThreshold(totalGamesList, m);
+		}
+	}
 };
 
 const seekFirstMatchupAtThreshold = function (list, index) {
-  let goalGames = getTotalGames(list[index]);
-  while (index >= 0 && getTotalGames(list[index]) === goalGames) {
-    index -= 1;
-  }
-  console.log(index + 1);
-  return list[index + 1];
+	let goalGames = getTotalGames(list[index]);
+	while (index >= 0 && getTotalGames(list[index]) === goalGames) {
+		index -= 1;
+	}
+	console.log(index + 1);
+	return list[index + 1];
 };
 const binarySearchListForObjectWithComparator = function (
   list,

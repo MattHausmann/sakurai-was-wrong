@@ -1,9 +1,16 @@
 // MatchupContainer.js
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import MatchupContainerView from "./MatchupContainerView";
+import LabeledCharacterPortrait from "./CharacterPortrait";
+
 import NavigationOverlay from "./NavigationOverlay";
 import wins from "./wins.json";
+
+import { useSelector, useDispatch } from "react-redux";
+import MatchupRecordDisplay from "./MatchupRecordDisplay";
+import { PieChart } from "@mui/x-charts/PieChart";
+
+import "./MatchupContainer.css";
+
 
 let possibleMatchups = {};
 const MATCHUP_THRESHOLD = 200;
@@ -100,6 +107,7 @@ function getWins(videogameId, left, right) {
 //then if the videogameId, leftCharacter, or rightCharacter changes,
 const MatchupContainer = () => {
   const { matchup, quizMode } = useSelector((state) => state);
+	const dispatch = useDispatch();
   
   let {videogameId, left, right} = matchup;
   console.log(matchup);
@@ -143,9 +151,59 @@ const MatchupContainer = () => {
 
 
   return (
-	<NavigationOverlay>
-		<MatchupContainerView/>
-	</NavigationOverlay>
+    <div className="matchup-container">
+      <div className="top-row">
+          <LabeledCharacterPortrait side="left" />
+        <div className="matchup-container-center">
+          <MatchupRecordDisplay
+            leftWins={wins[videogameId][left][right]}
+            rightWins={wins[videogameId][right][left]}
+          />
+          <div className="matchup-graphs">
+            <div className="pie-chart-container">
+              <PieChart
+                slotProps={{ legend: { hidden: true } }}
+                // legend: { classes: ["pie-chart-legend"] } }}
+                // hidden: true } }}
+                series={[
+                  {
+                    data: [
+                      {
+                        id: 0,
+                        value: wins[videogameId][right][left],
+                        label: right,
+                        color: "#cc76a1",
+                      },
+                      {
+                        id: 1,
+                        value: wins[videogameId][left][right],
+                        label: left,
+                        color: "#87b38d",
+                      },
+                    ],
+                  },
+                ]}
+                width={200}
+                height={200}
+              />
+            </div>
+            {quizMode && (
+              <div style={{ width: "100%", display: "flex" }}>
+                TODO: quizMode slider here
+              </div>
+            )}
+          </div>
+        </div>
+          <LabeledCharacterPortrait side="right" />
+      </div>
+	  <div class="bottom-row">
+		<button onClick={() => {console.log('clicked');dispatch({ type: "first"});}}>First</button>
+		<button onClick={() => {console.log('clicked');dispatch({ type: "prev"});}}>Previous</button>
+		<button onClick={() => {console.log('clicked');dispatch({ type: "random"});}}>New</button>
+		<button onClick={() => {console.log('clicked');dispatch({ type: "next"});}}>Next</button>
+		<button onClick={() => {console.log('clicked');dispatch({ type: "last"});}}>Last</button>
+	  </div>
+    </div>
   );
 };
 
