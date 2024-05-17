@@ -3,18 +3,36 @@ import { useSelector, useDispatch } from "react-redux";
 import wins from "./wins.json";
 
 const unsortedMatchupList = [];
+const matchupsPerCharacter = {};
 for (let videogameId of [1, 1386]) {
-  for (let winner in wins[videogameId]) {
-    for (let loser in wins[videogameId][winner]) {
-      if (loser != winner) {
-        unsortedMatchupList.push({
-          videogameId: videogameId,
-          left: winner,
-          right: loser,
-        });
-      }
-    }
-  }
+	for (let winner in wins[videogameId]) {
+		for (let loser in wins[videogameId][winner]) {
+			if(!(winner in matchupsPerCharacter)) {
+				matchupsPerCharacter[winner] = [];
+			}
+			if(!(loser in matchupsPerCharacter)) {
+				matchupsPerCharacter[loser] = [];
+			}
+			let matchup = {
+				videogameId: videogameId,
+				left: winner,
+				right: loser,
+			};
+			
+			matchupsPerCharacter[winner].push(matchup);
+			
+			let matchupWins = getWins(matchup);
+			//winner on left, even matchups in alphabetical order			
+			if(matchupWins[0] > matchupWins[1] || 
+				(
+					matchupWins[0]==matchupWins[1]
+					&& matchup.right.localeCompare(matchup.left) > 0
+				)
+			) {
+				unsortedMatchupList.push(matchup);
+			}
+		}
+	}
 }
 
 const defaultCompareMatchups = (a, b) => {
@@ -81,16 +99,12 @@ const compareByTotalGames = (a, b) => {
 };
 
 const compareByLeftWinPercent = (a, b) => {
-  let aLeftWins = wins[a.videogameId][a.left][a.right];
-  let aRightWins = wins[a.videogameId][a.right][a.left];
-  let bLeftWins = wins[b.videogameId][b.left][b.right];
-  let bRightWins = wins[b.videogameId][b.right][b.left];
-
-  let leftWinPctDifference = aLeftWins * bRightWins - bLeftWins * aRightWins;
-  return leftWinPctDifference?leftWinPctDifference:
-	aLeftWins-bLeftWins?aLeftWins-bLeftWins:
+	const[aLeftWins,aRightWins] = getWins(a);
+	const[bLeftWins,bRightWins] = getWins(b);
+	let leftWinPctDifference = aLeftWins * bRightWins - bLeftWins * aRightWins;
+	return leftWinPctDifference?-leftWinPctDifference:
+		aLeftWins-bLeftWins?bLeftWins-aLeftWins:
 		defaultCompareMatchups(a,b);
-
 };
 
 const compareByWinnerWinPercent = (a, b) => {
@@ -104,7 +118,7 @@ const compareByWinnerWinPercent = (a, b) => {
   if (winnerWinPctDifference === 0) {
     return aWinnerWins - bWinnerWins;
   }
-  return winnerWinPctDifference;
+  return -winnerWinPctDifference;
 };
 const compareByLoserWinPercent = (a, b) => {
   let aWinnerWins = getWinnerWins(a);
@@ -160,14 +174,24 @@ const binarySearchListForObjectWithComparator = function (list,goal,comparator) 
   let m = Math.floor(list.length / 2);
   let b = 0;
   let e = list.length - 1;
+  
 
   while (comparator(goal, list[m])) {
-    let cmp = comparator(goal, list[m]);
+	let cmp = comparator(goal, list[m]);
     if (cmp > 0) {
-      b = m;
+		if(b != m) {
+			b = m;
+		}
+		else {
+			b += 1;
+		}
     }
     if (cmp < 0) {
-      e = m;
+		if(e != m) {
+			e = m;
+		} else {
+			e -= 1;
+		}
     }
     m = Math.floor((b + e) / 2);
   }
@@ -211,16 +235,16 @@ export function first(args) {
 
 export function last(args) {
 	let {matchup, orderBy, minimumGames, requiredLeft, requiredRight} = args;
-  let currentList = sortedMatchupLists[orderBy];
-  let i = currentList.length;
+	let currentList = sortedMatchupLists[orderBy];
+	let i = currentList.length;
 
-  let enoughGames = false;
-  let leftOkay = !requiredLeft;
-  let rightOkay = !requiredRight;
+	let enoughGames = false;
+	let leftOkay = !requiredLeft;
+	let rightOkay = !requiredRight;
 
   while (i > 0 && (!enoughGames || !leftOkay || !rightOkay)) {
-    i -= 1;
-    let matchup = currentList[i];
+	i -= 1;
+	let matchup = currentList[i];
     enoughGames = getTotalGames(matchup) >= minimumGames;
     leftOkay = !requiredLeft || requiredLeft === matchup.left;
     rightOkay = !requiredRight || requiredRight === matchup.right;
@@ -296,15 +320,10 @@ export function randomMatchup(state) {
 };
 
 function leftButtonsVisible(args) {
-	console.log(args);
-	console.log(!!prev(args));
 	return !!prev(args);
 }
 
 function rightButtonsVisible(args) {
-	console.log(args);
-	console.log(next(args));
-	console.log(!!next(args));
 	return !!next(args);
 }
 

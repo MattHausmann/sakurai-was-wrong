@@ -1,14 +1,12 @@
 import wins from "./wins.json";
 import { createStore } from "redux";
-import {
-  randomMatchup,
-} from "./MatchupNavigator";
+import { randomMatchup } from "./MatchupNavigator";
 
 let initialState = {
   bestScores: {},
   currentIndex: 1,
   guessedMatchups: {},
-  minimumGames: 1000,
+  minimumGames: 3000,
   orderBy: "Left Win %",
   quizMode: false,
   quizResults: [],
