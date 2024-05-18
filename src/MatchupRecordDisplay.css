@@ -11,12 +11,4 @@
   font-size: 4.5em;
   justify-content: center;
   margin-top: 0.3em;
-
-  span.left-percent {
-    color: #87b38d;
-  }
-
-  span.right-percent {
-    color: #cc76a1;
-  }
 }
