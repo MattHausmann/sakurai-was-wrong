@@ -26,7 +26,10 @@ const LabeledCharacterPortrait = ({ side }) => {
     // either left or right. no need for else
     let name = matchup.left;
     if (side === "right") {
-      name = matchup.right;
+		if(name === matchup.right) {
+			return;
+		}
+		name = matchup.right;
     }
     if (name in fromNameToResolvedName) {
       name = fromNameToResolvedName[name];

@@ -87,10 +87,10 @@ const getLoserWins = (matchup) => {
 
 
 const getTotalGames = (matchup) => {
-  let leftWins = wins[matchup.videogameId][matchup.left][matchup.right];
-  let rightWins = wins[matchup.videogameId][matchup.right][matchup.left];
+	let leftWins = wins[matchup.videogameId][matchup.left][matchup.right];
+	let rightWins = wins[matchup.videogameId][matchup.right][matchup.left];
 
-  return leftWins + rightWins;
+	return leftWins + rightWins;
 };
 
 const compareByTotalGames = (a, b) => {
@@ -108,16 +108,15 @@ const compareByLeftWinPercent = (a, b) => {
 };
 
 const compareByWinnerWinPercent = (a, b) => {
-  let aWinnerWins = getWinnerWins(a);
-  let aLoserWins = getLoserWins(a);
-  let bWinnerWins = getWinnerWins(b);
-  let bLoserWins = getLoserWins(b);
-  //awins/aloses > bwins/bloses but with cross-multiplication
-  let winnerWinPctDifference =
-    aWinnerWins * bLoserWins - bWinnerWins * aLoserWins;
-  if (winnerWinPctDifference === 0) {
-    return aWinnerWins - bWinnerWins;
-  }
+	let aWinnerWins = getWinnerWins(a);
+	let aLoserWins = getLoserWins(a);
+	let bWinnerWins = getWinnerWins(b);
+	let bLoserWins = getLoserWins(b);
+	//awins/aloses > bwins/bloses but with cross-multiplication
+	let winnerWinPctDifference = aWinnerWins * bLoserWins - bWinnerWins * aLoserWins;
+	if (winnerWinPctDifference === 0) {
+		return aWinnerWins - bWinnerWins;
+	}
   return -winnerWinPctDifference;
 };
 const compareByLoserWinPercent = (a, b) => {
@@ -242,15 +241,15 @@ export function last(args) {
 	let leftOkay = !requiredLeft;
 	let rightOkay = !requiredRight;
 
-  while (i > 0 && (!enoughGames || !leftOkay || !rightOkay)) {
-	i -= 1;
-	let matchup = currentList[i];
-    enoughGames = getTotalGames(matchup) >= minimumGames;
-    leftOkay = !requiredLeft || requiredLeft === matchup.left;
-    rightOkay = !requiredRight || requiredRight === matchup.right;
-  }
+	while (i > 0 && (!enoughGames || !leftOkay || !rightOkay)) {
+		i -= 1;
+		let matchup = currentList[i];
+		enoughGames = getTotalGames(matchup) >= minimumGames;
+		leftOkay = !requiredLeft || requiredLeft === matchup.left;
+		rightOkay = !requiredRight || requiredRight === matchup.right;
+	}
 
-  return currentList[i];
+	return currentList[i];
 };
 
 export function prev(args) {
@@ -301,8 +300,7 @@ export function next(args) {
 	if(enoughGames && leftOkay && rightOkay) {
 		return list[targetNext];
 	}
-	return undefined;
-	
+	return undefined;	
 };
 
 
