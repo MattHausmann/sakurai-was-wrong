@@ -1,114 +1,91 @@
 body {
-	font-family: Arial, sans-serif;
-	text-align: center;
+  font-family: Arial, sans-serif;
+  text-align: center;
 }
 
 .app-container {
-	display: flex;
-	align-items: stretch; /* Equal height for both columns */
-	justify-content: center;
-	height: 100vh;
-	background-color: #dadaee;
+  display: flex;
+  align-items: stretch; /* Equal height for both columns */
+  justify-content: center;
+  height: 100vh;
+  background-color: #dadaee;
 }
 
 /* Left column */
 .left-column {
-	flex: 4;
-	border: 2px solid #333; /* Rectangle outline */
-	padding: 20px;
-	box-sizing: border-box;
+  flex: 4;
+  border: 2px solid #333; /* Rectangle outline */
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 /* Right column */
 .right-column {
-	flex: 1;
-	border: 2px solid #333; /* Rectangle outline */
-	padding: 20px;
-	box-sizing: border-box;
+  flex: 1;
+  border: 2px solid #333; /* Rectangle outline */
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 @media (width <= 900px) {
-	.right-column {
-		flex: 0;
-	}
+  .right-column {
+    flex: 0;
+  }
 }
 
 /* Game buttons (square, no text) */
 .game-button {
-	display: inline-block;
-	width: 130px; /* Adjust as needed */
-	height: 48px; /* Square buttons */
-	background-color: #444444;
-	/* Add your game logos as background images */
-	background-size: cover;
-	margin: 10px;
+  display: inline-block;
+  width: 130px; /* Adjust as needed */
+  height: 48px; /* Square buttons */
+  background-color: #444444;
+  /* Add your game logos as background images */
+  background-size: cover;
+  margin: 10px;
 }
 
 .game-button.selected {
-	/* Add any other styles you want for selected buttons */
+  /* Add any other styles you want for selected buttons */
 }
 
 .questionMessage {
-	width: 250px;
-	display: inline-block;
-	position: relative;
-	background-color: white;
+  width: 250px;
+  display: inline-block;
+  position: relative;
+  background-color: white;
 }
 
 /* Game buttons (square, no text) */
 .game-button {
-	display: inline-block;
-	width: 130px; /* Adjust as needed */
-	height: 48px; /* Square buttons */
-	background-color: #444444;
-	/* Add your game logos as background images */
-	background-size: cover;
-	padding: 0px;
+  display: inline-block;
+  width: 130px; /* Adjust as needed */
+  height: 48px; /* Square buttons */
+  background-color: #444444;
+  /* Add your game logos as background images */
+  background-size: cover;
+  padding: 0px;
 }
 
 .game-button.selected {
-	background-color: #999;
+  background-color: #999;
 }
 
 .matchup-navigation {
-	max-width: 600px;
-	margin: 0 auto;
-	padding: 20px;
-	background-color: #ffffff;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	display: flex;
-	flex-direction: column; /* Adjusted to vertical layout */
-	align-items: center;
-}
-.matchup-display {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 20px;
-}
-.matchup-display img {
-	max-width: 50px;
-	height: auto;
-}
-
-.imageLoading {
-	width: 132px;
-	height: 132px;
-	border: 2px solid #333333;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.labeled-portrait p {
-	height: 36px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column; /* Adjusted to vertical layout */
+  align-items: center;
 }
 
 .win-text-color {
-	color: #87b38d;
+  color: #87b38d;
 }
 
 .lose-text-color {
-	color: #cc76a1;
+  color: #cc76a1;
 }
