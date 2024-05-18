@@ -23,6 +23,7 @@ const LabeledCharacterPortrait = ({ side }) => {
 
   useEffect(() => {
     setLoading(true);
+    // either left or right. no need for else
     let name = matchup.left;
     if (side === "right") {
       name = matchup.right;
