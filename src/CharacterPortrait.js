@@ -23,9 +23,17 @@ const LabeledCharacterPortrait = ({ side }) => {
 
   useEffect(() => {
 	  setLoading(true);
+	  if(side ==="left") {
+		  if(name === matchup.left) {
+			  return;
+		  }
+	  }
     let name = matchup.left;
     if (side === "right") {
-      name = matchup.right;
+		if(name === matchup.right) {
+			return;
+		}
+		name = matchup.right;
     }
     if (name in fromNameToResolvedName) {
       name = fromNameToResolvedName[name];
