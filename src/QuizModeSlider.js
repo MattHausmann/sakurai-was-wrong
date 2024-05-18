@@ -28,18 +28,7 @@ const MatchupSlider = ({ winsDisplay }) => {
 
   return (
     <div className="matchup-slider">
-      <div className="text-above-slider">
-        <span className="left-percent">
-          {Math.floor((sliderValue * 100) / (leftWins + rightWins))}
-        </span>
-        <span className="percent-divider">:</span>
-        <span className="right-percent">
-          {Math.ceil(
-            ((leftWins + rightWins - sliderValue) * 100) /
-              (leftWins + rightWins)
-          )}
-        </span>
-      </div>
+      <div className="text-above-slider"></div>
       <>
         <div>
           {quizMode ? (
@@ -68,21 +57,28 @@ const MatchupSlider = ({ winsDisplay }) => {
       </>
       <div className="percentContainer">
         <>
-          {quizMode ? (
-            <input
-              type="number"
-              value={sliderValue}
-              onChange={quizMode ? handleTextInput : undefined}
-              className="winrate-input"
-            />
-          ) : (
-            <div className="winrate-text">{leftWins}</div>
-          )}
+          <input
+            type="number"
+            value={sliderValue}
+            onChange={(e) => {
+              let l = parseInt(e.target.value, 10);
+              let r = leftWins + rightWins - l;
+              dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
+            }}
+            className="slider-num-input win-text-color"
+          />
+          <h2>:</h2>
+          <input
+            type="number"
+            value={rightWins}
+            onChange={(e) => {
+              let r = parseInt(e.target.value, 10);
+              let l = leftWins + rightWins - r;
+              dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
+            }}
+            className="slider-num-input lose-text-color"
+          />
         </>
-        <span className="winLoseSeparator">:</span>
-        <div className="loserate-text">
-          {leftWins + rightWins - sliderValue}
-        </div>
       </div>
     </div>
   );
