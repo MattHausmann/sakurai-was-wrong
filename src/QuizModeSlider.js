@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import "./QuizModeSlider.css";
-import wins from "./wins.json";
 
 const MatchupSlider = ({ winsDisplay }) => {
   const quizMode = useSelector((state) => state.quizMode);
