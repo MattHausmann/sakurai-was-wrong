@@ -172,7 +172,6 @@ export function first(args) {
 	let list = lockLeft?matchupsPerCharacter[matchup.left]:leftPercentList;
 	let currentIndex = -1;
 	let enoughGames = false;
-	console.log(list);
 	while (currentIndex <list.length-1 && !enoughGames) {
 		currentIndex += 1;
 		let matchup = list[currentIndex];
@@ -190,7 +189,6 @@ export function last(args) {
 	let list = lockLeft?matchupsPerCharacter[matchup.left]:leftPercentList;
 	let currentIndex = list.length;
 	let enoughGames = false;
-	console.log(list);
 	while (currentIndex >0 && !enoughGames) {
 		currentIndex -= 1;
 		let matchup = list[currentIndex];
@@ -244,20 +242,16 @@ export function next(args) {
 export function randomMatchup(state) {
 	let list = totalGamesList
 	if(state.lockLeft) {
-		console.log('in state.lockLeft', matchupsPerCharacter, state.matchup.left, matchupsPerCharacter[state.matchup.left]);
 		list = matchupsPerCharacter[state.matchup.left];
 		let newIndex = Math.floor(Math.random() * list.length);
 		while(list[newIndex] == state.matchup) {
 			newIndex = Math.floor(Math.random() * list.length);			
-			console.log(list, list[newIndex], state.matchup);
 		}
 		return list[newIndex];
 	}
 	const matchup0 = firstMatchupAtOrAboveThreshold(state.minimumGames);
-	console.log(list);
 	const index0 = binarySearchListForObjectWithComparator(list, matchup0, compareByTotalGames);
 	const newIndex = index0 + Math.floor(Math.random() * (list.length-index0));
-	console.log(list, index0, newIndex);
 	return totalGamesList[newIndex];
 };
 function leftButtonsVisible(args) {
@@ -296,21 +290,13 @@ for (let videogameId of [1, 1386]) {
 	}
 }
 
-console.log(oneSidedMatchupListA);
-console.log(oneSidedMatchupListB);
-console.log(oneSidedMatchupListC);
-console.log(twoSidedMatchupList);
-
-console.log(matchupsPerCharacter);
 let totalGamesList = [...oneSidedMatchupListA].sort(compareByTotalGames);
 let leftPercentList = [...twoSidedMatchupList].sort(compareByLeftWinPercent);
 let winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinnerWinPercent);
 
-
 for(let left in matchupsPerCharacter) {
 	matchupsPerCharacter[left] = [...matchupsPerCharacter[left]].sort(compareByLeftWinPercent);
 }
-console.log(matchupsPerCharacter);
 
 
 export function MatchupNavigator() {
