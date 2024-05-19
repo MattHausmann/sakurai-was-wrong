@@ -3,16 +3,17 @@ import { createStore } from "redux";
 import { randomMatchup } from "./MatchupNavigator";
 
 let initialState = {
-  bestScores: {},
-  currentIndex: 1,
-  guessedMatchups: {},
-  minimumGames: 3000,
-  orderBy: "Left Win %",
-  quizMode: false,
-  quizResults: [],
-  selectedGames: [],
-  seenMatchups: {},
-  winsDisplay: [0, 0],
+	bestScores: {},
+	currentIndex: 1,
+	guessedMatchups: {},
+	minimumGames: 1,
+	orderBy: "Left Win %",
+	quizMode: false,
+	quizResults: [],
+	selectedGames: [],
+	seenMatchups: {},
+	winsDisplay: [0, 0],
+	lockLeft: false,
 };
 
 const seenMatchupStringify = (newMatchup) => {
@@ -50,36 +51,38 @@ initialState = mutateStateFromNav(initialState, firstMatchup);
 
 const reducer = (prevState = initialState, action) => {
 	switch (action.type) {
-    case "setGameId":
-      return {
-        ...prevState,
-        gameId: action.gameId,
-      };
-    case "updateWinsDisplay":
-      return {
-        ...prevState,
-        winsDisplay: action.winsDisplay,
-      };
-    case "setMatchup":
-      return mutateStateFromNav(prevState, action.matchup);
-
-    case "setOrderBy":
-      return {
-        ...prevState,
-        orderBy: action.orderBy,
-      };
+	case "setGameId":
+		return {
+			...prevState,
+			gameId: action.gameId,
+		};
+	case "updateWinsDisplay":
+		return {
+			...prevState,
+			winsDisplay: action.winsDisplay,
+		};
+	case "setMatchup":
+		return mutateStateFromNav(prevState, action.matchup);
+	case "toggleLockLeft":
+		return {
+			...prevState,
+			lockLeft:!(prevState.lockLeft),
+		}
+	  
     // quiz muts
-    case "pushQuizResult":
-      return {
-        ...prevState,
-        quizResults: [...prevState.quizResults, action.result],
-      };
-    case "toggleQuizMode":
-      return {
-        ...prevState,
-        quizMode: action.val,
-        winsDisplay: newWinsDisplay(action.val, prevState.matchup),
-      };
+	case "pushQuizResult":
+		return {
+			...prevState,
+			quizResults: [...prevState.quizResults, action.result],
+		};
+
+	case "toggleQuizMode":
+		return {
+			...prevState,
+			quizMode: action.val,
+			winsDisplay: newWinsDisplay(action.val, prevState.matchup),
+		};
+
     default:
       return prevState;
   }
