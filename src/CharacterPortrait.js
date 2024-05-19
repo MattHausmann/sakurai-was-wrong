@@ -1,53 +1,61 @@
 // CharacterPortrait.js
 import React, { useState, useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
-const LabeledCharacterPortrait = ({ side }) => {
-  let { matchup } = useSelector((state) => state);
+const LabeledCharacterPortrait = ({ side, lockSwitch, onClick }) => {
+	let { matchup, lockLeft } = useSelector((state) => state);
 
-  let [loading, setLoading] = useState(true);
-  let [baseImagePath, setBaseImagePath] = useState("");
-  let [resolvedName, setResolvedName] = useState("");
+	let [loading, setLoading] = useState(true);
+	let [baseImagePath, setBaseImagePath] = useState("");
+	let [name, setName] = useState("");
+	let [resolvedName, setResolvedName] = useState("");
 
-  let fromNameToResolvedName = useMemo(() => {
-    return {
-      "R.O.B.": "R.O.B",
-      "Bowser Jr.": "Bowser Jr",
-      "Sheik / Zelda": "Sheik & Zelda",
-      Daisy: "Peach",
-      "Dark Samus": "Samus",
-      "Dark Pit": "Pit",
-      Richter: "Simon Belmont",
-    };
-  }, []);
+	let fromNameToResolvedName = useMemo(() => {
+		return {
+			"R.O.B.": "R.O.B",
+			"Bowser Jr.": "Bowser Jr",
+			"Sheik / Zelda": "Sheik & Zelda",
+			"Daisy": "Peach",
+			"Dark Samus": "Samus",
+			"Dark Pit": "Pit",
+			"Richter": "Simon Belmont",
+		};
+	}, []);
 
-  useEffect(() => {
-    setLoading(true);
-    // either left or right. no need for else
-    let name = matchup.left;
-    if (side === "right") {
-		if(name === matchup.right) {
-			return;
+	useEffect(() => {
+		let newName = matchup.left;
+		if (side === "right") {
+			newName = matchup.right;
 		}
-		name = matchup.right;
-    }
-    if (name in fromNameToResolvedName) {
-      name = fromNameToResolvedName[name];
-    }
-    setResolvedName(name);
-    setBaseImagePath(`./characters/${matchup.videogameId}/${name}/image.png`);
-  }, [fromNameToResolvedName, matchup, side]);
+		if (newName in fromNameToResolvedName) {
+			newName = fromNameToResolvedName[newName];
+		}
 
-  return (
-    <div className="labeled-portrait">
-      <img
-        src={baseImagePath}
-        alt={loading ? "Loading..." : resolvedName}
-        onLoad={() => setLoading(false)}
-      />
-      <p>{resolvedName}</p>
-    </div>
-  );
+		if (resolvedName !== newName) {
+			setResolvedName(newName);
+			setLoading(true);
+			setBaseImagePath(`./characters/${matchup.videogameId}/${newName}/image.png`);
+		}
+	}, [fromNameToResolvedName, matchup, side]);
+
+	let dispatch = useDispatch();
+
+	return (
+		<div className="labeled-portrait">
+			<img
+				src={baseImagePath}
+				alt={loading ? "Loading..." : resolvedName}
+				onLoad={() => setLoading(false)}
+			/>
+			<p>{resolvedName}</p>
+				{lockSwitch && (
+					<label>
+						Lock Character:
+						<input type="checkbox" onChange={() => {dispatch({type:"toggleLockLeft"});}} />
+					</label>
+				)}
+		</div>
+	);
 };
 
 export default LabeledCharacterPortrait;
