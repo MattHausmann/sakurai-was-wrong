@@ -21,30 +21,30 @@ const seenMatchupStringify = (newMatchup) => {
 };
 
 const newWinsDisplay = (quizMode, matchup) => {
-  if (quizMode) {
-    let sum =
-      wins[matchup.videogameId][matchup.left][matchup.right] +
-      wins[matchup.videogameId][matchup.right][matchup.left];
-    let halfWins = Math.ceil(sum / 2);
-    return [halfWins, sum - halfWins];
-  } else {
-    return [
-      wins[matchup.videogameId][matchup.left][matchup.right],
-      wins[matchup.videogameId][matchup.right][matchup.left],
-    ];
-  }
+	if (quizMode) {
+		let sum =
+			wins[matchup.videogameId][matchup.left][matchup.right] +
+			wins[matchup.videogameId][matchup.right][matchup.left];
+		let halfWins = Math.ceil(sum / 2);
+		return [halfWins, sum - halfWins];
+	} else {
+		return [
+			wins[matchup.videogameId][matchup.left][matchup.right],
+			wins[matchup.videogameId][matchup.right][matchup.left],
+		];
+	}
 };
 
 const mutateStateFromNav = (prevState, newMatchup) => {
-  return {
-    ...prevState,
-    matchup: newMatchup,
-    seenMatchups: {
-      ...prevState.seenMatchups,
-      [seenMatchupStringify(newMatchup)]: true,
-    },
-    winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
-  };
+	return {
+		...prevState,
+		matchup: newMatchup,
+		seenMatchups: {
+		  ...prevState.seenMatchups,
+		  [seenMatchupStringify(newMatchup)]: true,
+		},
+		winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
+	};
 };
 
 let firstMatchup = randomMatchup(initialState);

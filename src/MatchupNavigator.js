@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, React } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import wins from "./wins.json";
 
@@ -179,10 +179,9 @@ const binarySearchListForObjectWithComparator = function (list,goal,comparator) 
 };
 
 
-
 export function first(args) {
 	let {matchup, orderBy, minimumGames, lockLeft} = args;
-	let list = lockLeft?matchupsPerCharacter[matchup.left]:leftPercentList;
+	let list = lockLeft?matchupsPerCharacter[matchup.left]:winnerWinPercentList;
 	let currentIndex = -1;
 	let enoughGames = false;
 	while (currentIndex <list.length-1 && !enoughGames) {
@@ -199,7 +198,7 @@ export function first(args) {
 
 export function last(args) {
 	let {matchup, orderBy, minimumGames, lockLeft} = args;
-	let list = lockLeft?matchupsPerCharacter[matchup.left]:leftPercentList;
+	let list = lockLeft?matchupsPerCharacter[matchup.left]:winnerWinPercentList;
 	let currentIndex = list.length;
 	let enoughGames = false;
 	while (currentIndex >0 && !enoughGames) {
@@ -215,7 +214,6 @@ export function last(args) {
 
 export function prev(args) {
 	let {matchup, orderBy, minimumGames, lockLeft} = args;
-	matchup = unreverse(matchup);
 	let list = lockLeft?matchupsPerCharacter[matchup.left]:leftPercentList;
 	let currentIndex = binarySearchListForObjectWithComparator(list, matchup, compareByLeftWinPercent);
 	let inc = -1;
@@ -232,26 +230,24 @@ export function prev(args) {
 	if(enoughGames) {
 		return list[targetPrev];
 	}
-
 	return undefined;	
 };
 
 
 export function next(args) {
 	let {matchup, orderBy, minimumGames, lockLeft} = args;
-	matchup = unreverse(matchup);
 	let list = lockLeft?matchupsPerCharacter[matchup.left]:leftPercentList;
 	let currentIndex = binarySearchListForObjectWithComparator(list, matchup, compareByLeftWinPercent);
 	let targetNext = currentIndex;
 	let enoughGames = false;
-
-	while (targetNext < Math.floor((list.length-1)/2) && !enoughGames) {
+	
+	let endIndex = lockLeft?list.length-1:Math.floor((list.length-1)/2);
+	while (targetNext < endIndex && !enoughGames) {
 		targetNext += 1;
 		let matchup = list[targetNext];
 		enoughGames = getTotalGames(matchup) >= minimumGames;
 	}
 	if(enoughGames) {
-		console.log(isReversed(list[targetNext]));
 		return list[targetNext];
 	}
 	return undefined;	
@@ -284,6 +280,7 @@ function leftButtonsVisible(args) {
 }
 
 function rightButtonsVisible(args) {
+	console.log(args);
 	return !!next(args);
 }
 
@@ -325,6 +322,7 @@ for (let videogameId of [1, 1386]) {
 	}
 }
 
+
 let totalGamesList = [...oneSidedMatchupListA].sort(compareByTotalGames);
 let leftPercentList = [...twoSidedMatchupList].sort(compareByLeftWinPercent);
 let winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinnerWinPercent);
@@ -336,10 +334,16 @@ for(let left in matchupsPerCharacter) {
 
 export function MatchupNavigator() {
 	const dispatch = useDispatch();
-	const {matchup, orderBy, minimumGames, lockLeft}=useSelector((state)=>state);
-
-	let args = {matchup, orderBy, minimumGames, lockLeft};
+	let {matchup, orderBy, minimumGames, lockLeft}=useSelector((state)=>state);
 	
+	let args = {matchup, orderBy, minimumGames, lockLeft};
+	console.log('making matchupnavigator');
+	useEffect(() => {
+		if(!lockLeft) {
+			dispatch({type:"setMatchup", matchup:unreverse(matchup)});
+		}
+	}, [lockLeft]);
+
 	
 
 	return (
