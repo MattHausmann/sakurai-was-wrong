@@ -3,19 +3,19 @@ import { useSelector, useDispatch } from "react-redux";
 import wins from "./wins.json";
 
 const defaultCompareMatchups = (a, b) => {
-	let leftCompare = a.left.localeCompare(b.left)
-	if(!leftCompare) {
+	let leftCompare = a.left.localeCompare(b.left);
+	if (!leftCompare) {
 		let rightCompare = a.right.localeCompare(b.right);
-		if(!rightCompare) {
-			return a.videogameId -b.videogameId;
+		if (!rightCompare) {
+			return a.videogameId - b.videogameId;
 		}
 		return rightCompare;
 	}
 	return leftCompare;
-}
+};
 
 export function getWins(matchup) {
-	let {videogameId, left, right} = matchup;
+	let { videogameId, left, right } = matchup;
 	let leftWins = 0;
 	let rightWins = 0;
 	if (videogameId in wins) {
@@ -51,8 +51,6 @@ const getLoserWins = (matchup) => {
 	return Math.min(leftWins, rightWins);
 };
 
-
-
 const getTotalGames = (matchup) => {
 	let leftWins = wins[matchup.videogameId][matchup.left][matchup.right];
 	let rightWins = wins[matchup.videogameId][matchup.right][matchup.left];
@@ -62,7 +60,7 @@ const getTotalGames = (matchup) => {
 
 const compareByTotalGames = (a, b) => {
 	let gamesCompare = getTotalGames(a) - getTotalGames(b);
-	return gamesCompare?gamesCompare:defaultCompareMatchups(a,b);
+	return gamesCompare ? gamesCompare : defaultCompareMatchups(a, b);
 };
 
 const compareByLeftWinPercent = (a, b) => {
@@ -84,7 +82,7 @@ const compareByWinnerWinPercent = (a, b) => {
 	if (winnerWinPctDifference === 0) {
 		return aWinnerWins - bWinnerWins;
 	}
-  return -winnerWinPctDifference;
+	return -winnerWinPctDifference;
 };
 
 const firstMatchupAtOrAboveThreshold = function (threshold) {
@@ -138,34 +136,31 @@ const unreverse = function(matchup) {
 }
 
 const binarySearchListForObjectWithComparator = function (list,goal,comparator) {
-	
-	
-  let m = Math.floor(list.length / 2);
-  let b = 0;
-  let e = list.length - 1;
-  while (comparator(goal, list[m])) {
-	let cmp = comparator(goal, list[m]);
-    if (cmp > 0) {
-		if(b != m) {
-			b = m;
+
+
+	let m = Math.floor(list.length / 2);
+	let b = 0;
+	let e = list.length - 1;
+	while (comparator(goal, list[m])) {
+		let cmp = comparator(goal, list[m]);
+		if (cmp > 0) {
+			if (b != m) {
+				b = m;
+			} else {
+				b += 1;
+			}
 		}
-		else {
-			b += 1;
+		if (cmp < 0) {
+			if (e != m) {
+				e = m;
+			} else {
+				e -= 1;
+			}
 		}
-    }
-    if (cmp < 0) {
-		if(e != m) {
-			e = m;
-		} else {
-			e -= 1;
-		}
-    }
-    m = Math.floor((b + e) / 2);
-  }
-  return m;
+		m = Math.floor((b + e) / 2);
+	}
+	return m;
 };
-
-
 
 export function first(args) {
 	let {matchup, orderBy, minimumGames, lockLeft} = args;
@@ -180,9 +175,8 @@ export function first(args) {
 	if(enoughGames) {
 		return list[currentIndex];
 	}
-	return undefined;	
-};
-
+	return undefined;
+}
 
 export function last(args) {
 	let {matchup, orderBy, minimumGames, lockLeft} = args;
@@ -197,8 +191,8 @@ export function last(args) {
 	if(enoughGames) {
 		return list[currentIndex];
 	}
-	return undefined;	
-};
+	return undefined;
+}
 
 export function prev(args) {
 	let {matchup, orderBy, minimumGames, lockLeft} = args;
@@ -214,9 +208,8 @@ export function prev(args) {
 	if(enoughGames) {
 		return list[targetPrev];
 	}
-	return undefined;	
-};
-
+	return undefined;
+}
 
 export function next(args) {
 	let {matchup, orderBy, minimumGames, lockLeft} = args;
@@ -225,7 +218,7 @@ export function next(args) {
 	let targetNext = currentIndex;
 	let enoughGames = false;
 
-	while (targetNext < list.length-1 && !enoughGames) {
+	while (targetNext < list.length - 1 && !enoughGames) {
 		targetNext += 1;
 		let matchup = list[targetNext];
 		enoughGames = getTotalGames(matchup) >= minimumGames;
@@ -233,11 +226,8 @@ export function next(args) {
 	if(enoughGames) {
 		return list[targetNext];
 	}
-	return undefined;	
-};
-
-
-
+	return undefined;
+}
 
 export function randomMatchup(state) {
 	let list = totalGamesList
@@ -245,7 +235,7 @@ export function randomMatchup(state) {
 		list = matchupsPerCharacter[state.matchup.left];
 		let newIndex = Math.floor(Math.random() * list.length);
 		while(list[newIndex] == state.matchup) {
-			newIndex = Math.floor(Math.random() * list.length);			
+			newIndex = Math.floor(Math.random() * list.length);
 		}
 		return list[newIndex];
 	}
@@ -253,21 +243,20 @@ export function randomMatchup(state) {
 	const index0 = binarySearchListForObjectWithComparator(list, matchup0, compareByTotalGames);
 	const newIndex = index0 + Math.floor(Math.random() * (list.length-index0));
 	return totalGamesList[newIndex];
-};
+}
 function leftButtonsVisible(args) {
 	return !!prev(args);
 }
 
 function rightButtonsVisible(args) {
-	console.log('checking if right button is visible for',args);
+	console.log("checking if right button is visible for", args);
 	return !!next(args);
 }
-
 
 const oneSidedMatchupListA = [];
 const oneSidedMatchupListB = [];
 const oneSidedMatchupListC = [];
-const twoSidedMatchupList = []
+const twoSidedMatchupList = [];
 const matchupsPerCharacter = {};
 
 for (let videogameId of [1, 1386]) {
@@ -298,44 +287,43 @@ for(let left in matchupsPerCharacter) {
 	matchupsPerCharacter[left] = [...matchupsPerCharacter[left]].sort(compareByLeftWinPercent);
 }
 
-
 export function MatchupNavigator() {
 	const dispatch = useDispatch();
 	const {matchup, orderBy, minimumGames, lockLeft}=useSelector((state)=>state);
 
 	let args = {matchup, orderBy, minimumGames, lockLeft};
-	
-	
+
+
 
 	return (
 		<div class="matchup-navigator">
-			<button 
+			<button
 				onClick={() => {dispatch({ type: "setMatchup", matchup:first(args)});}}
 				style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 			>
 				First
 			</button>
-			<button 
+			<button
 				onClick={() => {dispatch({ type: "setMatchup", matchup:prev(args)});}}
 				style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 			>
 				Previous
 			</button>
-			
+
 			<button onClick={() => {
-				let newMatchup = randomMatchup(args); 
-				console.log(newMatchup); 
+				let newMatchup = randomMatchup(args);
+				console.log(newMatchup);
 				dispatch({ type: "setMatchup", matchup:newMatchup});
 			}}>
 				New
 			</button>
-			<button 
+			<button
 				onClick={() => {dispatch({ type: "setMatchup", matchup:next(args)});}}
 				style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 			>
 				Next
 			</button>
-			<button 
+			<button
 				onClick={() => {dispatch({ type: "setMatchup", matchup:last(args)});}}
 				style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 			>

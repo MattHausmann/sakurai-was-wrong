@@ -5,11 +5,11 @@ import { useDispatch } from "react-redux";
 import "./QuizModeSlider.css";
 
 const MatchupSlider = ({ winsDisplay }) => {
-  const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
-  const [sliderValue, setSliderValue] = useState(winsDisplay[0]);
-  const [leftWins, setLeftWins] = useState(winsDisplay[0]);
-  const [rightWins, setRightWins] = useState(winsDisplay[1]);
+	const [sliderValue, setSliderValue] = useState(winsDisplay[0]);
+	const [leftWins, setLeftWins] = useState(winsDisplay[0]);
+	const [rightWins, setRightWins] = useState(winsDisplay[1]);
 
   useEffect(() => {
     setLeftWins(winsDisplay[0]);
