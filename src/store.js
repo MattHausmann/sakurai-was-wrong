@@ -6,7 +6,7 @@ let initialState = {
 	bestScores: {},
 	currentIndex: 1,
 	guessedMatchups: {},
-	minimumGames: 1,
+	minimumGames: 10000,
 	orderBy: "Left Win %",
 	quizMode: false,
 	quizResults: [],
@@ -19,6 +19,7 @@ let initialState = {
 const seenMatchupStringify = (newMatchup) => {
   return [[newMatchup.left, newMatchup.right].sort().join("")];
 };
+
 const newWinsDisplay = (quizMode, matchup) => {
   if (quizMode) {
     let sum =
