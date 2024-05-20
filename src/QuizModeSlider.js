@@ -1,12 +1,10 @@
 // MatchupSlider.js
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import "./QuizModeSlider.css";
-import wins from "./wins.json";
 
 const MatchupSlider = ({ winsDisplay }) => {
-  const quizMode = useSelector((state) => state.quizMode);
   const dispatch = useDispatch();
 
   const [sliderValue, setSliderValue] = useState(winsDisplay[0]);
@@ -28,31 +26,21 @@ const MatchupSlider = ({ winsDisplay }) => {
 
   return (
     <div className="matchup-slider">
-      <div className="text-above-slider"></div>
       <>
         <div>
-          {quizMode ? (
-            <input
-              id="slider-input"
-              type="range"
-              min="0"
-              max={leftWins + rightWins}
-              value={sliderValue}
-              step="1"
-              onChange={(e) => {
-                let l = parseInt(e.target.value, 10);
-                let r = leftWins + rightWins - l;
-                dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
-              }}
-            />
-          ) : (
-            <meter
-              id="slider-meter"
-              min="0"
-              max={leftWins + rightWins}
-              value={leftWins}
-            />
-          )}
+          <input
+            id="slider-input"
+            type="range"
+            min="0"
+            max={leftWins + rightWins}
+            value={sliderValue}
+            step="1"
+            onChange={(e) => {
+              let l = parseInt(e.target.value, 10);
+              let r = leftWins + rightWins - l;
+              dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
+            }}
+          />
         </div>
       </>
       <div className="percentContainer">
@@ -79,6 +67,19 @@ const MatchupSlider = ({ winsDisplay }) => {
             className="slider-num-input lose-text-color"
           />
         </>
+      </div>
+      <div className="submit-button">
+        <button
+          type="button"
+          onClick={(e) => {
+            dispatch({ type: "setQuizSubmitAnimation", val: true });
+            setTimeout(() => {
+              dispatch({ type: "setQuizSubmitAnimation", val: false });
+            }, 5000);
+          }}
+        >
+          submit
+        </button>
       </div>
     </div>
   );
