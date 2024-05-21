@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { PieChart } from "@mui/x-charts/PieChart";
 
 import wins from "./wins.json";
 
 const PieChartComponent = () => {
-	const dispatch = useDispatch();
-	const { displayQuizResults, matchup, quizMode, winsDisplay, lockLeft } =
-		useSelector((state) => state);
+	const { displayQuizResults, matchup, quizMode, winsDisplay } = useSelector(
+		(state) => state
+	);
 
 	const [data, setData] = useState([
 		{
@@ -83,6 +83,7 @@ const PieChartComponent = () => {
 				series={[
 					{
 						data,
+						cx: 100,
 					},
 				]}
 				width={200}
