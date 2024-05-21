@@ -1,8 +1,14 @@
 // MatchupSlider.js
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-
+import NumberInput from "./NumberInput";
 import "./QuizModeSlider.css";
+
+import {colors} from "./colors";
+
+const isValid = (num) => {
+	return num.length > 0 && !isNaN(num) && !num.startsWith("-");
+};
 
 const MatchupSlider = ({ winsDisplay }) => {
 	const dispatch = useDispatch();
@@ -17,11 +23,19 @@ const MatchupSlider = ({ winsDisplay }) => {
 		setSliderValue(winsDisplay[0]);
 	}, [winsDisplay]);
 
-	const handleTextInput = (e) => {
-		let newSliderValue = parseInt(e.target.value, 10);
-		newSliderValue = Math.max(0, newSliderValue);
-		newSliderValue = Math.min(newSliderValue, leftWins + rightWins);
-		setSliderValue(newSliderValue);
+	const handleInputChange = (e, isLeft) => {
+		if (isValid(e.target.value)) {
+			let l;
+			let r;
+			if (isLeft) {
+				l = parseInt(e.target.value, 10);
+				r = leftWins + rightWins - l;
+			} else {
+				r = parseInt(e.target.value, 10);
+				l = leftWins + rightWins - r;
+			}
+			dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
+		}
 	};
 
 	return (
@@ -45,26 +59,24 @@ const MatchupSlider = ({ winsDisplay }) => {
 			</>
 			<div className="percentContainer">
 				<>
-					<input
-						type="number"
+					<NumberInput
+						label=""
+						color={colors.winGreen}
+						aria-label="number input"
 						value={sliderValue}
 						onChange={(e) => {
-							let l = parseInt(e.target.value, 10);
-							let r = leftWins + rightWins - l;
-							dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
+							handleInputChange(e, true);
 						}}
-						className="slider-num-input win-text-color"
 					/>
 					<h2>:</h2>
-					<input
-						type="number"
+					<NumberInput
+						label=""
+						color={colors.loseRed}
+						aria-label="number input"
 						value={rightWins}
 						onChange={(e) => {
-							let r = parseInt(e.target.value, 10);
-							let l = leftWins + rightWins - r;
-							dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
+							handleInputChange(e, false);
 						}}
-						className="slider-num-input lose-text-color"
 					/>
 				</>
 			</div>

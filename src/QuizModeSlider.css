@@ -9,18 +9,6 @@
 	display: flex;
 }
 
-.slider-num-input {
-	font-size: 60px; /* Match the font size */
-	background-color: rgba(0, 0, 0, 0.1); /* Make it transparent */
-	width: 140px;
-	text-align: right; /* Center the input value */
-	display: inline-block; /* Display as inline-block */
-}
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-	opacity: 1;
-}
-
 .submit-button {
-  margin: 10px;
+	margin: 10px;
 }
