@@ -5,7 +5,6 @@ import "./ScoreDisplay.css";
 
 const ScoreDisplay = () => {
 	const { score, quizResults } = useSelector((state) => state);
-
 	const [scoreImpact, setScoreImpact] = useState([]);
 
 	useEffect(() => {

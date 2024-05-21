@@ -1,5 +1,5 @@
 // App.js
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import GameSelect from "./GameSelect";
 import MatchupContainer from "./MatchupContainer";
@@ -16,15 +16,24 @@ const App = () => {
 	];
 
 	const dispatch = useDispatch();
-	const quizMode = useSelector((state) => state.quizMode);
+	const { quizMode, quizResults } = useSelector((state) => state);
 
 	const [videogameId, setVideogameId] = useState("1");
+	const rightColumnRef = useRef(null);
 
 	const handleGameSelect = (gameId) => {
 		setVideogameId(gameId);
 	};
 
-	// Other logic for handling character display and matchup
+	useEffect(() => {
+		if (rightColumnRef.current) {
+			rightColumnRef.current.scrollTo({
+				top: rightColumnRef.current.scrollHeight,
+				behavior: "smooth",
+			});
+		}
+	}, [quizResults]);
+
 	return (
 		<div className="app-container">
 			<div className="left-column">
@@ -41,7 +50,7 @@ const App = () => {
 				/>
 				<MatchupContainer videogameId={videogameId} quizMode={quizMode} />
 			</div>
-			<div className="right-column">
+			<div className="right-column" ref={rightColumnRef}>
 				<ScoreDisplay />
 			</div>
 		</div>

@@ -11,6 +11,7 @@ let initialState = {
 	orderBy: "Left Win %",
 	quizMode: false,
 	quizResults: [],
+	score: 0,
 	scoreDisplay: [],
 	selectedGames: [],
 	seenMatchups: {},
@@ -115,7 +116,7 @@ const reducer = (prevState = initialState, action) => {
 				winsDisplay: newWinsDisplay(action.val, prevState.matchup),
 			};
 
-		case "submitScore": {
+		case "submitGuess": {
 			let actual = [
 				wins[prevState.matchup.videogameId][prevState.matchup.left][
 					prevState.matchup.right

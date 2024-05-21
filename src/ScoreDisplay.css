@@ -1,5 +1,6 @@
 .quizResultsList {
 	display: flex;
+	flex: 1;
 	flex-direction: column;
 }
 
@@ -8,7 +9,6 @@ div.quizResultsRow {
 	display: flex;
 	flex-direction: column;
 	padding: 5px;
-	width: 100%;
 
 	h3 {
 		margin: 3px;

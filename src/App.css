@@ -14,17 +14,17 @@ body {
 /* Left column */
 .left-column {
   flex: 4;
-  border: 2px solid #333; /* Rectangle outline */
+  border: 2px solid #333;
   padding: 20px;
   box-sizing: border-box;
 }
 
 /* Right column */
 .right-column {
+	display: flex;
   flex: 1;
-  border: 2px solid #333; /* Rectangle outline */
-  padding: 20px;
-  box-sizing: border-box;
+  border: 2px solid #333;
+	overflow-y: scroll;
 }
 
 @media (width <= 900px) {
