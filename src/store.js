@@ -22,6 +22,7 @@ let initialState = {
 const seenMatchupStringify = (newMatchup) => {
 	return [[newMatchup.left, newMatchup.right].sort().join("")];
 };
+
 const newWinsDisplay = (quizMode, matchup) => {
 	if (quizMode) {
 		let sum =
