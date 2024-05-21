@@ -11,18 +11,18 @@ const MatchupSlider = ({ winsDisplay }) => {
 	const [leftWins, setLeftWins] = useState(winsDisplay[0]);
 	const [rightWins, setRightWins] = useState(winsDisplay[1]);
 
-  useEffect(() => {
-    setLeftWins(winsDisplay[0]);
-    setRightWins(winsDisplay[1]);
-    setSliderValue(winsDisplay[0]);
-  }, [winsDisplay]);
+	useEffect(() => {
+	  setLeftWins(winsDisplay[0]);
+	  setRightWins(winsDisplay[1]);
+	  setSliderValue(winsDisplay[0]);
+	}, [winsDisplay]);
 
-  const handleTextInput = (e) => {
-    let newSliderValue = parseInt(e.target.value, 10);
-    newSliderValue = Math.max(0, newSliderValue);
-    newSliderValue = Math.min(newSliderValue, leftWins + rightWins);
-    setSliderValue(newSliderValue);
-  };
+	const handleTextInput = (e) => {
+	  let newSliderValue = parseInt(e.target.value, 10);
+	  newSliderValue = Math.max(0, newSliderValue);
+	  newSliderValue = Math.min(newSliderValue, leftWins + rightWins);
+	  setSliderValue(newSliderValue);
+	};
 
   return (
     <div className="matchup-slider">

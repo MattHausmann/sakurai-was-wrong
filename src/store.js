@@ -1,38 +1,38 @@
-import wins from "./wins.json";
 import { createStore } from "redux";
 import { randomMatchup } from "./MatchupNavigator";
+import wins from "./wins.json";
 
 let initialState = {
-  bestScores: {},
-  currentIndex: 1,
-  guessedMatchups: {},
-  matchup: {},
-  minimumGames: 1,
-  orderBy: "Left Win %",
-  quizMode: false,
-  quizResults: [],
-  selectedGames: [],
-  seenMatchups: {},
-  winsDisplay: [0, 0],
-  lockLeft: false,
+	bestScores: {},
+	currentIndex: 1,
+	guessedMatchups: {},
+	matchup: {},
+	minimumGames: 1,
+	orderBy: "Left Win %",
+	quizMode: false,
+	quizResults: [],
+	selectedGames: [],
+	seenMatchups: {},
+	winsDisplay: [0, 0],
+	lockLeft: false,
 };
 
 const seenMatchupStringify = (newMatchup) => {
-  return [[newMatchup.left, newMatchup.right].sort().join("")];
+	return [[newMatchup.left, newMatchup.right].sort().join("")];
 };
 const newWinsDisplay = (quizMode, matchup) => {
-  if (quizMode) {
-    let sum =
-      wins[matchup.videogameId][matchup.left][matchup.right] +
-      wins[matchup.videogameId][matchup.right][matchup.left];
-    let halfWins = Math.ceil(sum / 2);
-    return [halfWins, sum - halfWins];
-  } else {
-    return [
-      wins[matchup.videogameId][matchup.left][matchup.right],
-      wins[matchup.videogameId][matchup.right][matchup.left],
-    ];
-  }
+	if (quizMode) {
+		let sum =
+			wins[matchup.videogameId][matchup.left][matchup.right] +
+			wins[matchup.videogameId][matchup.right][matchup.left];
+		let halfWins = Math.ceil(sum / 2);
+		return [halfWins, sum - halfWins];
+	} else {
+		return [
+			wins[matchup.videogameId][matchup.left][matchup.right],
+			wins[matchup.videogameId][matchup.right][matchup.left],
+		];
+	}
 };
 
 const mutateStateFromNav = (prevState, newMatchup) => {
@@ -51,24 +51,24 @@ let firstMatchup = randomMatchup(initialState);
 initialState = mutateStateFromNav(initialState, firstMatchup);
 
 const reducer = (prevState = initialState, action) => {
-  switch (action.type) {
-    case "setGameId":
-      return {
-        ...prevState,
-        gameId: action.gameId,
-      };
-    case "updateWinsDisplay":
-      return {
-        ...prevState,
-        winsDisplay: action.winsDisplay,
-      };
-    case "setMatchup":
-      return mutateStateFromNav(prevState, action.matchup);
-    case "toggleLockLeft":
-      return {
-        ...prevState,
-        lockLeft: !prevState.lockLeft,
-      };
+	switch (action.type) {
+		case "setGameId":
+			return {
+				...prevState,
+				gameId: action.gameId,
+			};
+		case "updateWinsDisplay":
+			return {
+				...prevState,
+				winsDisplay: action.winsDisplay,
+			};
+		case "setMatchup":
+			return mutateStateFromNav(prevState, action.matchup);
+		case "toggleLockLeft":
+			return {
+				...prevState,
+				lockLeft: !prevState.lockLeft,
+			};
 
     // quiz muts
     case "pushQuizResult":
@@ -90,14 +90,14 @@ const reducer = (prevState = initialState, action) => {
         displayQuizResults: action.val,
       };
 
-    default:
-      return prevState;
-  }
+		default:
+			return prevState;
+	}
 };
 
 const store = createStore(
-  reducer,
-  initialState,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+	reducer,
+	initialState,
+	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 export default store;
