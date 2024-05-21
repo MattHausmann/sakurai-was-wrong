@@ -4,22 +4,20 @@ import { PieChart } from "@mui/x-charts/PieChart";
 
 import wins from "./wins.json";
 
-const PieChartComponent = () => {
-	const { displayQuizResults, matchup, quizMode, winsDisplay } = useSelector(
-		(state) => state
-	);
+const PieChartComponent = ({ pieChartDisplay }) => {
+	const { displayQuizResults, matchup } = useSelector((state) => state);
 
 	const [data, setData] = useState([
 		{
 			id: 0,
-			value: winsDisplay[1],
+			value: pieChartDisplay[1],
 			label: matchup.right,
 			color: "#cc76a1",
 		},
 
 		{
 			id: 1,
-			value: winsDisplay[0],
+			value: pieChartDisplay[0],
 			label: matchup.left,
 			color: "#87b38d",
 		},
@@ -28,16 +26,17 @@ const PieChartComponent = () => {
 	useEffect(() => {
 		if (displayQuizResults) {
 			let diff =
-				wins[matchup.videogameId][matchup.left][matchup.right] - winsDisplay[0];
+				wins[matchup.videogameId][matchup.left][matchup.right] -
+				pieChartDisplay[0];
 
 			let color;
-			let [left, right] = winsDisplay;
+			let [left, right] = pieChartDisplay;
 			if (diff >= 0) {
-				right = winsDisplay[1] - diff;
+				right = pieChartDisplay[1] - diff;
 				color = "green";
 			} else {
 				diff = -diff;
-				left = winsDisplay[0] - diff;
+				left = pieChartDisplay[0] - diff;
 				color = "purple";
 			}
 
@@ -48,7 +47,7 @@ const PieChartComponent = () => {
 					label: matchup.right,
 					color: "#cc76a1",
 				},
-				{ id: 2, value: diff, color },
+				{ id: 2, value: diff, color, label: "Difference" },
 
 				{
 					id: 1,
@@ -61,29 +60,29 @@ const PieChartComponent = () => {
 			setData([
 				{
 					id: 0,
-					value: winsDisplay[1],
+					value: pieChartDisplay[1],
 					label: matchup.right,
 					color: "#cc76a1",
 				},
 
 				{
 					id: 1,
-					value: winsDisplay[0],
+					value: pieChartDisplay[0],
 					label: matchup.left,
 					color: "#87b38d",
 				},
 			]);
 		}
-	}, [displayQuizResults, matchup, winsDisplay]);
+	}, [displayQuizResults, matchup, pieChartDisplay]);
 
 	return (
 		<div className="pie-chart-container">
 			<PieChart
-				slotProps={{ legend: { hidden: true } }}
+				slotProps={{ legend: { hidden: !displayQuizResults } }}
 				series={[
 					{
 						data,
-						cx: 100,
+						cx: displayQuizResults ? 0 : 100,
 					},
 				]}
 				width={200}

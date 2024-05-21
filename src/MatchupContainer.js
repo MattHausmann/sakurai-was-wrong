@@ -1,5 +1,5 @@
 // MatchupContainer.js
-import { useState, React } from "react";
+import React, {useEffect, useState} from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import LabeledCharacterPortrait from "./CharacterPortrait";
@@ -11,41 +11,48 @@ import QuizModeSlider from "./QuizModeSlider";
 import "./MatchupContainer.css";
 
 const MatchupContainer = () => {
-  const dispatch = useDispatch();
-  const { matchup, quizMode, winsDisplay, lockLeft } = useSelector(
-    (state) => state
-  );
-  let { left, right } = matchup;
+	const dispatch = useDispatch();
+	const { displayQuizResults, quizMode, winsDisplay, lockLeft } = useSelector(
+		(state) => state
+	);
+	const [pieChartDisplay, setPieChartDisplay] = useState(winsDisplay);
 
-  return (
-    <div className="matchup-container">
-      <div className="top-row">
-        <LabeledCharacterPortrait
-          lockSwitch
-          side={"left"}
-          onClick={() => {
-            dispatch({ type: "toggleLockLeft" });
-          }}
-        />
-        <div className="matchup-container-center">
-          <MatchupRecordDisplay
-            leftWins={winsDisplay[0]}
-            rightWins={winsDisplay[1]}
-          />
-          <div className="matchup-graphs">
-            <div className="pie-chart-container">
-              <PieChartComponent />
-            </div>
-            {quizMode && <QuizModeSlider  />}
-          </div>
-        </div>
-        <LabeledCharacterPortrait side={"right"} />
-      </div>
-      <div class="bottom-row">
-        <MatchupNavigator lockLeft={lockLeft} />
-      </div>
-    </div>
-  );
+	useEffect(()=>{
+		if (displayQuizResults) {
+			return;
+		}
+			setPieChartDisplay([winsDisplay[0], winsDisplay[1]]);
+	}, [winsDisplay, displayQuizResults])
+
+	return (
+		<div className="matchup-container">
+			<div className="top-row">
+				<LabeledCharacterPortrait
+					lockSwitch
+					side={"left"}
+					onClick={() => {
+						dispatch({ type: "toggleLockLeft" });
+					}}
+				/>
+				<div className="matchup-container-center">
+					<MatchupRecordDisplay
+						leftWins={winsDisplay[0]}
+						rightWins={winsDisplay[1]}
+					/>
+					<div className="matchup-graphs">
+						<div className="pie-chart-container">
+							<PieChartComponent pieChartDisplay={pieChartDisplay} />
+						</div>
+						{quizMode && <QuizModeSlider />}
+					</div>
+				</div>
+				<LabeledCharacterPortrait side={"right"} />
+			</div>
+			<div class="bottom-row">
+				<MatchupNavigator lockLeft={lockLeft} />
+			</div>
+		</div>
+	);
 };
 
 export default MatchupContainer;

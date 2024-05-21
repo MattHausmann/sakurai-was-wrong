@@ -25,20 +25,21 @@ function NumberInput(props) {
 						color: props.color || "text.primary",
 						backgroundColor: "rgba(0.0, 0.0, 0.0, 0.1)",
 						borderRadius: 1,
+						height: "2.2em",
 					},
 					"& .MuiOutlinedInput-root": {
 						"& fieldset": {
-							borderColor: "primary.main",
+							// borderColor: "primary.main",
 						},
 						"&:hover fieldset": {
 							borderColor: "primary.dark",
 						},
 						"&.Mui-focused fieldset": {
-							borderColor: "primary.light",
+							// borderColor: "primary.light",
 						},
 						"& .MuiInputBase-input": {
 							fontWeight: "300",
-							fontSize: "3.5em",
+							fontSize: "2em",
 							textAlign: "right",
 						},
 					},

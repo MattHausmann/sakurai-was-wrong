@@ -50,21 +50,21 @@ const mutateStateFromNav = (prevState, newMatchup) => {
 		winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
 	};
 };
-const mutateStateFromQuiz = (prevState, newMatchup) => {
-	return {
-		...prevState,
-		matchup: newMatchup,
-		seenMatchups: {
-			...prevState.seenMatchups,
-			[seenMatchupStringify(newMatchup)]: true,
-		},
-		scoreDisplay: [
-			...prevState.scoreDisplay,
-			{ matchup: prevState.matchup, guess: prevState.winsDisplay },
-		],
-		winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
-	};
-};
+// const mutateStateFromQuiz = (prevState, newMatchup) => {
+// 	return {
+// 		...prevState,
+// 		matchup: newMatchup,
+// 		seenMatchups: {
+// 			...prevState.seenMatchups,
+// 			[seenMatchupStringify(newMatchup)]: true,
+// 		},
+// 		scoreDisplay: [
+// 			...prevState.scoreDisplay,
+// 			{ matchup: prevState.matchup, guess: prevState.winsDisplay },
+// 		],
+// 		winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
+// 	};
+// };
 
 let firstMatchup = randomMatchup(initialState);
 initialState = mutateStateFromNav(initialState, firstMatchup);
@@ -119,6 +119,7 @@ const reducer = (prevState = initialState, action) => {
 					{ matchup: prevState.matchup, guess: prevState.winsDisplay, actual },
 				],
 				displayQuizResults: true,
+				winsDisplay: newWinsDisplay(false, prevState.matchup),
 			};
 		}
 		case "resetQuizSubmitDisplay":
