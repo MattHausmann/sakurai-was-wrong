@@ -19,20 +19,6 @@ let initialState = {
 	lockLeft: false,
 };
 
-// temp val for testing
-initialState.quizResults = [
-	{
-		matchup: { videogameId: 0, left: "mario", right: "luigi" },
-		guess: [50, 50],
-		actual: [123, 456],
-	},
-	{
-		matchup: { videogameId: 0, left: "wario", right: "waluigi" },
-		guess: [20, 80],
-		actual: [654, 987],
-	},
-];
-
 const seenMatchupStringify = (newMatchup) => {
 	return [[newMatchup.left, newMatchup.right].sort().join("")];
 };
