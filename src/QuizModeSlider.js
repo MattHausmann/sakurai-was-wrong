@@ -24,65 +24,65 @@ const MatchupSlider = ({ winsDisplay }) => {
 	  setSliderValue(newSliderValue);
 	};
 
-  return (
-    <div className="matchup-slider">
-      <>
-        <div>
-          <input
-            id="slider-input"
-            type="range"
-            min="0"
-            max={leftWins + rightWins}
-            value={sliderValue}
-            step="1"
-            onChange={(e) => {
-              let l = parseInt(e.target.value, 10);
-              let r = leftWins + rightWins - l;
-              dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
-            }}
-          />
-        </div>
-      </>
-      <div className="percentContainer">
-        <>
-          <input
-            type="number"
-            value={sliderValue}
-            onChange={(e) => {
-              let l = parseInt(e.target.value, 10);
-              let r = leftWins + rightWins - l;
-              dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
-            }}
-            className="slider-num-input win-text-color"
-          />
-          <h2>:</h2>
-          <input
-            type="number"
-            value={rightWins}
-            onChange={(e) => {
-              let r = parseInt(e.target.value, 10);
-              let l = leftWins + rightWins - r;
-              dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
-            }}
-            className="slider-num-input lose-text-color"
-          />
-        </>
-      </div>
-      <div className="submit-button">
-        <button
-          type="button"
-          onClick={(e) => {
-            dispatch({ type: "setQuizSubmitAnimation", val: true });
-            setTimeout(() => {
-              dispatch({ type: "setQuizSubmitAnimation", val: false });
-            }, 5000);
-          }}
-        >
-          submit
-        </button>
-      </div>
-    </div>
-  );
+	return (
+	  <div className="matchup-slider">
+	    <>
+	      <div>
+	        <input
+	          id="slider-input"
+	          type="range"
+	          min="0"
+	          max={leftWins + rightWins}
+	          value={sliderValue}
+	          step="1"
+	          onChange={(e) => {
+	            let l = parseInt(e.target.value, 10);
+	            let r = leftWins + rightWins - l;
+	            dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
+	          }}
+	        />
+	      </div>
+	    </>
+	    <div className="percentContainer">
+	      <>
+	        <input
+	          type="number"
+	          value={sliderValue}
+	          onChange={(e) => {
+	            let l = parseInt(e.target.value, 10);
+	            let r = leftWins + rightWins - l;
+	            dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
+	          }}
+	          className="slider-num-input win-text-color"
+	        />
+	        <h2>:</h2>
+	        <input
+	          type="number"
+	          value={rightWins}
+	          onChange={(e) => {
+	            let r = parseInt(e.target.value, 10);
+	            let l = leftWins + rightWins - r;
+	            dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
+	          }}
+	          className="slider-num-input lose-text-color"
+	        />
+	      </>
+	    </div>
+	    <div className="submit-button">
+	      <button
+	        type="button"
+	        onClick={(e) => {
+	          dispatch({ type: "submitScore" });
+	          setTimeout(() => {
+	            dispatch({ type: "resetQuizSubmitDisplay" });
+	          }, 5000);
+	        }}
+	      >
+	        submit
+	      </button>
+	    </div>
+	  </div>
+	);
 };
 
 export default MatchupSlider;

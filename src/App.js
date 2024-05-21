@@ -24,7 +24,6 @@ const App = () => {
 		setVideogameId(gameId);
 	};
 
-        <ScoreDisplay score={100} />
 	// Other logic for handling character display and matchup
 	return (
 		<div className="app-container">
@@ -43,6 +42,7 @@ const App = () => {
 				<MatchupContainer videogameId={videogameId} quizMode={quizMode} />
 			</div>
 			<div className="right-column">
+				<ScoreDisplay />
 			</div>
 		</div>
 	);

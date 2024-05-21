@@ -11,11 +11,26 @@ let initialState = {
 	orderBy: "Left Win %",
 	quizMode: false,
 	quizResults: [],
+	scoreDisplay: [],
 	selectedGames: [],
 	seenMatchups: {},
 	winsDisplay: [0, 0],
 	lockLeft: false,
 };
+
+// temp val for testing
+initialState.quizResults = [
+	{
+		matchup: { videogameId: 0, left: "mario", right: "luigi" },
+		guess: [50, 50],
+		actual: [123, 456],
+	},
+	{
+		matchup: { videogameId: 0, left: "wario", right: "waluigi" },
+		guess: [20, 80],
+		actual: [654, 987],
+	},
+];
 
 const seenMatchupStringify = (newMatchup) => {
 	return [[newMatchup.left, newMatchup.right].sort().join("")];
@@ -35,16 +50,32 @@ const newWinsDisplay = (quizMode, matchup) => {
 	}
 };
 
+// this is distinct from mutating due to a quiz guess
 const mutateStateFromNav = (prevState, newMatchup) => {
-  return {
-    ...prevState,
-    matchup: newMatchup,
-    seenMatchups: {
-      ...prevState.seenMatchups,
-      [seenMatchupStringify(newMatchup)]: true,
-    },
-    winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
-  };
+	return {
+		...prevState,
+		matchup: newMatchup,
+		seenMatchups: {
+			...prevState.seenMatchups,
+			[seenMatchupStringify(newMatchup)]: true,
+		},
+		winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
+	};
+};
+const mutateStateFromQuiz = (prevState, newMatchup) => {
+	return {
+		...prevState,
+		matchup: newMatchup,
+		seenMatchups: {
+			...prevState.seenMatchups,
+			[seenMatchupStringify(newMatchup)]: true,
+		},
+		scoreDisplay: [
+			...prevState.scoreDisplay,
+			{ matchup: prevState.matchup, guess: prevState.winsDisplay },
+		],
+		winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
+	};
 };
 
 let firstMatchup = randomMatchup(initialState);
@@ -70,25 +101,40 @@ const reducer = (prevState = initialState, action) => {
 				lockLeft: !prevState.lockLeft,
 			};
 
-    // quiz muts
-    case "pushQuizResult":
-      return {
-        ...prevState,
-        quizResults: [...prevState.quizResults, action.result],
-      };
+		// quiz muts
+		case "pushQuizResult":
+			return {
+				...prevState,
+				quizResults: [...prevState.quizResults, action.result],
+			};
 
-    case "toggleQuizMode":
-      return {
-        ...prevState,
-        quizMode: action.val,
-        winsDisplay: newWinsDisplay(action.val, prevState.matchup),
-      };
+		case "toggleQuizMode":
+			return {
+				...prevState,
+				quizMode: action.val,
+				winsDisplay: newWinsDisplay(action.val, prevState.matchup),
+			};
 
-    case "setQuizSubmitAnimation":
-      return {
-        ...prevState,
-        displayQuizResults: action.val,
-      };
+		case "submitScore": {
+			let actual = [
+				wins[prevState.matchup.videogameId][prevState.matchup.left][
+					prevState.matchup.right
+				],
+				wins[prevState.matchup.videogameId][prevState.matchup.right][
+					prevState.matchup.left
+				],
+			];
+			return {
+				...prevState,
+				quizResults: [
+					...prevState.quizResults,
+					{ matchup: prevState.matchup, guess: prevState.winsDisplay, actual },
+				],
+				displayQuizResults: true,
+			};
+		}
+		case "resetQuizSubmitDisplay":
+			return { ...prevState, displayQuizResults: false };
 
 		default:
 			return prevState;
