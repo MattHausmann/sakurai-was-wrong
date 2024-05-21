@@ -36,7 +36,7 @@ const MatchupContainer = () => {
             <div className="pie-chart-container">
               <PieChartComponent />
             </div>
-            {quizMode && <QuizModeSlider winsDisplay={winsDisplay} />}
+            {quizMode && <QuizModeSlider  />}
           </div>
         </div>
         <LabeledCharacterPortrait side={"right"} />

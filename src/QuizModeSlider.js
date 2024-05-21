@@ -1,16 +1,17 @@
 // MatchupSlider.js
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import NumberInput from "./NumberInput";
 import "./QuizModeSlider.css";
 
-import {colors} from "./colors";
+import { colors } from "./colors";
 
 const isValid = (num) => {
 	return num.length > 0 && !isNaN(num) && !num.startsWith("-");
 };
 
-const MatchupSlider = ({ winsDisplay }) => {
+const MatchupSlider = () => {
+	const winsDisplay = useSelector((state) => state.winsDisplay);
 	const dispatch = useDispatch();
 
 	const [sliderValue, setSliderValue] = useState(winsDisplay[0]);
