@@ -247,12 +247,6 @@ export function prevMatchup(args) {
 	if(lockLeft) {
 		let list = matchupsPerCharacter[matchup.left];
 		let comparator = compareByLeftWinPercent;
-		console.log(matchup);
-		console.log(list[list.length-1]);
-		if(matchup == list[list.length - 1]) {
-			console.log(matchup,binarySearchListForObjectWithComparator(list, matchup, comparator));
-
-		}
 		let idx = binarySearchListForObjectWithComparator(list, matchup, comparator);
 		while(idx >= 0) {
 			let newMatchup = list[idx];
@@ -264,9 +258,7 @@ export function prevMatchup(args) {
 	} else {
 		let list = winnerWinPercentList;
 		let comparator = compareByWinnerWinPercent;
-		console.log('about to search for object in list');
 		let idx = binarySearchListForObjectWithComparator(list, matchup, comparator);
-		console.log(list, idx, list[idx]);
 		while(idx >= 0) {
 			let newMatchup = list[idx];
 			if(matchup != newMatchup && getTotalGames(newMatchup) >= minimumGames) {
@@ -288,7 +280,6 @@ export function randomMatchup(state) {
 		list = matchupsPerCharacter[state.matchup.left];
 		let newIndex = Math.floor(Math.random() * list.length);
 		while(list[newIndex] == state.matchup || !enoughGames) {
-			console.log(enoughGames, state.minimumGames);
 			newIndex = Math.floor(Math.random() * list.length);
 			enoughGames = getTotalGames(list[newIndex]) >= state.minimumGames;
 		}
@@ -300,13 +291,10 @@ export function randomMatchup(state) {
 	return totalGamesList[newIndex];
 }
 function leftButtonsVisible(args) {
-	console.log('checking if left buttons are visible');
-	console.log(args.matchup);
 	return !!prevMatchup(args);
 }
 
 function rightButtonsVisible(args) {
-	console.log(args);
 	return !!nextMatchup(args);
 }
 
@@ -354,10 +342,12 @@ for (let videogameId of [1, 1386]) {
 	}
 }
 
+let seenMatchups = JSON.parse(localStorage.getItem('seenMatchups')) ?? {};
+let guessedMatchups = localStorage.getItem('guessedMatchups') ?? {};
+let bestScorePerMatchup = localStorage.getItem('bestScorePerMatchup') ?? {};
 
 let totalGamesList = [...oneSidedMatchupListA].sort(compareByTotalGames);
 let leftPercentList = [...twoSidedMatchupList].sort(compareByLeftWinPercent);
-
 let winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinnerWinPercent);
 
 
@@ -370,16 +360,29 @@ export function MatchupNavigator() {
 	let {matchup, minimumGames, lockLeft}=useSelector((state)=>state);
 
 	let args = {matchup, minimumGames, lockLeft};
-	console.log('making matchupnavigator', matchup, minimumGames, lockLeft);
+	let videogameId = matchup.videogameId;
+
 	useEffect(() => {
-		console.log('lockLeft is now', lockLeft, matchup);
 		if(!lockLeft) {
 			dispatch({type:"setMatchup", matchup:matchup});
 		}
 	}, [dispatch, matchup, lockLeft]);
-	console.log('past useEffect');
+	
+	if(!(matchup.videogameId in seenMatchups)) {
+		seenMatchups[videogameId] = {};
+	}
+	let alphabeticallyFirst = matchup.left.localeCompare(matchup.right) < 0? matchup.left:matchup.right;
+	let alphabeticallyLast = alphabeticallyFirst == matchup.left?matchup.right:matchup.left;
+	
+	if(!(alphabeticallyFirst in seenMatchups[videogameId])) {
+		seenMatchups[videogameId][alphabeticallyFirst] = [];
+	}
+	if(!(seenMatchups[videogameId][alphabeticallyFirst].includes(alphabeticallyLast))) {
+		seenMatchups[videogameId][alphabeticallyFirst].push(alphabeticallyLast);
+	}
 
-
+	localStorage.setItem('seenMatchups', JSON.stringify(seenMatchups));
+	
 	return (
 		<div class="matchup-navigator">
 			<button
@@ -399,7 +402,6 @@ export function MatchupNavigator() {
 
 			<button onClick={() => {
 				let newMatchup = randomMatchup(args);
-				console.log(newMatchup);
 				dispatch({ type: "setMatchup", matchup:newMatchup});
 			}}>
 				New
