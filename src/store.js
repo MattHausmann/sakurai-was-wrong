@@ -5,6 +5,7 @@ import wins from "./wins.json";
 let initialState = {
 	bestScores: {},
 	currentIndex: 1,
+	seenMatchups: JSON.parse(localStorage.getItem('seenMatchups')) ?? {},
 	guessedMatchups: {},
 	matchup: {},
 	minimumGames: 1,
@@ -14,14 +15,52 @@ let initialState = {
 	score: 0,
 	scoreDisplay: [],
 	selectedGames: [],
-	seenMatchups: {},
 	winsDisplay: [0, 0],
 	lockLeft: false,
 };
 
-const seenMatchupStringify = (newMatchup) => {
-	return [[newMatchup.left, newMatchup.right].sort().join("")];
-};
+const mutateSeenMatchups = (seenMatchups, matchup) => {
+	let {videogameId, left, right} = matchup;
+	let alphabeticallyFirst = left.localeCompare(right) < 0 ? left:right;
+	let alphabeticallyLast = alphabeticallyFirst == left?right:left;
+	
+	let newMatchups = {...seenMatchups};
+	
+	if(!(videogameId in newMatchups)) {
+		newMatchups[videogameId] = {}
+	}
+	if(!(alphabeticallyFirst in newMatchups[videogameId])) {
+		newMatchups[videogameId][alphabeticallyFirst] = [];
+	}
+	if(!(newMatchups[videogameId][alphabeticallyFirst].includes(alphabeticallyLast))) {
+		newMatchups[videogameId][alphabeticallyFirst].push(alphabeticallyLast);
+	}
+	console.log(newMatchups);
+	localStorage.setItem('seenMatchups', JSON.stringify(newMatchups));
+	return newMatchups;
+}
+
+const mutateGuessedMatchups = (guessedMatchups, matchup, guess) => {
+	let {videogameId, left, right} = matchup;
+	let alphabeticallyFirst = left.localeCompare(right) < 0 ? left:right;
+	let alphabeticallyLast = alphabeticallyFirst == left?right:left;
+	
+	let newMatchups = {...guessedMatchups};
+
+	if(!(videogameId in newMatchups)) {
+		newMatchups[videogameId] = {}
+	}
+	if(!(alphabeticallyFirst in newMatchups[videogameId])) {
+		newMatchups[videogameId][alphabeticallyFirst] = {};
+	}
+	
+	newMatchups[videogameId][alphabeticallyFirst][alphabeticallyLast] = guess;
+
+	console.log(newMatchups);
+	localStorage.setItem('guessedMatchups', JSON.stringify(newMatchups));
+	return newMatchups;
+
+}
 
 const newWinsDisplay = (quizMode, matchup) => {
 	if (quizMode) {
@@ -40,14 +79,12 @@ const newWinsDisplay = (quizMode, matchup) => {
 
 // this is distinct from mutating due to a quiz guess
 const mutateStateFromNav = (prevState, newMatchup) => {
+	
 	console.log(prevState.matchup, newMatchup);
 	return {
 		...prevState,
 		matchup: newMatchup,
-		seenMatchups: {
-			...prevState.seenMatchups,
-			[seenMatchupStringify(newMatchup)]: true,
-		},
+		seenMatchups: mutateSeenMatchups(prevState.seenMatchups, newMatchup),
 		winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
 	};
 };

@@ -342,7 +342,6 @@ for (let videogameId of [1, 1386]) {
 	}
 }
 
-let seenMatchups = JSON.parse(localStorage.getItem('seenMatchups')) ?? {};
 let guessedMatchups = localStorage.getItem('guessedMatchups') ?? {};
 let bestScorePerMatchup = localStorage.getItem('bestScorePerMatchup') ?? {};
 
@@ -368,20 +367,7 @@ export function MatchupNavigator() {
 		}
 	}, [dispatch, matchup, lockLeft]);
 	
-	if(!(matchup.videogameId in seenMatchups)) {
-		seenMatchups[videogameId] = {};
-	}
-	let alphabeticallyFirst = matchup.left.localeCompare(matchup.right) < 0? matchup.left:matchup.right;
-	let alphabeticallyLast = alphabeticallyFirst == matchup.left?matchup.right:matchup.left;
-	
-	if(!(alphabeticallyFirst in seenMatchups[videogameId])) {
-		seenMatchups[videogameId][alphabeticallyFirst] = [];
-	}
-	if(!(seenMatchups[videogameId][alphabeticallyFirst].includes(alphabeticallyLast))) {
-		seenMatchups[videogameId][alphabeticallyFirst].push(alphabeticallyLast);
-	}
 
-	localStorage.setItem('seenMatchups', JSON.stringify(seenMatchups));
 	
 	return (
 		<div class="matchup-navigator">
