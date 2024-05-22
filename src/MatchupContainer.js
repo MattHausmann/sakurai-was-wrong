@@ -1,5 +1,5 @@
 // MatchupContainer.js
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import LabeledCharacterPortrait from "./CharacterPortrait";
@@ -17,12 +17,12 @@ const MatchupContainer = () => {
 	);
 	const [pieChartDisplay, setPieChartDisplay] = useState(winsDisplay);
 
-	useEffect(()=>{
+	useEffect(() => {
 		if (displayQuizResults) {
 			return;
 		}
-			setPieChartDisplay([winsDisplay[0], winsDisplay[1]]);
-	}, [winsDisplay, displayQuizResults])
+		setPieChartDisplay([winsDisplay[0], winsDisplay[1]]);
+	}, [winsDisplay, displayQuizResults]);
 
 	return (
 		<div className="matchup-container">
@@ -40,10 +40,13 @@ const MatchupContainer = () => {
 						rightWins={winsDisplay[1]}
 					/>
 					<div className="matchup-graphs">
-						<div className="pie-chart-container">
-							<PieChartComponent pieChartDisplay={pieChartDisplay} />
-						</div>
-						{quizMode && <QuizModeSlider />}
+						{quizMode ? (
+							<QuizModeSlider />
+						) : (
+							<div className="pie-chart-container">
+								<PieChartComponent pieChartDisplay={pieChartDisplay} />
+							</div>
+						)}
 					</div>
 				</div>
 				<LabeledCharacterPortrait side={"right"} />
