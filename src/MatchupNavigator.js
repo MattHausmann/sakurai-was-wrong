@@ -206,9 +206,9 @@ export function lastMatchup(args) {
 
 function binarySearchListForObjectWithComparator(list, matchup, comparator) {
 	let idx = 0;
-	
-	while(idx < list.length && !(list[idx].left == matchup.left && 
-								list[idx].right == matchup.right && 
+
+	while(idx < list.length && !(list[idx].left == matchup.left &&
+								list[idx].right == matchup.right &&
 								list[idx].videogameId == matchup.videogameId)) {
 		idx+=1;
 	}
@@ -368,8 +368,7 @@ for(let left in matchupsPerCharacter) {
 export function MatchupNavigator() {
 	const dispatch = useDispatch();
 	let {matchup, minimumGames, lockLeft}=useSelector((state)=>state);
-	
-	
+
 	let args = {matchup, minimumGames, lockLeft};
 	console.log('making matchupnavigator', matchup, minimumGames, lockLeft);
 	useEffect(() => {
@@ -377,21 +376,22 @@ export function MatchupNavigator() {
 		if(!lockLeft) {
 			dispatch({type:"setMatchup", matchup:matchup});
 		}
-	}, [lockLeft]);
+	}, [dispatch, matchup, lockLeft]);
 	console.log('past useEffect');
 
-	
+
 	return (
 		<div class="matchup-navigator">
 			<button
+				disabled={!firstMatchup(args)}
 				onClick={() => {dispatch({ type: "setMatchup", matchup:firstMatchup(args)});}}
 				style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 			>
 				First
 			</button>
 			<button
-				disabled={!prev(args)}
-				onClick={() => {dispatch({ type: "setMatchup", matchup:prev(args)});}}
+				disabled={!prevMatchup(args)}
+				onClick={() => {dispatch({ type: "setMatchup", matchup:prevMatchup(args)});}}
 				style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 			>
 				Previous
@@ -405,15 +405,15 @@ export function MatchupNavigator() {
 				New
 			</button>
 			<button
-				disabled={!next(args)}
-				onClick={() => {dispatch({ type: "setMatchup", matchup:next(args)});}}
+				disabled={!nextMatchup(args)}
+				onClick={() => {dispatch({ type: "setMatchup", matchup:nextMatchup(args)});}}
 				style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 			>
 				Next
 			</button>
 			<button
-				disabled={!last(args)}
-				onClick={() => {dispatch({ type: "setMatchup", matchup:last(args)});}}
+				disabled={!lastMatchup(args)}
+				onClick={() => {dispatch({ type: "setMatchup", matchup:lastMatchup(args)});}}
 				style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 			>
 				Last
