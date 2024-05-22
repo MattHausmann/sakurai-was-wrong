@@ -11,7 +11,7 @@ const isValid = (num) => {
 };
 
 const MatchupSlider = () => {
-	const winsDisplay = useSelector((state) => state.winsDisplay);
+	const { displayQuizResults, winsDisplay } = useSelector((state) => state);
 	const dispatch = useDispatch();
 
 	const [sliderValue, setSliderValue] = useState(winsDisplay[0]);
@@ -87,17 +87,23 @@ const MatchupSlider = () => {
 				</>
 			</div>
 			<div className="submit-button">
-				<button
-					type="button"
-					onClick={(e) => {
-						dispatch({ type: "submitGuess" });
-						setTimeout(() => {
-							dispatch({ type: "resetQuizSubmitDisplay" });
-						}, 5000);
-					}}
-				>
-					submit
-				</button>
+				{displayQuizResults ? (
+					<button
+						type="button"
+						onClick={(_e) => dispatch({ type: "resetQuizSubmitDisplay" })}
+					>
+						New
+					</button>
+				) : (
+					<button
+						type="button"
+						onClick={(_e) => {
+							dispatch({ type: "submitGuess" });
+						}}
+					>
+						submit
+					</button>
+				)}
 			</div>
 		</>
 	);

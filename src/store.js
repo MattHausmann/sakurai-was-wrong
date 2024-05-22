@@ -122,8 +122,15 @@ const reducer = (prevState = initialState, action) => {
 				winsDisplay: newWinsDisplay(false, prevState.matchup),
 			};
 		}
-		case "resetQuizSubmitDisplay":
-			return { ...prevState, displayQuizResults: false };
+		case "resetQuizSubmitDisplay": {
+			let newMatchup = randomMatchup(prevState);
+			return {
+				...prevState,
+				displayQuizResults: false,
+				matchup: newMatchup,
+				winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
+			};
+		}
 
 		default:
 			return prevState;
