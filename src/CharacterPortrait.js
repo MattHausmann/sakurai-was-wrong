@@ -2,12 +2,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
+
 const LabeledCharacterPortrait = ({ side, lockSwitch, onClick }) => {
 	let { matchup, lockLeft } = useSelector((state) => state);
-
-	let [loading, setLoading] = useState(true);
-	let [baseImagePath, setBaseImagePath] = useState("");
 	let [name, setName] = useState("");
+	let [baseImagePath, setBaseImagePath] = useState("");
+	let [loading, setLoading] = useState(true);
 	let [resolvedName, setResolvedName] = useState("");
 
 	let fromNameToResolvedName = useMemo(() => {
@@ -31,11 +31,9 @@ const LabeledCharacterPortrait = ({ side, lockSwitch, onClick }) => {
 			newName = fromNameToResolvedName[newName];
 		}
 
-		if (resolvedName !== newName) {
-			setResolvedName(newName);
-			setLoading(true);
-			setBaseImagePath(`./characters/${matchup.videogameId}/${newName}/image.png`);
-		}
+		setResolvedName(newName);
+		setLoading(true);
+		setBaseImagePath(`./characters/${matchup.videogameId}/${newName}/image.png`);
 	}, [fromNameToResolvedName, matchup, side]);
 
 	let dispatch = useDispatch();

@@ -1,5 +1,5 @@
 import { createStore } from "redux";
-import { randomMatchup } from "./MatchupNavigator";
+import { randomMatchup, unreverse } from "./MatchupNavigator";
 import wins from "./wins.json";
 
 let initialState = {
@@ -40,6 +40,7 @@ const newWinsDisplay = (quizMode, matchup) => {
 
 // this is distinct from mutating due to a quiz guess
 const mutateStateFromNav = (prevState, newMatchup) => {
+	console.log(prevState.matchup, newMatchup);
 	return {
 		...prevState,
 		matchup: newMatchup,
@@ -67,6 +68,7 @@ const mutateStateFromNav = (prevState, newMatchup) => {
 // };
 
 let firstMatchup = randomMatchup(initialState);
+let matchupIndex = 
 initialState = mutateStateFromNav(initialState, firstMatchup);
 
 const reducer = (prevState = initialState, action) => {
@@ -84,9 +86,11 @@ const reducer = (prevState = initialState, action) => {
 		case "setMatchup":
 			return mutateStateFromNav(prevState, action.matchup);
 		case "toggleLockLeft":
+		console.log(prevState.matchup, unreverse(prevState.matchup));
 			return {
 				...prevState,
 				lockLeft: !prevState.lockLeft,
+				matchup:unreverse(prevState.matchup),
 			};
 
 		// quiz muts
