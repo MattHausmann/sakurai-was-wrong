@@ -4,11 +4,90 @@
 	flex: 1;
 }
 
-.percentContainer {
+.num-input-container {
 	justify-content: center;
 	display: flex;
 }
 
 .submit-button {
 	margin: 10px;
+}
+
+/* Basic styling for the container */
+.matchup-slider {
+	width: 300px;
+	margin: 50px auto;
+	text-align: center;
+}
+
+.slider {
+	-webkit-appearance: none; /* Override default styles */
+	appearance: none;
+	width: 100%; /* Full-width */
+	height: 8px; /* Height of the track */
+	background: linear-gradient(to right, #87b38d 50%, #cc76a1 50%);
+	border-radius: 25px;
+	outline: none; /* Remove outline */
+	opacity: 0.8; /* Track opacity */
+	/* transition: opacity 0.2s; /1* Transition for hover effect *1/ */
+}
+
+/* Hover effect */
+.slider:hover {
+	opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+	-webkit-appearance: none; /* Override default styles */
+	appearance: none;
+	width: 15px;
+	height: 10px;
+	background: #333;
+	border-radius: 2px;
+	cursor: pointer;
+	position: relative;
+	z-index: 1;
+}
+
+.slider::-moz-range-thumb {
+	width: 15px;
+	height: 10px;
+	background: #333;
+	border-radius: 2px;
+	cursor: pointer;
+	position: relative;
+	z-index: 1;
+	transition: left 1.0s ease-in;
+}
+
+.slider::-webkit-slider-runnable-track {
+	width: 100%;
+	height: 8px;
+	cursor: pointer;
+	background: transparent;
+	border-radius: 25px;
+}
+.slider::-moz-range-track {
+	width: 100%;
+	height: 8px;
+	cursor: pointer;
+	background: transparent;
+	border-radius: 25px;
+}
+
+/* Styling for different browsers to ensure consistency */
+.slider::-moz-range-progress {
+	background-color: #87b38d;
+	height: 8px;
+	border-radius: 25px;
+}
+
+.slider::-ms-fill-lower {
+	background-color: #87b38d;
+	border-radius: 25px;
+}
+
+.slider::-ms-fill-upper {
+	background-color: #87b38d;
+	border-radius: 25px;
 }

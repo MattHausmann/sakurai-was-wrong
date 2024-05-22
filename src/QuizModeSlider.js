@@ -24,6 +24,13 @@ const MatchupSlider = () => {
 		setSliderValue(winsDisplay[0]);
 	}, [winsDisplay]);
 
+	useEffect(() => {
+		const percentage = (leftWins / (leftWins + rightWins)) * 100;
+		document.querySelector(
+			".slider"
+		).style.background = `linear-gradient(to right, #87b38d ${percentage}%, #cc76a1 ${percentage}%)`;
+	}, [leftWins, rightWins]);
+
 	const handleInputChange = (e, isLeft) => {
 		if (isValid(e.target.value)) {
 			let l;
@@ -40,25 +47,23 @@ const MatchupSlider = () => {
 	};
 
 	return (
-		<div className="matchup-slider">
-			<>
-				<div>
-					<input
-						id="slider-input"
-						type="range"
-						min="0"
-						max={leftWins + rightWins}
-						value={sliderValue}
-						step="1"
-						onChange={(e) => {
-							let l = parseInt(e.target.value, 10);
-							let r = leftWins + rightWins - l;
-							dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
-						}}
-					/>
-				</div>
-			</>
-			<div className="percentContainer">
+		<>
+			<div className="matchup-slider">
+				<input
+					className="slider"
+					type="range"
+					min="0"
+					max={leftWins + rightWins}
+					value={sliderValue}
+					step="1"
+					onChange={(e) => {
+						let l = parseInt(e.target.value, 10);
+						let r = leftWins + rightWins - l;
+						dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });
+					}}
+				/>
+			</div>
+			<div className="num-input-container">
 				<>
 					<NumberInput
 						label=""
@@ -94,7 +99,7 @@ const MatchupSlider = () => {
 					submit
 				</button>
 			</div>
-		</div>
+		</>
 	);
 };
 
