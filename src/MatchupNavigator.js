@@ -3,22 +3,22 @@ import { useSelector, useDispatch } from "react-redux";
 import wins from "./wins.json";
 
 const defaultCompareMatchups = (a, b) => {
-	//first, alphabetical order then reverse alphabetical order	
-	
+	//first, alphabetical order then reverse alphabetical order
+
 	let alphabeticalOrderA = a.left.localeCompare(a.right) < 0;
 	let alphabeticalOrderB = b.left.localeCompare(b.right) < 0;
-	
+
 	if(alphabeticalOrderB & !alphabeticalOrderA) {
 		return 1;
 	}
 	if(alphabeticalOrderA & !alphabeticalOrderB) {
 		return -1;
 	}
-	
-	
+
+
 	let leftCompare = a.left.localeCompare(b.left)
 	//if it's in alphabetical order
-	if(leftCompare < 0) {		
+	if(leftCompare < 0) {
 	}
 	if(!leftCompare) {
 		let rightCompare = a.right.localeCompare(b.right);
@@ -215,7 +215,7 @@ export function prev(args) {
 	let currentIndex = binarySearchListForObjectWithComparator(list, matchup, compareByLeftWinPercent);
 	let inc = -1;
 	if(!lockLeft && currentIndex > list.length/2) {
-		inc = 1;		
+		inc = 1;
 	}
 	let targetPrev = currentIndex;
 	let enoughGames = false;
@@ -236,7 +236,7 @@ export function next(args) {
 	let currentIndex = binarySearchListForObjectWithComparator(list, matchup, compareByLeftWinPercent);
 	let targetNext = currentIndex;
 	let enoughGames = false;
-	
+
 	let endIndex = lockLeft?list.length-1:Math.floor((list.length-1)/2);
 	while (targetNext < endIndex && !enoughGames) {
 		targetNext += 1;
@@ -252,13 +252,13 @@ export function next(args) {
 export function randomMatchup(state) {
 	let list = state.lockLeft?matchupsPerCharacter[state.matchup.left]:totalGamesList;
 	let enoughGames = false;
-	let newState = state.matchup;	
+	let newState = state.matchup;
 	if(state.lockLeft) {
 		list = matchupsPerCharacter[state.matchup.left];
 		let newIndex = Math.floor(Math.random() * list.length);
 		while(list[newIndex] == state.matchup || !enoughGames) {
 			console.log(enoughGames, state.minimumGames);
-			newIndex = Math.floor(Math.random() * list.length);			
+			newIndex = Math.floor(Math.random() * list.length);
 			enoughGames = getTotalGames(list[newIndex]) >= state.minimumGames;
 		}
 		return list[newIndex];
@@ -302,7 +302,7 @@ for (let videogameId of [1, 1386]) {
 		}
 
 		for (let right in wins[videogameId][left]) {
-			if(left != right) {
+			if(left !== right) {
 				let matchup = {videogameId, left, right};
 				twoSidedMatchupList.push(matchup);
 				matchupsPerCharacter[left].push(matchup);
@@ -327,26 +327,28 @@ for(let left in matchupsPerCharacter) {
 export function MatchupNavigator() {
 	const dispatch = useDispatch();
 	let {matchup, orderBy, minimumGames, lockLeft}=useSelector((state)=>state);
-	
+
 	let args = {matchup, orderBy, minimumGames, lockLeft};
 	console.log('making matchupnavigator');
 	useEffect(() => {
 		if(!lockLeft) {
 			dispatch({type:"setMatchup", matchup:unreverse(matchup)});
 		}
-	}, [lockLeft]);
+	}, [dispatch, lockLeft, matchup]);
 
-	
+
 
 	return (
 		<div class="matchup-navigator">
 			<button
+				disabled={!first(args)}
 				onClick={() => {dispatch({ type: "setMatchup", matchup:first(args)});}}
 				style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 			>
 				First
 			</button>
 			<button
+				disabled={!prev(args)}
 				onClick={() => {dispatch({ type: "setMatchup", matchup:prev(args)});}}
 				style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 			>
@@ -361,12 +363,14 @@ export function MatchupNavigator() {
 				New
 			</button>
 			<button
+				disabled={!next(args)}
 				onClick={() => {dispatch({ type: "setMatchup", matchup:next(args)});}}
 				style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 			>
 				Next
 			</button>
 			<button
+				disabled={!last(args)}
 				onClick={() => {dispatch({ type: "setMatchup", matchup:last(args)});}}
 				style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 			>
