@@ -3,8 +3,18 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./ScoreDisplay.css";
 
+const scoreGuess = (quizResults) => {
+	let {matchup, guess, actual} = quizResults;
+	
+}
+
+
+
 const ScoreDisplay = () => {
-	const { score, quizResults } = useSelector((state) => state);
+	const { score, seenMatchups, guessedMatchups, quizResults } = useSelector((state) => state);
+	
+	console.log(guessedMatchups, quizResults);
+	
 	const [scoreImpact, setScoreImpact] = useState([]);
 
 	useEffect(() => {

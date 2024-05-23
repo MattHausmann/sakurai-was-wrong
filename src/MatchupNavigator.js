@@ -258,7 +258,7 @@ export function prevMatchup(args) {
 	} else {
 		let list = winnerWinPercentList;
 		let comparator = compareByWinnerWinPercent;
-		let idx = binarySearchListForObjectWithComparator(list, matchup, comparator);
+		let idx = binarySearchListForObjectWithComparator(list, unreverse(matchup), comparator);
 		while(idx >= 0) {
 			let newMatchup = list[idx];
 			if(matchup != newMatchup && getTotalGames(newMatchup) >= minimumGames) {
@@ -284,6 +284,25 @@ export function randomMatchup(state) {
 			enoughGames = getTotalGames(list[newIndex]) >= state.minimumGames;
 		}
 		return list[newIndex];
+	}
+	if(state.quizMode) {
+		let looping = true;
+		let selected = {};
+
+		while(looping) {
+			let characters = Object.keys(matchupsPerCharacter);
+			console.log(characters);
+			let randomCharacter = characters[Math.floor(Math.random()*characters.length)];
+			console.log(randomCharacter);
+			let matchups = matchupsPerCharacter[randomCharacter];
+			console.log(matchups);
+			selected = matchups[Math.floor(Math.random()*matchups.length)];
+			console.log(selected);
+			if(getTotalGames(selected) >= state.minimumGames) {
+				looping = false;
+			}
+		}
+		return selected;
 	}
 	const matchup0 = firstMatchupAtOrAboveThreshold(state.minimumGames);
 	const index0 = binarySearchListForObjectWithComparator(list, matchup0, compareByTotalGames);

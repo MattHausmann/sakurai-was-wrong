@@ -6,9 +6,9 @@ let initialState = {
 	bestScores: {},
 	currentIndex: 1,
 	seenMatchups: JSON.parse(localStorage.getItem('seenMatchups')) ?? {},
-	guessedMatchups: {},
+	guessedMatchups: JSON.parse(localStorage.getItem('guessedMatchups')) ?? {},
 	matchup: {},
-	minimumGames: 1,
+	minimumGames: 1000,
 	orderBy: "Left Win %",
 	quizMode: false,
 	quizResults: [],
@@ -19,10 +19,15 @@ let initialState = {
 	lockLeft: false,
 };
 
-const mutateSeenMatchups = (seenMatchups, matchup) => {
-	let {videogameId, left, right} = matchup;
+function alphabetize(left, right) {
 	let alphabeticallyFirst = left.localeCompare(right) < 0 ? left:right;
 	let alphabeticallyLast = alphabeticallyFirst == left?right:left;
+	return [alphabeticallyFirst, alphabeticallyLast];
+}
+
+const mutateSeenMatchups = (seenMatchups, matchup) => {
+	let {videogameId, left, right} = matchup;
+	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
 	
 	let newMatchups = {...seenMatchups};
 	
@@ -40,10 +45,11 @@ const mutateSeenMatchups = (seenMatchups, matchup) => {
 	return newMatchups;
 }
 
+
+
 const mutateGuessedMatchups = (guessedMatchups, matchup, guess) => {
 	let {videogameId, left, right} = matchup;
-	let alphabeticallyFirst = left.localeCompare(right) < 0 ? left:right;
-	let alphabeticallyLast = alphabeticallyFirst == left?right:left;
+	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
 	
 	let newMatchups = {...guessedMatchups};
 
@@ -58,6 +64,7 @@ const mutateGuessedMatchups = (guessedMatchups, matchup, guess) => {
 
 	console.log(newMatchups);
 	localStorage.setItem('guessedMatchups', JSON.stringify(newMatchups));
+	console.log(newMatchups);
 	return newMatchups;
 
 }
@@ -105,7 +112,6 @@ const mutateStateFromNav = (prevState, newMatchup) => {
 // };
 
 let firstMatchup = randomMatchup(initialState);
-let matchupIndex = 
 initialState = mutateStateFromNav(initialState, firstMatchup);
 
 const reducer = (prevState = initialState, action) => {
@@ -138,10 +144,14 @@ const reducer = (prevState = initialState, action) => {
 			};
 
 		case "toggleQuizMode":
+			let newMatchup = action.val?randomMatchup(prevState):prevState.matchup;
 			return {
 				...prevState,
 				quizMode: action.val,
-				winsDisplay: newWinsDisplay(action.val, prevState.matchup),
+				winsDisplay: newWinsDisplay(action.val, newMatchup),
+				matchup:newMatchup,
+				displayQuizResults:false,
+				lockLeft:false,
 			};
 
 		case "submitGuess": {
@@ -153,12 +163,19 @@ const reducer = (prevState = initialState, action) => {
 					prevState.matchup.left
 				],
 			];
+			console.log(prevState.winsDisplay);
+			let[alphabeticallyFirst , alphabeticallyLast] = alphabetize(prevState.matchup.left, prevState.matchup.right);
+			let guess = alphabeticallyFirst == prevState.matchup.left?prevState.winsDisplay[0]:prevState.winsDisplay[1];
+			let newGuessedMatchups = mutateGuessedMatchups(prevState.guessedMatchups, prevState.matchup, guess);
+			localStorage.setItem("guessedMatchups", JSON.stringify(newGuessedMatchups));
 			return {
 				...prevState,
 				quizResults: [
 					...prevState.quizResults,
-					{ matchup: prevState.matchup, guess: prevState.winsDisplay, actual },
+					{ matchup: prevState.matchup, guess: prevState.winsDisplay, actual },					
 				],
+				seenMatchups:mutateSeenMatchups(prevState.seenMatchups, prevState.matchup),
+				guessedMatchups:newGuessedMatchups,
 				displayQuizResults: true,
 				winsDisplay: newWinsDisplay(false, prevState.matchup),
 			};

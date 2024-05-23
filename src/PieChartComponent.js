@@ -78,7 +78,7 @@ const PieChartComponent = ({ pieChartDisplay }) => {
 	return (
 		<div className="pie-chart-container">
 			<PieChart
-				slotProps={{ legend: { hidden: !displayQuizResults } }}
+				slotProps={{ legend: { hidden: true } }}
 				series={[
 					{
 						data,
