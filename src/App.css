@@ -89,3 +89,34 @@ body {
 .lose-text-color {
   color: #cc76a1;
 }
+
+.score-display {
+	position:relative;
+	width:100%;
+}
+
+/* Style for the score box container */
+.score-box {
+  position: relative;
+  width: 80%;
+  height: 40px;
+  border: 2px solid #333;
+  text-align: right;
+  font-family: Arial, sans-serif;
+  margin: 10px 20px 20px 20px;
+}
+
+/* Style for the "Score" label */
+.score-label {
+  position: absolute;
+  top: -10px;
+  left: 1%;
+  padding: 0 10px;
+  background-color:#dadaef;
+}
+
+/* Style for the score value */
+.score-value {
+  font-size: 24px;
+  line-height: 40px;
+}

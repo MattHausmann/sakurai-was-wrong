@@ -85,7 +85,7 @@ const compareByTotalGames = (a, b) => {
 	return gamesCompare ? gamesCompare : defaultCompareMatchups(a, b);
 };
 
-const compareByLeftWinPercent = (a, b) => {
+export const compareByLeftWinPercent = (a, b) => {
 	const[aLeftWins,aRightWins] = getWins(a);
 	const[bLeftWins,bRightWins] = getWins(b);
 	let leftWinPctDifference = aLeftWins * bRightWins - bLeftWins * aRightWins;
@@ -269,9 +269,6 @@ export function prevMatchup(args) {
 	}
 }
 
-
-
-
 export function randomMatchup(state) {
 	let list = state.lockLeft?matchupsPerCharacter[state.matchup.left]:totalGamesList;
 	let enoughGames = false;
@@ -333,45 +330,55 @@ function isReversed(matchup) {
 
 const oneSidedMatchupListA = [];
 const twoSidedMatchupList = []
-const matchupsPerCharacter = {};
+export const matchupsPerCharacter = {};
+
 
 for (let videogameId of [1, 1386]) {
 	for (let left in wins[videogameId]) {
 		if(!(left in matchupsPerCharacter)) {
 			matchupsPerCharacter[left] = []
 		}
-
 		for (let right in wins[videogameId][left]) {
-			if(left !== right) {
-				let matchup = {videogameId, left, right};
-				twoSidedMatchupList.push(matchup);
-				matchupsPerCharacter[left].push(matchup);
-				let winnerWins = getWinnerWins(matchup);
-				if(wins[videogameId][left][right] == winnerWins) {
-					if(wins[videogameId][right][left] == winnerWins) {
-						if(left.localeCompare(right) < 0) {
-							oneSidedMatchupListA.push(matchup);
-						}
-					} else {
+		if(left != right) {
+			let matchup = {videogameId, left, right};
+			twoSidedMatchupList.push(matchup);
+			matchupsPerCharacter[left].push(matchup);
+			let winnerWins = getWinnerWins(matchup);
+			if(wins[videogameId][left][right] == winnerWins) {
+				if(wins[videogameId][right][left] == winnerWins) {
+					if(left.localeCompare(right) < 0) {
 						oneSidedMatchupListA.push(matchup);
 					}
+				} else {
+					oneSidedMatchupListA.push(matchup);
 				}
+			}
 			}
 		}
 	}
 }
 
-let guessedMatchups = localStorage.getItem('guessedMatchups') ?? {};
-let bestScorePerMatchup = localStorage.getItem('bestScorePerMatchup') ?? {};
 
 let totalGamesList = [...oneSidedMatchupListA].sort(compareByTotalGames);
+
+export const fromMinimumGamesToTotalMatchups = {};
+
+let numMatchups = 1;
+let currentMinimumGames = 9999999;
+
+while(numMatchups <= totalGamesList.length) {
+	let lastMatchup = totalGamesList[totalGamesList.length - numMatchups];
+	let thresholdForNumMatchups = getTotalGames(lastMatchup);
+	if(thresholdForNumMatchups < currentMinimumGames) {
+		fromMinimumGamesToTotalMatchups[thresholdForNumMatchups] = numMatchups;
+	}
+	numMatchups += 1;
+}
+
+console.log(fromMinimumGamesToTotalMatchups);
+
 let leftPercentList = [...twoSidedMatchupList].sort(compareByLeftWinPercent);
 let winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinnerWinPercent);
-
-
-for(let left in matchupsPerCharacter) {
-	matchupsPerCharacter[left] = [...matchupsPerCharacter[left]].sort(compareByLeftWinPercent);
-}
 
 export function MatchupNavigator() {
 	const dispatch = useDispatch();

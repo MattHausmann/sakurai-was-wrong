@@ -1,22 +1,41 @@
 // ScoreDisplay.js
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { getWins, matchupsPerCharacter, compareByLeftWinPercent, fromMinimumGamesToTotalMatchups } from "./MatchupNavigator";
 import "./ScoreDisplay.css";
+import wins from "./wins.json";
 
-const scoreGuess = (quizResults) => {
-	let {matchup, guess, actual} = quizResults;
-	
+let sortedKeys = Object.keys(fromMinimumGamesToTotalMatchups).map(Number).sort((a,b) => a-b);
+
+
+
+
+for(let left in matchupsPerCharacter) {
+	matchupsPerCharacter[left] = [...matchupsPerCharacter[left]].sort(compareByLeftWinPercent);
 }
 
 
 
+
+
 const ScoreDisplay = () => {
-	const { score, seenMatchups, guessedMatchups, quizResults } = useSelector((state) => state);
 	
-	console.log(guessedMatchups, quizResults);
+	const { bestScore, totalScore, totalSeen, totalGuessed, mostRecentScore, quizResults, minimumGames } = useSelector((state) => state);
+	const dispatch = useDispatch();
 	
 	const [scoreImpact, setScoreImpact] = useState([]);
+	
+	const [sliderValue, setSliderValue] = useState(500);
 
+	const handleChange = (event) => {
+		const newIndex = parseInt(event.target.value, 10);
+		setSliderValue(newIndex);
+
+		dispatch({ type: "setMinimumGames", val: sortedKeys[newIndex]});
+
+	}
+	
+	
 	useEffect(() => {
 		const impact = quizResults.map((data) => {
 			let diff = data.guess[0] - data.actual[0];
@@ -38,41 +57,43 @@ const ScoreDisplay = () => {
 	}, [quizResults]);
 
 	return (
-		<div className="quizResults">
-			<h4>Score: {score}</h4>
-			<div className="quizResultsList">
-				{quizResults.map((data, i) => {
-					return (
-						<>
-							<div className="quizResultsRow">
-								<div className="header">
-									<h3>
-										{data.matchup.left} vs {data.matchup.right}
-									</h3>
-								</div>
-								<div className="data">
-									<div>
-										<h4>your guess</h4>
-										<div className="record-display">
-											<div className="win-text-color">{data.guess[0]}</div> :{" "}
-											<div className="lose-text-color">{data.guess[1]}</div>
-										</div>
-									</div>
-									<div>
-										<h4>actual</h4>
-										<div className="record-display">
-											<div className="win-text-color">{data.actual[0]}</div> :{" "}
-											<div className="lose-text-color">{data.actual[1]}</div>
-										</div>
-									</div>
-								</div>
-								{scoreImpact[i]}
-							</div>
-						</>
-					);
-				})}
-			</div>
+	<div class="score-display">
+		<div class="score-box">
+			<span class="score-label">Best score</span>
+			<span class="score-value">{bestScore}</span>
 		</div>
+		<div class="score-box">
+			<span class="score-label">Most recent score</span>
+			<span class="score-value">{mostRecentScore}</span>
+		</div>
+		<div class="score-box">
+			<span class="score-label">Total score</span>
+			<span class="score-value">{totalScore}</span>
+		</div>
+		<div class="score-box">
+			<span class="score-label">Matchups guessed</span>
+			<span class="score-value">{totalGuessed}</span>
+		</div>
+		<div class="score-box">
+			<span class="score-label">Matchups seen</span>
+			<span class="score-value">{totalSeen}</span>
+		</div>
+		<div class="score-box">
+			<span class="score-label">Total matchups</span>
+			<span class="score-value">{fromMinimumGamesToTotalMatchups[sortedKeys[sliderValue]]}</span>
+		</div>
+		
+		<div>
+			<input
+				type="range"
+				min={0}
+				max={sortedKeys.length - 1}
+				value={sliderValue}
+				onChange={handleChange}
+			/>
+			<span>minimumGames: {sortedKeys[sliderValue]}</span>
+		</div>
+	</div>
 	);
 };
 
