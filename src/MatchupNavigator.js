@@ -162,7 +162,7 @@ export function firstMatchup(args) {
 		let list = matchupsPerCharacter[matchup.left];
 		while(idx < list.length) {
 			let newMatchup = list[idx];
-			if(matchup != newMatchup && getTotalGames(newMatchup) >= minimumGames) {
+			if(matchup !== newMatchup && getTotalGames(newMatchup) >= minimumGames) {
 				return newMatchup;
 			}
 			idx += 1;
@@ -171,7 +171,7 @@ export function firstMatchup(args) {
 		let list = winnerWinPercentList;
 		while(idx < list.length) {
 			let newMatchup = list[idx];
-			if(matchup != newMatchup && getTotalGames(newMatchup) >= minimumGames) {
+			if(matchup !== newMatchup && getTotalGames(newMatchup) >= minimumGames) {
 				return newMatchup;
 			}
 			idx += 1;
@@ -186,7 +186,7 @@ export function lastMatchup(args) {
 		let idx = list.length - 1;
 		while(idx > 0) {
 			let newMatchup = list[idx];
-			if(matchup != newMatchup && getTotalGames(newMatchup) >= minimumGames) {
+			if(matchup !== newMatchup && getTotalGames(newMatchup) >= minimumGames) {
 				return newMatchup;
 			}
 			idx -= 1;
@@ -196,7 +196,7 @@ export function lastMatchup(args) {
 		let idx = list.length - 1;
 		while(idx >= 0) {
 			let newMatchup = list[idx];
-			if(matchup != newMatchup && getTotalGames(newMatchup) >= minimumGames) {
+			if(matchup !== newMatchup && getTotalGames(newMatchup) >= minimumGames) {
 				return newMatchup;
 			}
 			idx -= 1;
@@ -207,9 +207,9 @@ export function lastMatchup(args) {
 function binarySearchListForObjectWithComparator(list, matchup, comparator) {
 	let idx = 0;
 
-	while(idx < list.length && !(list[idx].left == matchup.left &&
-								list[idx].right == matchup.right &&
-								list[idx].videogameId == matchup.videogameId)) {
+	while(idx < list.length && !(list[idx].left === matchup.left &&
+								list[idx].right === matchup.right &&
+								list[idx].videogameId === matchup.videogameId)) {
 		idx+=1;
 	}
 	return idx;

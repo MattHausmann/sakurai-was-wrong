@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import NumberInput from "./NumberInput";
 import "./QuizModeSlider.css";
-
 import { colors } from "./colors";
 
 const isValid = (num) => {
