@@ -25,7 +25,6 @@
 	appearance: none;
 	width: 100%; /* Full-width */
 	height: 8px; /* Height of the track */
-	background: linear-gradient(to right, #87b38d 50%, #cc76a1 50%);
 	border-radius: 25px;
 	outline: none; /* Remove outline */
 	opacity: 0.8; /* Track opacity */

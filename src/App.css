@@ -13,7 +13,7 @@ body {
 
 /* Left column */
 .left-column {
-  flex: 4;
+  flex: 3;
   border: 2px solid #333;
   padding: 20px;
   box-sizing: border-box;
@@ -22,7 +22,7 @@ body {
 /* Right column */
 .right-column {
 	display: flex;
-  flex: 1;
+  flex: 2;
   border: 2px solid #333;
 	overflow-y: scroll;
 }
@@ -32,6 +32,14 @@ body {
     flex: 0;
   }
 }
+
+#inrement, #decrement {
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
 
 /* Game buttons (square, no text) */
 .game-button {

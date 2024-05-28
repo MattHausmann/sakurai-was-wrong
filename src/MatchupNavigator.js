@@ -73,7 +73,7 @@ const getWinnerWinRate = (matchup) => {
 	return winnerWins/(leftWins+rightWins);
 }
 
-const getTotalGames = (matchup) => {
+export const getTotalGames = (matchup) => {
 	let leftWins = wins[matchup.videogameId][matchup.left][matchup.right];
 	let rightWins = wins[matchup.videogameId][matchup.right][matchup.left];
 
@@ -288,13 +288,9 @@ export function randomMatchup(state) {
 
 		while(looping) {
 			let characters = Object.keys(matchupsPerCharacter);
-			console.log(characters);
 			let randomCharacter = characters[Math.floor(Math.random()*characters.length)];
-			console.log(randomCharacter);
 			let matchups = matchupsPerCharacter[randomCharacter];
-			console.log(matchups);
 			selected = matchups[Math.floor(Math.random()*matchups.length)];
-			console.log(selected);
 			if(getTotalGames(selected) >= state.minimumGames) {
 				looping = false;
 			}
@@ -375,11 +371,8 @@ while(numMatchups <= totalGamesList.length) {
 	numMatchups += 1;
 }
 
-console.log(fromMinimumGamesToTotalMatchups);
-
 let leftPercentList = [...twoSidedMatchupList].sort(compareByLeftWinPercent);
 let winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinnerWinPercent);
-
 export function MatchupNavigator() {
 	const dispatch = useDispatch();
 	let {matchup, minimumGames, lockLeft}=useSelector((state)=>state);

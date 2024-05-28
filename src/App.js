@@ -37,11 +37,6 @@ const App = () => {
 	return (
 		<div className="app-container">
 			<div className="left-column">
-				<GameSelect
-					games={games}
-					videogameId={videogameId}
-					selectGame={handleGameSelect}
-				/>
 				<Switch
 					onChange={(e) => {
 						dispatch({ type: "toggleQuizMode", val: e.target.checked });

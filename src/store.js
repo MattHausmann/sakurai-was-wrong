@@ -1,11 +1,10 @@
 import { createStore } from "redux";
-import { getWins, randomMatchup, unreverse } from "./MatchupNavigator";
+import { getWins, getTotalGames, randomMatchup, unreverse, fromMinimumGamesToTotalMatchups } from "./MatchupNavigator";
 import wins from "./wins.json";
 
 let initialState = {
 	currentIndex: 1,
 	matchup: {},
-	minimumGames: 4169,
 	orderBy: "Left Win %",
 	quizMode: false,
 	quizResults: [],
@@ -15,7 +14,16 @@ let initialState = {
 	selectedGames: [],
 	winsDisplay: [0, 0],
 	lockLeft: false,
+	minimumGames:1000,
 };
+
+let minGames = initialState.minimumGames;
+let keys = Object.keys(fromMinimumGamesToTotalMatchups);
+while(!(minGames in fromMinimumGamesToTotalMatchups) && minGames < keys.length) {
+	minGames += 1;
+}
+
+initialState.totalMatchups = fromMinimumGamesToTotalMatchups[minGames];
 
 let guessedMatchups = JSON.parse(localStorage.getItem('guessedMatchups')) ?? {};
 let seenMatchups = JSON.parse(localStorage.getItem('seenMatchups')) ?? {};
@@ -148,7 +156,6 @@ const newWinsDisplay = (quizMode, matchup) => {
 // this is distinct from mutating due to a quiz guess
 const mutateStateFromNav = (prevState, newMatchup) => {
 	
-	console.log(prevState.matchup, newMatchup);
 	let {videogameId, left, right} = newMatchup;
 	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
 	
@@ -158,7 +165,6 @@ const mutateStateFromNav = (prevState, newMatchup) => {
 	if(videogameId in seenMatchups) {
 		if(alphabeticallyFirst in seenMatchups[videogameId]) {
 			if(seenMatchups[videogameId][alphabeticallyFirst].includes(alphabeticallyLast)) {
-				console.log("already seen");
 				newTotalSeen -= 1;
 			}
 		}
@@ -252,6 +258,35 @@ initialState.totalGuessed = totalGuessed;
 
 
 
+const countSeenMatchupsMinimumGames = (minimumGames) => {
+	let seen = 0;
+	for(let videogameId in seenMatchups) {
+		for(let alphabeticallyFirst in seenMatchups[videogameId]) {
+			for(let alphabeticallyLast of seenMatchups[videogameId][alphabeticallyFirst]) {
+				if(getTotalGames({videogameId, left:alphabeticallyFirst, right:alphabeticallyLast}) >= minimumGames) {
+					seen += 1;
+				}
+			}
+		}
+	}
+	return seen;
+}
+
+
+const countGuessedMatchupsMinimumGames = (minimumGames) => {
+	let guessed = 0;
+	for(let videogameId in seenMatchups) {
+		for(let alphabeticallyFirst in guessedMatchups[videogameId]) {
+			for(let alphabeticallyLast in guessedMatchups[videogameId][alphabeticallyFirst]) {
+				if(getTotalGames({videogameId, left:alphabeticallyFirst, right:alphabeticallyLast}) >= minimumGames) {
+					guessed += 1;
+				}
+			}
+		}
+	}
+	return guessed;
+}
+
 
 const reducer = (prevState = initialState, action) => {
 	switch (action.type) {
@@ -320,9 +355,13 @@ const reducer = (prevState = initialState, action) => {
 			};
 		}
 		case "setMinimumGames": {
-			
-			
-			return prevState;
+			return {
+				...prevState,
+				minimumGames:action.val,
+				totalMatchups:fromMinimumGamesToTotalMatchups[action.val],
+				totalGuessed: countGuessedMatchupsMinimumGames(action.val),
+				totalSeen: countSeenMatchupsMinimumGames(action.val),
+			}
 		}
 
 		default:

@@ -1,13 +1,16 @@
 // ScoreDisplay.js
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getWins, matchupsPerCharacter, compareByLeftWinPercent, fromMinimumGamesToTotalMatchups } from "./MatchupNavigator";
+import { getTotalGames, getWins, matchupsPerCharacter, compareByLeftWinPercent, fromMinimumGamesToTotalMatchups } from "./MatchupNavigator";
+import MatchupSlider from './MatchupSlider.js';
 import "./ScoreDisplay.css";
 import wins from "./wins.json";
 
-let sortedKeys = Object.keys(fromMinimumGamesToTotalMatchups).map(Number).sort((a,b) => a-b);
 
 
+let guessedMatchups = JSON.parse(localStorage.getItem('guessedMatchups')) ?? {};
+let seenMatchups = JSON.parse(localStorage.getItem('seenMatchups')) ?? {};
+let bestScorePerMatchup = JSON.parse(localStorage.getItem('bestScorePerMatchup')) ?? {};
 
 
 for(let left in matchupsPerCharacter) {
@@ -17,23 +20,15 @@ for(let left in matchupsPerCharacter) {
 
 
 
-
 const ScoreDisplay = () => {
 	
-	const { bestScore, totalScore, totalSeen, totalGuessed, mostRecentScore, quizResults, minimumGames } = useSelector((state) => state);
+	const { matchup, bestScore, mostRecentScore, totalScore, totalSeen, totalGuessed, totalMatchups, quizResults, minimumGames } = useSelector((state) => state);
 	const dispatch = useDispatch();
 	
 	const [scoreImpact, setScoreImpact] = useState([]);
 	
 	const [sliderValue, setSliderValue] = useState(500);
-
-	const handleChange = (event) => {
-		const newIndex = parseInt(event.target.value, 10);
-		setSliderValue(newIndex);
-
-		dispatch({ type: "setMinimumGames", val: sortedKeys[newIndex]});
-
-	}
+	
 	
 	
 	useEffect(() => {
@@ -55,7 +50,7 @@ const ScoreDisplay = () => {
 		});
 		setScoreImpact(impact);
 	}, [quizResults]);
-
+	
 	return (
 	<div class="score-display">
 		<div class="score-box">
@@ -80,19 +75,9 @@ const ScoreDisplay = () => {
 		</div>
 		<div class="score-box">
 			<span class="score-label">Total matchups</span>
-			<span class="score-value">{fromMinimumGamesToTotalMatchups[sortedKeys[sliderValue]]}</span>
+			<span class="score-value">{totalMatchups}</span>
 		</div>
-		
-		<div>
-			<input
-				type="range"
-				min={0}
-				max={sortedKeys.length - 1}
-				value={sliderValue}
-				onChange={handleChange}
-			/>
-			<span>minimumGames: {sortedKeys[sliderValue]}</span>
-		</div>
+		<MatchupSlider />
 	</div>
 	);
 };
