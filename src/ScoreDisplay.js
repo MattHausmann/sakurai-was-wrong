@@ -1,36 +1,45 @@
 // ScoreDisplay.js
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getTotalGames, getWins, matchupsPerCharacter, compareByLeftWinPercent, fromMinimumGamesToTotalMatchups } from "./MatchupNavigator";
-import MatchupSlider from './MatchupSlider.js';
+import {
+	getTotalGames,
+	getWins,
+	matchupsPerCharacter,
+	compareByLeftWinPercent,
+	fromMinimumGamesToTotalMatchups,
+} from "./MatchupNavigator";
+import MatchupSlider from "./MatchupSlider.js";
 import "./ScoreDisplay.css";
-import wins from "./wins.json";
 
+let guessedMatchups = JSON.parse(localStorage.getItem("guessedMatchups")) ?? {};
+let seenMatchups = JSON.parse(localStorage.getItem("seenMatchups")) ?? {};
+let bestScorePerMatchup =
+	JSON.parse(localStorage.getItem("bestScorePerMatchup")) ?? {};
 
-
-let guessedMatchups = JSON.parse(localStorage.getItem('guessedMatchups')) ?? {};
-let seenMatchups = JSON.parse(localStorage.getItem('seenMatchups')) ?? {};
-let bestScorePerMatchup = JSON.parse(localStorage.getItem('bestScorePerMatchup')) ?? {};
-
-
-for(let left in matchupsPerCharacter) {
-	matchupsPerCharacter[left] = [...matchupsPerCharacter[left]].sort(compareByLeftWinPercent);
+for (let left in matchupsPerCharacter) {
+	matchupsPerCharacter[left] = [...matchupsPerCharacter[left]].sort(
+		compareByLeftWinPercent
+	);
 }
 
-
-
-
 const ScoreDisplay = () => {
-	
-	const { matchup, bestScore, mostRecentScore, totalScore, totalSeen, totalGuessed, totalMatchups, quizResults, minimumGames } = useSelector((state) => state);
+	const {
+		matchup,
+		bestScore,
+		mostRecentScore,
+		totalScore,
+		totalSeen,
+		totalGuessed,
+		totalMatchups,
+		quizResults,
+		minimumGames,
+	} = useSelector((state) => state);
 	const dispatch = useDispatch();
-	
+
 	const [scoreImpact, setScoreImpact] = useState([]);
-	
+
 	const [sliderValue, setSliderValue] = useState(500);
-	
-	
-	
+
 	useEffect(() => {
 		const impact = quizResults.map((data) => {
 			let diff = data.guess[0] - data.actual[0];
@@ -50,35 +59,35 @@ const ScoreDisplay = () => {
 		});
 		setScoreImpact(impact);
 	}, [quizResults]);
-	
+
 	return (
-	<div class="score-display">
-		<div class="score-box">
-			<span class="score-label">Best score</span>
-			<span class="score-value">{bestScore}</span>
+		<div className="score-display">
+			<div className="score-box">
+				<span className="score-label">Best score</span>
+				<span className="score-value">{bestScore}</span>
+			</div>
+			<div className="score-box">
+				<span className="score-label">Most recent score</span>
+				<span className="score-value">{mostRecentScore}</span>
+			</div>
+			<div className="score-box">
+				<span className="score-label">Total score</span>
+				<span className="score-value">{totalScore}</span>
+			</div>
+			<div className="score-box">
+				<span className="score-label">Matchups guessed</span>
+				<span className="score-value">{totalGuessed}</span>
+			</div>
+			<div className="score-box">
+				<span className="score-label">Matchups seen</span>
+				<span className="score-value">{totalSeen}</span>
+			</div>
+			<div className="score-box">
+				<span className="score-label">Total matchups</span>
+				<span className="score-value">{totalMatchups}</span>
+			</div>
+			<MatchupSlider value={1000} />
 		</div>
-		<div class="score-box">
-			<span class="score-label">Most recent score</span>
-			<span class="score-value">{mostRecentScore}</span>
-		</div>
-		<div class="score-box">
-			<span class="score-label">Total score</span>
-			<span class="score-value">{totalScore}</span>
-		</div>
-		<div class="score-box">
-			<span class="score-label">Matchups guessed</span>
-			<span class="score-value">{totalGuessed}</span>
-		</div>
-		<div class="score-box">
-			<span class="score-label">Matchups seen</span>
-			<span class="score-value">{totalSeen}</span>
-		</div>
-		<div class="score-box">
-			<span class="score-label">Total matchups</span>
-			<span class="score-value">{totalMatchups}</span>
-		</div>
-		<MatchupSlider value={1000}/>
-	</div>
 	);
 };
 
