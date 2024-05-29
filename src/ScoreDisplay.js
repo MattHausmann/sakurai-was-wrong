@@ -77,7 +77,7 @@ const ScoreDisplay = () => {
 			<span class="score-label">Total matchups</span>
 			<span class="score-value">{totalMatchups}</span>
 		</div>
-		<MatchupSlider />
+		<MatchupSlider value={1000}/>
 	</div>
 	);
 };
