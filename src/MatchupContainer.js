@@ -24,11 +24,12 @@ const MatchupContainer = () => {
 		setPieChartDisplay([winsDisplay[0], winsDisplay[1]]);
 	}, [winsDisplay, displayQuizResults]);
 
+
 	return (
 		<div className="matchup-container">
 			<div className="top-row">
 				<LabeledCharacterPortrait
-					lockSwitch
+					lockSwitch={!quizMode}
 					side={"left"}
 					onClick={() => {
 						dispatch({ type: "toggleLockLeft" });

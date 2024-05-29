@@ -1,12 +1,36 @@
 // ScoreDisplay.js
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { getTotalGames, getWins, matchupsPerCharacter, compareByLeftWinPercent, fromMinimumGamesToTotalMatchups } from "./MatchupNavigator";
+import MatchupSlider from './MatchupSlider.js';
 import "./ScoreDisplay.css";
+import wins from "./wins.json";
+
+
+
+let guessedMatchups = JSON.parse(localStorage.getItem('guessedMatchups')) ?? {};
+let seenMatchups = JSON.parse(localStorage.getItem('seenMatchups')) ?? {};
+let bestScorePerMatchup = JSON.parse(localStorage.getItem('bestScorePerMatchup')) ?? {};
+
+
+for(let left in matchupsPerCharacter) {
+	matchupsPerCharacter[left] = [...matchupsPerCharacter[left]].sort(compareByLeftWinPercent);
+}
+
+
+
 
 const ScoreDisplay = () => {
-	const { score, quizResults } = useSelector((state) => state);
+	
+	const { matchup, bestScore, mostRecentScore, totalScore, totalSeen, totalGuessed, totalMatchups, quizResults, minimumGames } = useSelector((state) => state);
+	const dispatch = useDispatch();
+	
 	const [scoreImpact, setScoreImpact] = useState([]);
-
+	
+	const [sliderValue, setSliderValue] = useState(500);
+	
+	
+	
 	useEffect(() => {
 		const impact = quizResults.map((data) => {
 			let diff = data.guess[0] - data.actual[0];
@@ -26,43 +50,35 @@ const ScoreDisplay = () => {
 		});
 		setScoreImpact(impact);
 	}, [quizResults]);
-
+	
 	return (
-		<div className="quizResults">
-			<h4>Score: {score}</h4>
-			<div className="quizResultsList">
-				{quizResults.map((data, i) => {
-					return (
-						<>
-							<div className="quizResultsRow">
-								<div className="header">
-									<h3>
-										{data.matchup.left} vs {data.matchup.right}
-									</h3>
-								</div>
-								<div className="data">
-									<div>
-										<h4>your guess</h4>
-										<div className="record-display">
-											<div className="win-text-color">{data.guess[0]}</div> :{" "}
-											<div className="lose-text-color">{data.guess[1]}</div>
-										</div>
-									</div>
-									<div>
-										<h4>actual</h4>
-										<div className="record-display">
-											<div className="win-text-color">{data.actual[0]}</div> :{" "}
-											<div className="lose-text-color">{data.actual[1]}</div>
-										</div>
-									</div>
-								</div>
-								{scoreImpact[i]}
-							</div>
-						</>
-					);
-				})}
-			</div>
+	<div class="score-display">
+		<div class="score-box">
+			<span class="score-label">Best score</span>
+			<span class="score-value">{bestScore}</span>
 		</div>
+		<div class="score-box">
+			<span class="score-label">Most recent score</span>
+			<span class="score-value">{mostRecentScore}</span>
+		</div>
+		<div class="score-box">
+			<span class="score-label">Total score</span>
+			<span class="score-value">{totalScore}</span>
+		</div>
+		<div class="score-box">
+			<span class="score-label">Matchups guessed</span>
+			<span class="score-value">{totalGuessed}</span>
+		</div>
+		<div class="score-box">
+			<span class="score-label">Matchups seen</span>
+			<span class="score-value">{totalSeen}</span>
+		</div>
+		<div class="score-box">
+			<span class="score-label">Total matchups</span>
+			<span class="score-value">{totalMatchups}</span>
+		</div>
+		<MatchupSlider value={1000}/>
+	</div>
 	);
 };
 

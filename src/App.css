@@ -13,7 +13,7 @@ body {
 
 /* Left column */
 .left-column {
-  flex: 4;
+  flex: 3;
   border: 2px solid #333;
   padding: 20px;
   box-sizing: border-box;
@@ -22,7 +22,7 @@ body {
 /* Right column */
 .right-column {
 	display: flex;
-  flex: 1;
+  flex: 2;
   border: 2px solid #333;
 	overflow-y: scroll;
 }
@@ -32,6 +32,14 @@ body {
     flex: 0;
   }
 }
+
+#inrement, #decrement {
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
 
 /* Game buttons (square, no text) */
 .game-button {
@@ -88,4 +96,35 @@ body {
 
 .lose-text-color {
   color: #cc76a1;
+}
+
+.score-display {
+	position:relative;
+	width:100%;
+}
+
+/* Style for the score box container */
+.score-box {
+  position: relative;
+  width: 80%;
+  height: 40px;
+  border: 2px solid #333;
+  text-align: right;
+  font-family: Arial, sans-serif;
+  margin: 10px 20px 20px 20px;
+}
+
+/* Style for the "Score" label */
+.score-label {
+  position: absolute;
+  top: -10px;
+  left: 1%;
+  padding: 0 10px;
+  background-color:#dadaef;
+}
+
+/* Style for the score value */
+.score-value {
+  font-size: 24px;
+  line-height: 40px;
 }
