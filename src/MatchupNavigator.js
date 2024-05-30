@@ -275,6 +275,9 @@ export function randomMatchup(state) {
 	let newState = state.matchup;
 	if(state.lockLeft) {
 		list = matchupsPerCharacter[state.matchup.left];
+		if (list.length === 1) {
+			return state.matchup;
+		}
 		let newIndex = Math.floor(Math.random() * list.length);
 		while(list[newIndex] == state.matchup || !enoughGames) {
 			newIndex = Math.floor(Math.random() * list.length);
