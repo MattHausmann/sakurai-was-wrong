@@ -1,7 +1,7 @@
 // CharacterPortrait.js
 import React, { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
+import "./CharacterPortrait.css"
 
 const LabeledCharacterPortrait = ({ side, lockSwitch, onClick }) => {
 	let { matchup, lockLeft } = useSelector((state) => state);
