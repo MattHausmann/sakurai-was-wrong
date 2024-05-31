@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import NumberInput from "./NumberInput";
-import "./QuizModeSlider.css";
 import { colors } from "./colors";
+import "./QuizModeSlider.css";
 
 const isValid = (num) => {
 	return num.length > 0 && !isNaN(num) && !num.startsWith("-");
@@ -26,8 +26,8 @@ const MatchupSlider = () => {
 	useEffect(() => {
 		const percentage = (leftWins / (leftWins + rightWins)) * 100;
 		document.querySelector(
-			".slider"
-		).style.background = `linear-gradient(to right, #87b38d ${percentage}%, #cc76a1 ${percentage}%)`;
+			".quiz-slider"
+		).style.background = `linear-gradient(to right, ${colors.winGreen} ${percentage}%, ${colors.loseRed} ${percentage}%)`;
 	}, [leftWins, rightWins]);
 
 	const handleInputChange = (e, isLeft) => {
@@ -47,9 +47,9 @@ const MatchupSlider = () => {
 
 	return (
 		<>
-			<div className="matchup-slider">
+			<div className="quiz-mode-slider">
 				<input
-					className="slider"
+					className="quiz-slider"
 					type="range"
 					min="0"
 					max={leftWins + rightWins}
