@@ -1,18 +1,17 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
 body {
-  font-family: Helvetica, Arial, sans-serif;
-  text-align: center;
+	font-family: Helvetica, Arial, sans-serif;
+	text-align: center;
 }
 
-
 .app-container {
-  display: flex;
-  flex-direction:column;
-  align-items: stretch; /* Equal height for both columns */
-  justify-content: center;
-  height: 80vh;
-  background-color: #dadaee;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch; /* Equal height for both columns */
+	justify-content: center;
+	height: 80vh;
+	background-color: #dadaee;
 }
 
 .app-header {
@@ -21,131 +20,128 @@ body {
 	text-align: right;
 }
 
-
 .app-content {
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1; /* Allow content to take remaining height */
+	display: flex;
+	flex-direction: row;
+	flex-grow: 1; /* Allow content to take remaining height */
 }
-
-
 
 /* Left column */
 .left-column {
-  flex: 3;
-  border: 2px solid #333;
-  padding: 20px;
-  box-sizing: border-box;
+	flex: 3;
+	border: 2px solid #333;
+	padding: 20px;
+	box-sizing: border-box;
 }
 
 /* Right column */
 .right-column {
 	display: flex;
-  flex: 2;
-  border: 2px solid #333;
+	flex: 2;
+	border: 2px solid #333;
 	overflow-y: scroll;
 }
 
 @media (width <= 900px) {
-  .right-column {
-    flex: 0;
-  }
+	.right-column {
+		flex: 0;
+	}
 }
 
-#inrement, #decrement {
-  width: 30px;
-  height: 30px;
-  font-size: 16px;
-  cursor: pointer;
+#inrement,
+#decrement {
+	width: 30px;
+	height: 30px;
+	font-size: 16px;
+	cursor: pointer;
 }
-
 
 /* Game buttons (square, no text) */
 .game-button {
-  display: inline-block;
-  width: 130px; /* Adjust as needed */
-  height: 48px; /* Square buttons */
-  background-color: #444444;
-  /* Add your game logos as background images */
-  background-size: cover;
-  margin: 10px;
+	display: inline-block;
+	width: 130px; /* Adjust as needed */
+	height: 48px; /* Square buttons */
+	background-color: #444444;
+	/* Add your game logos as background images */
+	background-size: cover;
+	margin: 10px;
 }
 
 .game-button.selected {
-  /* Add any other styles you want for selected buttons */
+	/* Add any other styles you want for selected buttons */
 }
 
 .questionMessage {
-  width: 250px;
-  display: inline-block;
-  position: relative;
-  background-color: white;
+	width: 250px;
+	display: inline-block;
+	position: relative;
+	background-color: white;
 }
 
 /* Game buttons (square, no text) */
 .game-button {
-  display: inline-block;
-  width: 130px; /* Adjust as needed */
-  height: 48px; /* Square buttons */
-  background-color: #444444;
-  /* Add your game logos as background images */
-  background-size: cover;
-  padding: 0px;
+	display: inline-block;
+	width: 130px; /* Adjust as needed */
+	height: 48px; /* Square buttons */
+	background-color: #444444;
+	/* Add your game logos as background images */
+	background-size: cover;
+	padding: 0px;
 }
 
 .game-button.selected {
-  background-color: #999;
+	background-color: #999;
 }
 
 .matchup-navigation {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column; /* Adjusted to vertical layout */
-  align-items: center;
+	max-width: 600px;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column; /* Adjusted to vertical layout */
+	align-items: center;
 }
 
 .win-text-color {
-  color: #87b38d;
+	color: #87b38d;
 }
 
 .lose-text-color {
-  color: #cc76a1;
+	color: #cc76a1;
 }
 
 .score-display {
-	position:relative;
-	width:100%;
+	position: relative;
+	width: 100%;
 }
 
 /* Style for the score box container */
 .score-box {
-  position: relative;
-  width: 80%;
-  height: 40px;
-  border: 2px solid #333;
-  text-align: right;
-  font-family: Arial, sans-serif;
-  margin: 10px 20px 20px 20px;
+	position: relative;
+	width: 80%;
+	height: 40px;
+	border: 2px solid #333;
+	text-align: right;
+	font-family: Arial, sans-serif;
+	margin: 10px 20px 20px 20px;
 }
 
 /* Style for the "Score" label */
 .score-label {
-  position: absolute;
-  top: -10px;
-  left: 1%;
-  padding: 0 10px;
-  background-color:#dadaef;
+	position: absolute;
+	top: -10px;
+	left: 1%;
+	padding: 0 10px;
+	background-color: #dadaef;
 }
 
 /* Style for the score value */
 .score-value {
-  font-size: 24px;
-  line-height: 40px;
+	font-size: 24px;
+	line-height: 40px;
 }
 
 button {
