@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import GameSelect from "./GameSelect";
 import MatchupContainer from "./MatchupContainer";
+import MatchupSlider from "./MatchupSlider";
 import ScoreDisplay from "./ScoreDisplay";
 import Switch from "@mui/material/Switch";
 
@@ -20,11 +21,17 @@ const App = () => {
 
 	const [videogameId, setVideogameId] = useState("1");
 	const rightColumnRef = useRef(null);
+	
+	const dialogRef = useRef();
+	
+	const openDialog = () => {
+		dialogRef.current.showModal();
+	};
 
 	const handleGameSelect = (gameId) => {
 		setVideogameId(gameId);
 	};
-
+	
 	useEffect(() => {
 		if (rightColumnRef.current) {
 			rightColumnRef.current.scrollTo({
@@ -36,17 +43,33 @@ const App = () => {
 
 	return (
 		<div className="app-container">
-			<div className="left-column">
-				<Switch
-					onChange={(e) => {
-						dispatch({ type: "toggleQuizMode", val: e.target.checked });
-					}}
-					value={quizMode}
-				/>
-				<MatchupContainer videogameId={videogameId} quizMode={quizMode} />
+			<div className="app-header">
+				<button 
+					id="settingsButton"
+					onClick={()=>dialogRef.current.showModal()}
+				>
+					<i className="fa fa-cog"></i>
+				</button>
+				<dialog ref={dialogRef}>
+					<button onClick={()=>dialogRef.current.close()}>
+						<i className="fa fa-close"></i>
+					</button>
+					<MatchupSlider value={1000} />
+				</dialog>
 			</div>
-			<div className="right-column" ref={rightColumnRef}>
-				<ScoreDisplay />
+			<div className="app-content">
+				<div className="left-column">
+					<Switch
+						onChange={(e) => {
+							dispatch({ type: "toggleQuizMode", val: e.target.checked });
+						}}
+						value={quizMode}
+					/>
+					<MatchupContainer videogameId={videogameId} quizMode={quizMode} />
+				</div>
+				<div className="right-column" ref={rightColumnRef}>
+					<ScoreDisplay />
+				</div>
 			</div>
 		</div>
 	);
