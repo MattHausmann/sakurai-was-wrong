@@ -144,6 +144,7 @@ body {
 	line-height: 40px;
 }
 
+
 button {
 	display: inline-block;
 	border: 1px solid transparent;
@@ -164,15 +165,14 @@ button {
 
 button:hover,
 button:focus {
-	background: #007b9b;
+	background: #005f8d;
 }
 
 button:focus {
-	/* outline: 1px solid #fff; */
-	/* outline-offset: -4px; */
-	background: #007b9b;
+	outline: none;
 }
 
 button:active {
-	transform: scale(0.99);
+	transform: scale(0.98);
+	background: #004f7a;
 }
