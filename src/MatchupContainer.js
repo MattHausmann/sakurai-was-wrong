@@ -52,7 +52,7 @@ const MatchupContainer = () => {
 				</div>
 				<LabeledCharacterPortrait side={"right"} />
 			</div>
-			<div class="bottom-row">
+			<div className="bottom-row">
 				{!quizMode && <MatchupNavigator lockLeft={lockLeft} />}
 			</div>
 		</div>

@@ -388,12 +388,13 @@ export function MatchupNavigator() {
 			dispatch({type:"setMatchup", matchup:matchup});
 		}
 	}, [dispatch, matchup, lockLeft]);
-	
 
-	
+
+
 	return (
-		<div class="matchup-navigator">
+		<div className="matchup-navigator">
 			<button
+				className="button"
 				disabled={!firstMatchup(args)}
 				onClick={() => {dispatch({ type: "setMatchup", matchup:firstMatchup(args)});}}
 				style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
@@ -401,6 +402,7 @@ export function MatchupNavigator() {
 				First
 			</button>
 			<button
+				className="button"
 				disabled={!prevMatchup(args)}
 				onClick={() => {dispatch({ type: "setMatchup", matchup:prevMatchup(args)});}}
 				style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
@@ -408,13 +410,17 @@ export function MatchupNavigator() {
 				Previous
 			</button>
 
-			<button onClick={() => {
-				let newMatchup = randomMatchup(args);
-				dispatch({ type: "setMatchup", matchup:newMatchup});
-			}}>
+			<button
+				className="button"
+				onClick={() => {
+					let newMatchup = randomMatchup(args);
+					dispatch({ type: "setMatchup", matchup:newMatchup});
+				}}
+			>
 				New
 			</button>
 			<button
+				className="button"
 				disabled={!nextMatchup(args)}
 				onClick={() => {dispatch({ type: "setMatchup", matchup:nextMatchup(args)});}}
 				style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
@@ -422,6 +428,7 @@ export function MatchupNavigator() {
 				Next
 			</button>
 			<button
+				className="button"
 				disabled={!lastMatchup(args)}
 				onClick={() => {dispatch({ type: "setMatchup", matchup:lastMatchup(args)});}}
 				style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}

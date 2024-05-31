@@ -149,6 +149,34 @@ body {
 }
 
 button {
-	background-color: offwhite;
+	display: inline-block;
+	border: 1px solid transparent;
+	border-radius: 6px;
+	padding: 0.5rem 1rem;
+	margin: 0 0.1em;
+	text-decoration: none;
+	background: #007ec0;
+	color: #ffffff;
+	font-family: sans-serif;
+	font-size: 1rem;
 	cursor: pointer;
+	text-align: center;
+	transition: background 250ms ease-in-out, transform 150ms ease;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+
+button:hover,
+button:focus {
+	background: #007b9b;
+}
+
+button:focus {
+	/* outline: 1px solid #fff; */
+	/* outline-offset: -4px; */
+	background: #007b9b;
+}
+
+button:active {
+	transform: scale(0.99);
 }
