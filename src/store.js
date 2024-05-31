@@ -289,6 +289,7 @@ const countGuessedMatchupsMinimumGames = (minimumGames) => {
 
 
 const reducer = (prevState = initialState, action) => {
+	console.log(action);
 	switch (action.type) {
 		case "setGameId":
 			return {
@@ -361,6 +362,18 @@ const reducer = (prevState = initialState, action) => {
 				totalMatchups:fromMinimumGamesToTotalMatchups[action.val],
 				totalGuessed: countGuessedMatchupsMinimumGames(action.val),
 				totalSeen: countSeenMatchupsMinimumGames(action.val),
+			}
+		}
+		
+		case "forceMinimumGames": {
+			prevState.minimumGames=action.val;
+			return {
+				...prevState,
+				minimumGames:action.val,
+				totalMatchups:fromMinimumGamesToTotalMatchups[action.val],
+				totalGuessed:countGuessedMatchupsMinimumGames(action.val),
+				totalSeen:countSeenMatchupsMinimumGames(action.val),
+				matchup:randomMatchup({minimumGames:prevState.minimumGames}),
 			}
 		}
 

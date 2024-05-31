@@ -1,6 +1,6 @@
 .matchup-slider {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	flex: 1;
 }
 
@@ -23,6 +23,7 @@
 .slider {
 	-webkit-appearance: none; /* Override default styles */
 	appearance: none;
+	flex-direction:row;
 	width: 100%; /* Full-width */
 	height: 8px; /* Height of the track */
 	border-radius: 25px;
