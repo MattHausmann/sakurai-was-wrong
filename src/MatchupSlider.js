@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getTotalGames, fromMinimumGamesToTotalMatchups } from './MatchupNavigator.js';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -10,6 +10,11 @@ function MatchupSlider({value}) {
 	const dispatch = useDispatch();
 	const {matchup, minimumGames} = useSelector((state) => state);
 	const [sliderValue, setSliderValue] = useState(value);
+	
+	const [confirming, setConfirming] = useState(false);
+	
+	const dialogRef = useRef();
+	const confirmRef = useRef();
 	
 	const getMaxIndex = (matchup) => {
 		let totalGames = getTotalGames(matchup);
@@ -56,35 +61,65 @@ function MatchupSlider({value}) {
 	};
   
 	const handleChange = (event) => {
-		let maximumMinimum = getTotalGames(matchup);
 		const newIndex = parseInt(event.target.value, 10);
-		const newMinimumGames = sortedKeys[newIndex];
-		const newTotalMatchups = fromMinimumGamesToTotalMatchups[newMinimumGames];
-		if(newMinimumGames <= maximumMinimum) {
-			setSliderValue(newIndex);
-			dispatch({type:"setMinimumGames", val:newMinimumGames});
-		}
+		let newMinimumGames=sortedKeys[sliderValue];
+		setSliderValue(newIndex);
+		dispatch({type:"setMinimumGames", val:newMinimumGames});
+	}
+	
+	const handleOnMouseUp = (event) => {
+		let newMinimumGames=sortedKeys[sliderValue];
+		let maximumMinimum = getTotalGames(matchup);
+		
 		if(newMinimumGames > maximumMinimum) {
-			setSliderValue(getMaxIndex(matchup));
-			dispatch({type:"setMinimumGames", val:maximumMinimum});
+			confirmRef.current.show();
+			setConfirming(true);
 		}
+
 	}
 
 
 	return (
 		<div className="slider-container">
 			<span>Minimum games: {minimumGames}</span><br /> <br />
-			<div className="slider">
+			<div className="matchup-slider">
 				<button onClick={handleDecrement}>-</button>
 				<input 
 					type="range" 
 					min="0" 
 					max={sortedKeys.length - 1}
-					onChange={handleChange}
+					onChange={!confirming?handleChange:null}
 					value={sliderValue} 
+					onMouseUp={handleOnMouseUp}
 				/>
 				<button onClick={handleIncrement}>+</button> <br />
 			</div>
+			<dialog ref={dialogRef}>
+				<button onClick={()=>{
+					let closing = sliderValue <= getTotalGames(matchup);
+					if(closing) {
+						dialogRef.current.close();
+					} else {
+						confirmRef.current.show();
+					}
+				}}>
+					<i className="fa fa-close"></i>
+				</button>
+			</dialog>
+			<dialog ref={confirmRef}>
+				<span>The current matchup is beneath the threshold; this will set a new matchup.</span>
+				<span>Are you sure?</span>
+				<button onClick={()=>{
+					dispatch({type:"forceMinimumGames",val:sortedKeys[sliderValue]});
+					confirmRef.current.close();
+					setConfirming(false);
+				}}>Yes</button>
+				<button onClick={()=>{
+					setSliderValue(getMaxIndex(matchup));
+					confirmRef.current.close();
+					setConfirming(false);
+				}}>No</button>
+			</dialog>
 		</div>
 	);
 }

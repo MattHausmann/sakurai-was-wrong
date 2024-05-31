@@ -25,7 +25,7 @@ input.quiz-slider {
 	border-radius: 25px;
 	outline: none; /* Remove outline */
 	opacity: 0.8; /* Track opacity */
-	/* transition: opacity 0.2s; /1* Transition for hover effect *1/ */
+	transition: opacity 0.2s; /* Transition for hover effect */
 }
 
 /* Hover effect */
