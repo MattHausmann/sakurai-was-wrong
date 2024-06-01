@@ -1,4 +1,4 @@
-import { useEffect, React } from "react";
+import { useEffect, useState, React } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import wins from "./wins.json";
 
@@ -216,6 +216,7 @@ function binarySearchListForObjectWithComparator(list, matchup, comparator) {
 }
 
 export function nextMatchup(args) {
+	console.log("nextMatchup", args);
 	let {matchup, minimumGames, lockLeft} = args;
 	if(lockLeft) {
 		let list = matchupsPerCharacter[matchup.left];
@@ -243,6 +244,7 @@ export function nextMatchup(args) {
 }
 
 export function prevMatchup(args) {
+	console.log("prevMatchup", args);
 	let {matchup, minimumGames, lockLeft} = args;
 	if(lockLeft) {
 		let list = matchupsPerCharacter[matchup.left];
@@ -306,11 +308,11 @@ export function randomMatchup(state) {
 	return totalGamesList[newIndex];
 }
 function leftButtonsVisible(args) {
-	return !!prevMatchup(args);
+	return args.reversed?!!nextMatchup(args):!!prevMatchup(args);
 }
 
 function rightButtonsVisible(args) {
-	return !!nextMatchup(args);
+	return args.reversed?!!prevMatchup(args):!!nextMatchup(args);
 }
 
 function randomButtonVisible(args) {
@@ -376,11 +378,13 @@ while(numMatchups <= totalGamesList.length) {
 
 let leftPercentList = [...twoSidedMatchupList].sort(compareByLeftWinPercent);
 let winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinnerWinPercent);
+
+
 export function MatchupNavigator() {
 	const dispatch = useDispatch();
-	let {matchup, minimumGames, lockLeft}=useSelector((state)=>state);
-
-	let args = {matchup, minimumGames, lockLeft};
+	let {matchup, minimumGames, lockLeft, reversed}=useSelector((state)=>state);
+	
+	let args = {matchup, minimumGames, lockLeft, reversed};
 	let videogameId = matchup.videogameId;
 
 	useEffect(() => {
@@ -390,51 +394,62 @@ export function MatchupNavigator() {
 	}, [dispatch, matchup, lockLeft]);
 
 
-
+	console.log("prev: ", prevMatchup(args));
+	console.log("next: ", nextMatchup(args));
 	return (
 		<div className="matchup-navigator">
-			<button
-				className="button"
-				disabled={!firstMatchup(args)}
-				onClick={() => {dispatch({ type: "setMatchup", matchup:firstMatchup(args)});}}
-				style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
-			>
-				First
-			</button>
-			<button
-				className="button"
-				disabled={!prevMatchup(args)}
-				onClick={() => {dispatch({ type: "setMatchup", matchup:prevMatchup(args)});}}
-				style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
-			>
-				Previous
-			</button>
+			<div className="matchup-navigator-top-row">
+				<button onClick={()=>dispatch({type:"toggleReversed"})}>
+					<i className="fa fa-arrows-rotate"></i>
+				</button>
+			</div>
+			<div className="matchup-navigator-bottom-row">
+				<button
+					className="button"
+					disabled={reversed?!lastMatchup(args):!firstMatchup(args)}
+					onClick={() => {dispatch({ type: "setMatchup", matchup:reversed?lastMatchup(args):firstMatchup(args)});}}
+					style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
+				>
+					First
+				</button>
+				<button
+					className="button"
+					disabled={reversed?!nextMatchup(args):!prevMatchup(args)}
+					onClick={() => {
+						console.log("clicked previous", reversed?"next":"previous");
+						dispatch({ type: "setMatchup", matchup:reversed?nextMatchup(args):prevMatchup(args)});
+					}}
+					style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
+				>
+					Previous
+				</button>
 
-			<button
-				className="button"
-				onClick={() => {
-					let newMatchup = randomMatchup(args);
-					dispatch({ type: "setMatchup", matchup:newMatchup});
-				}}
-			>
-				New
-			</button>
-			<button
-				className="button"
-				disabled={!nextMatchup(args)}
-				onClick={() => {dispatch({ type: "setMatchup", matchup:nextMatchup(args)});}}
-				style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
-			>
-				Next
-			</button>
-			<button
-				className="button"
-				disabled={!lastMatchup(args)}
-				onClick={() => {dispatch({ type: "setMatchup", matchup:lastMatchup(args)});}}
-				style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
-			>
-				Last
-			</button>
+				<button
+					className="button"
+					onClick={() => {
+						let newMatchup = randomMatchup(args);
+						dispatch({ type: "setMatchup", matchup:newMatchup});
+					}}
+				>
+					New
+				</button>
+				<button
+					className="button"
+					disabled={reversed?!prevMatchup(args):!nextMatchup(args)}
+					onClick={() => {dispatch({ type: "setMatchup", matchup:reversed?prevMatchup(args):nextMatchup(args)});}}
+					style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
+				>
+					Next
+				</button>
+				<button
+					className="button"
+					disabled={reversed?!firstMatchup(args):!lastMatchup(args)}
+					onClick={() => {dispatch({ type: "setMatchup", matchup:reversed?firstMatchup(args):lastMatchup(args)});}}
+					style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
+				>
+					Last
+				</button>
+			</div>
 		</div>
 	);
 }

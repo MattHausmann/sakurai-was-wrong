@@ -15,6 +15,7 @@ let initialState = {
 	winsDisplay: [0, 0],
 	lockLeft: false,
 	minimumGames:1000,
+	reversed:false,
 	videogameIds:["1","1386"],
 };
 
@@ -290,7 +291,6 @@ const countGuessedMatchupsMinimumGames = (minimumGames) => {
 
 
 const reducer = (prevState = initialState, action) => {
-	console.log(action);
 	switch (action.type) {
 		case "setGameId":
 			return {
@@ -375,6 +375,13 @@ const reducer = (prevState = initialState, action) => {
 				totalGuessed:countGuessedMatchupsMinimumGames(action.val),
 				totalSeen:countSeenMatchupsMinimumGames(action.val),
 				matchup:randomMatchup({minimumGames:prevState.minimumGames}),
+			}
+		}
+		
+		case "toggleReversed": {
+			return {
+				...prevState,
+				reversed:!prevState.reversed,
 			}
 		}
 

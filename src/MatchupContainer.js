@@ -12,7 +12,7 @@ import "./MatchupContainer.css";
 
 const MatchupContainer = () => {
 	const dispatch = useDispatch();
-	const { displayQuizResults, quizMode, winsDisplay, lockLeft } = useSelector(
+	const { displayQuizResults, quizMode, winsDisplay, lockLeft, reversed } = useSelector(
 		(state) => state
 	);
 	const [pieChartDisplay, setPieChartDisplay] = useState(winsDisplay);
@@ -21,8 +21,8 @@ const MatchupContainer = () => {
 		if (displayQuizResults) {
 			return;
 		}
-		setPieChartDisplay([winsDisplay[0], winsDisplay[1]]);
-	}, [winsDisplay, displayQuizResults]);
+		setPieChartDisplay([winsDisplay[reversed?1:0], winsDisplay[reversed?0:1]]);
+	}, [winsDisplay, displayQuizResults, reversed]);
 
 
 	return (
@@ -30,15 +30,15 @@ const MatchupContainer = () => {
 			<div className="top-row">
 				<LabeledCharacterPortrait
 					lockSwitch={!quizMode}
-					side={"left"}
+					side={reversed?"right":"left"}
 					onClick={() => {
 						dispatch({ type: "toggleLockLeft" });
 					}}
 				/>
 				<div className="matchup-container-center">
 					<MatchupRecordDisplay
-						leftWins={winsDisplay[0]}
-						rightWins={winsDisplay[1]}
+						leftWins={winsDisplay[reversed?1:0]}
+						rightWins={winsDisplay[reversed?0:1]}
 					/>
 					<div className="matchup-graphs">
 						{quizMode ? (
@@ -50,7 +50,7 @@ const MatchupContainer = () => {
 						)}
 					</div>
 				</div>
-				<LabeledCharacterPortrait side={"right"} />
+				<LabeledCharacterPortrait side={reversed?"left":"right"} />
 			</div>
 			<div className="bottom-row">
 				{!quizMode && <MatchupNavigator lockLeft={lockLeft} />}
@@ -58,5 +58,6 @@ const MatchupContainer = () => {
 		</div>
 	);
 };
+
 
 export default MatchupContainer;

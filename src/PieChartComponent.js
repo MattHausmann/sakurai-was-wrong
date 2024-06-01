@@ -5,20 +5,20 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import wins from "./wins.json";
 
 const PieChartComponent = ({ pieChartDisplay }) => {
-	const { displayQuizResults, matchup } = useSelector((state) => state);
+	const { displayQuizResults, matchup, reversed } = useSelector((state) => state);
 
 	const [data, setData] = useState([
 		{
-			id: 0,
-			value: pieChartDisplay[1],
-			label: matchup.right,
+			id: reversed?1:0,
+			value: pieChartDisplay[reversed?0:1],
+			label: matchup.left,
 			color: "#cc76a1",
 		},
 
 		{
-			id: 1,
-			value: pieChartDisplay[0],
-			label: matchup.left,
+			id: reversed?0:1,
+			value: pieChartDisplay[reversed?1:0],
+			label: matchup.right,
 			color: "#87b38d",
 		},
 	]);
@@ -61,19 +61,19 @@ const PieChartComponent = ({ pieChartDisplay }) => {
 				{
 					id: 0,
 					value: pieChartDisplay[1],
-					label: matchup.right,
+					label: reversed?matchup.left:matchup.right,
 					color: "#cc76a1",
 				},
 
 				{
 					id: 1,
 					value: pieChartDisplay[0],
-					label: matchup.left,
+					label: reversed?matchup.right:matchup.left,
 					color: "#87b38d",
 				},
 			]);
 		}
-	}, [displayQuizResults, matchup, pieChartDisplay]);
+	}, [displayQuizResults, matchup, pieChartDisplay, reversed]);
 
 	return (
 		<div className="pie-chart-container">
