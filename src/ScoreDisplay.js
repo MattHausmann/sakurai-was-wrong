@@ -76,15 +76,15 @@ const ScoreDisplay = () => {
 			</div>
 			<div className="score-box">
 				<span className="score-label">Matchups guessed</span>
-				<span className="score-value">{totalGuessed}</span>
+				<span className="score-value">{totalGuessed}<span className="align">0000</span></span>
 			</div>
 			<div className="score-box">
 				<span className="score-label">Matchups seen</span>
-				<span className="score-value">{totalSeen}</span>
+				<span className="score-value">{totalSeen}<span className="align">0000</span></span>
 			</div>
 			<div className="score-box">
 				<span className="score-label">Total matchups</span>
-				<span className="score-value">{totalMatchups}</span>
+				<span className="score-value">{totalMatchups}<span className="align">0000</span></span>
 			</div>
 		</div>
 	);

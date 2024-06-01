@@ -15,6 +15,7 @@ let initialState = {
 	winsDisplay: [0, 0],
 	lockLeft: false,
 	minimumGames:1000,
+	videogameIds:["1","1386"],
 };
 
 let minGames = initialState.minimumGames;
