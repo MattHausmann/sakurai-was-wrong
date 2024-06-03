@@ -54,6 +54,7 @@ const App = () => {
 					<button onClick={()=>dialogRef.current.close()}>
 						<i className="fa fa-close"></i>
 					</button>
+					<GameSelect games={games} />
 					<MatchupSlider value={1000} />
 				</dialog>
 			</div>

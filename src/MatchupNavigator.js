@@ -18,8 +18,6 @@ const defaultCompareMatchups = (a, b) => {
 
 	let leftCompare = a.left.localeCompare(b.left)
 	//if it's in alphabetical order
-	if(leftCompare < 0) {
-	}
 	if(!leftCompare) {
 		let rightCompare = a.right.localeCompare(b.right);
 		if (!rightCompare) {
@@ -104,7 +102,7 @@ const compareByWinnerWinPercent = (a, b) => {
 	return winnerWinRateDifference;
 };
 
-const firstMatchupAtOrAboveThreshold = function (threshold) {
+export const firstIndexAtOrAboveThreshold = function (threshold) {
 	let listName = "Total Games";
 
 	let b = 0;
@@ -115,28 +113,28 @@ const firstMatchupAtOrAboveThreshold = function (threshold) {
 		let totalGames = getTotalGames(totalGamesList[m]);
 		if (totalGames < threshold) {
 			if (b + 1 === e) {
-				return seekFirstMatchupAtThreshold(totalGamesList, e);
+				return seekFirstIndexAtThreshold(totalGamesList, e);
 			}
 			b = m;
 		}
 		if (threshold < totalGames) {
 			if (b + 1 === e) {
-				return seekFirstMatchupAtThreshold(totalGamesList, e);
+				return seekFirstIndexAtThreshold(totalGamesList, e);
 			}
 			e = m;
 		}
 		if (threshold === totalGames) {
-			return seekFirstMatchupAtThreshold(totalGamesList, m);
+			return seekFirstIndexAtThreshold(totalGamesList, m);
 		}
 	}
 };
 
-const seekFirstMatchupAtThreshold = function (list, index) {
+const seekFirstIndexAtThreshold = function (list, index) {
 	let goalGames = getTotalGames(list[index]);
 	while (index >= 0 && getTotalGames(list[index]) === goalGames) {
 		index -= 1;
 	}
-	return list[index + 1];
+	return index + 1;
 };
 
 export function unreverse(matchup) {
@@ -155,14 +153,17 @@ const reverse = function(matchup) {
 
 
 export function firstMatchup(args) {
-	let {matchup, minimumGames, lockLeft} = args;
+	let {matchup, minimumGames, videogameIds, lockLeft} = args;
 	let idx = 0;
 
 	if(lockLeft) {
 		let list = matchupsPerCharacter[matchup.left];
 		while(idx < list.length) {
 			let newMatchup = list[idx];
-			if(matchup !== newMatchup && getTotalGames(newMatchup) >= minimumGames) {
+			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
+			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
+			correctVideogameId = correctVideogameId || videogameIds.length == 0;
+			if(matchup != newMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
 			}
 			idx += 1;
@@ -171,7 +172,10 @@ export function firstMatchup(args) {
 		let list = winnerWinPercentList;
 		while(idx < list.length) {
 			let newMatchup = list[idx];
-			if(matchup !== newMatchup && getTotalGames(newMatchup) >= minimumGames) {
+			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
+			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
+			correctVideogameId = correctVideogameId || videogameIds.length == 0;
+			if(matchup != newMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
 			}
 			idx += 1;
@@ -180,13 +184,16 @@ export function firstMatchup(args) {
 }
 
 export function lastMatchup(args) {
-	let {matchup, minimumGames, lockLeft} = args;
+	let {matchup, minimumGames, videogameIds, lockLeft} = args;
 	if(lockLeft) {
 		let list = matchupsPerCharacter[matchup.left];
 		let idx = list.length - 1;
 		while(idx > 0) {
 			let newMatchup = list[idx];
-			if(matchup !== newMatchup && getTotalGames(newMatchup) >= minimumGames) {
+			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
+			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
+			correctVideogameId = correctVideogameId || videogameIds.length == 0;
+			if(matchup != newMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
 			}
 			idx -= 1;
@@ -196,7 +203,10 @@ export function lastMatchup(args) {
 		let idx = list.length - 1;
 		while(idx >= 0) {
 			let newMatchup = list[idx];
-			if(matchup !== newMatchup && getTotalGames(newMatchup) >= minimumGames) {
+			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
+			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
+			correctVideogameId = correctVideogameId || videogameIds.length == 0;
+			if(matchup != newMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
 			}
 			idx -= 1;
@@ -216,15 +226,25 @@ function binarySearchListForObjectWithComparator(list, matchup, comparator) {
 }
 
 export function nextMatchup(args) {
-	console.log("nextMatchup", args);
-	let {matchup, minimumGames, lockLeft} = args;
+	let {matchup, minimumGames, videogameIds, lockLeft} = args;
+	let goalMatchup = {...matchup};
+	console.log(matchup, goalMatchup, matchup==goalMatchup);
 	if(lockLeft) {
-		let list = matchupsPerCharacter[matchup.left];
+		let list = matchupsPerCharacter[goalMatchup.left];
 		let comparator = compareByLeftWinPercent;
-		let idx = binarySearchListForObjectWithComparator(list, matchup, comparator);
+		let idx = binarySearchListForObjectWithComparator(list, goalMatchup, comparator);
+		console.log(list);
 		while(idx < list.length) {
 			let newMatchup = list[idx];
-			if(matchup != newMatchup && getTotalGames(newMatchup) >= minimumGames) {
+			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
+			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
+			correctVideogameId = correctVideogameId || videogameIds.length == 0;
+			let sameMatchup = goalMatchup.videogameId == newMatchup.videogameId
+							&& goalMatchup.left == newMatchup.left
+							&& goalMatchup.right== newMatchup.right;
+			if(!sameMatchup && enoughGames && correctVideogameId) {
+				console.log('returning new matchup');
+				console.log(newMatchup);
 				return newMatchup;
 			}
 			idx += 1;
@@ -235,7 +255,13 @@ export function nextMatchup(args) {
 		let idx = binarySearchListForObjectWithComparator(list, matchup, comparator);
 		while(idx < list.length) {
 			let newMatchup = list[idx];
-			if(matchup != newMatchup && getTotalGames(newMatchup) >= minimumGames) {
+			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
+			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
+			correctVideogameId = correctVideogameId || videogameIds.length == 0;
+			let sameMatchup = goalMatchup.videogameId == newMatchup.videogameId
+							&& goalMatchup.left == newMatchup.left
+							&& goalMatchup.right== newMatchup.right;
+			if(!sameMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
 			}
 			idx += 1;
@@ -244,15 +270,19 @@ export function nextMatchup(args) {
 }
 
 export function prevMatchup(args) {
-	console.log("prevMatchup", args);
-	let {matchup, minimumGames, lockLeft} = args;
+	let {matchup, minimumGames, videogameIds, lockLeft} = args;
 	if(lockLeft) {
 		let list = matchupsPerCharacter[matchup.left];
 		let comparator = compareByLeftWinPercent;
 		let idx = binarySearchListForObjectWithComparator(list, matchup, comparator);
+		let filteredVideogameIds = videogameIds;
+		
 		while(idx >= 0) {
 			let newMatchup = list[idx];
-			if(matchup != newMatchup && getTotalGames(newMatchup) >= minimumGames) {
+			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
+			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
+			correctVideogameId = correctVideogameId || videogameIds.length == 0;
+			if(matchup != newMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
 			}
 			idx -= 1;
@@ -263,7 +293,10 @@ export function prevMatchup(args) {
 		let idx = binarySearchListForObjectWithComparator(list, unreverse(matchup), comparator);
 		while(idx >= 0) {
 			let newMatchup = list[idx];
-			if(matchup != newMatchup && getTotalGames(newMatchup) >= minimumGames) {
+			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
+			correctVideogameId = correctVideogameId || videogameIds.length==0;
+			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
+			if(matchup != newMatchup && correctVideogameId&&enoughGames) {
 				return newMatchup;
 			}
 			idx -= 1;
@@ -271,7 +304,9 @@ export function prevMatchup(args) {
 	}
 }
 
-export function randomMatchup(state) {
+
+export function randomMatchup(state, filteredMatchups) {
+	
 	let list = state.lockLeft?matchupsPerCharacter[state.matchup.left]:totalGamesList;
 	let enoughGames = false;
 	let newState = state.matchup;
@@ -296,23 +331,40 @@ export function randomMatchup(state) {
 			let randomCharacter = characters[Math.floor(Math.random()*characters.length)];
 			let matchups = matchupsPerCharacter[randomCharacter];
 			selected = matchups[Math.floor(Math.random()*matchups.length)];
-			if(getTotalGames(selected) >= state.minimumGames) {
+			let noGameRequirements=state.videogameIds.length==0;
+			let videogameIdInList = state.videogameIds.includes(""+selected.videogameId)
+			let correctVideogameId = noGameRequirements||videogameIdInList;
+			let enoughGames=getTotalGames(selected) >= state.minimumGames
+
+			if(enoughGames && correctVideogameId) {
 				looping = false;
 			}
 		}
 		return selected;
 	}
-	const matchup0 = firstMatchupAtOrAboveThreshold(state.minimumGames);
-	const index0 = binarySearchListForObjectWithComparator(list, matchup0, compareByTotalGames);
-	const newIndex = index0 + Math.floor(Math.random() * (list.length-index0));
+	const index0 = firstIndexAtOrAboveThreshold(state.minimumGames);
+	let looping = true;
+	let newIndex = index0 + Math.floor(Math.random() * (list.length-index0));
+	while(looping) {
+		newIndex = index0 + Math.floor(Math.random() * (list.length-index0));
+		let newMatchup = totalGamesList[newIndex];
+
+		let noGameRequirements=state.videogameIds.length==0;
+		let videogameIdInList = state.videogameIds.includes(""+newMatchup.videogameId)
+		let correctVideogameId = noGameRequirements||videogameIdInList;
+		if(correctVideogameId) {
+			looping=false;
+		}
+	}
 	return totalGamesList[newIndex];
 }
+
 function leftButtonsVisible(args) {
-	return args.reversed?!!nextMatchup(args):!!prevMatchup(args);
+	return !!prevMatchup(args);
 }
 
 function rightButtonsVisible(args) {
-	return args.reversed?!!prevMatchup(args):!!nextMatchup(args);
+	return !!nextMatchup(args);
 }
 
 function randomButtonVisible(args) {
@@ -360,7 +412,7 @@ for (let videogameId of [1, 1386]) {
 }
 
 
-let totalGamesList = [...oneSidedMatchupListA].sort(compareByTotalGames);
+export const totalGamesList = [...oneSidedMatchupListA].sort(compareByTotalGames);
 
 export const fromMinimumGamesToTotalMatchups = {};
 
@@ -382,9 +434,9 @@ let winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinnerWinPerc
 
 export function MatchupNavigator() {
 	const dispatch = useDispatch();
-	let {matchup, minimumGames, lockLeft, reversed}=useSelector((state)=>state);
+	let {matchup, minimumGames, videogameIds, lockLeft}=useSelector((state)=>state);
 	
-	let args = {matchup, minimumGames, lockLeft, reversed};
+	let args = {matchup, minimumGames, videogameIds, lockLeft};
 	let videogameId = matchup.videogameId;
 
 	useEffect(() => {
@@ -394,30 +446,22 @@ export function MatchupNavigator() {
 	}, [dispatch, matchup, lockLeft]);
 
 
-	console.log("prev: ", prevMatchup(args));
-	console.log("next: ", nextMatchup(args));
 	return (
 		<div className="matchup-navigator">
-			<div className="matchup-navigator-top-row">
-				<button onClick={()=>dispatch({type:"toggleReversed"})}>
-					<i className="fa fa-arrows-rotate"></i>
-				</button>
-			</div>
 			<div className="matchup-navigator-bottom-row">
 				<button
 					className="button"
-					disabled={reversed?!lastMatchup(args):!firstMatchup(args)}
-					onClick={() => {dispatch({ type: "setMatchup", matchup:reversed?lastMatchup(args):firstMatchup(args)});}}
+					disabled={!firstMatchup(args)}
+					onClick={() => {dispatch({ type: "setMatchup", matchup:firstMatchup(args)});}}
 					style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 				>
 					First
 				</button>
 				<button
 					className="button"
-					disabled={reversed?!nextMatchup(args):!prevMatchup(args)}
+					disabled={!prevMatchup(args)}
 					onClick={() => {
-						console.log("clicked previous", reversed?"next":"previous");
-						dispatch({ type: "setMatchup", matchup:reversed?nextMatchup(args):prevMatchup(args)});
+						dispatch({ type: "setMatchup", matchup:prevMatchup(args)});
 					}}
 					style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 				>
@@ -435,16 +479,16 @@ export function MatchupNavigator() {
 				</button>
 				<button
 					className="button"
-					disabled={reversed?!prevMatchup(args):!nextMatchup(args)}
-					onClick={() => {dispatch({ type: "setMatchup", matchup:reversed?prevMatchup(args):nextMatchup(args)});}}
+					disabled={!nextMatchup(args)}
+					onClick={() => {dispatch({ type: "setMatchup", matchup:nextMatchup(args)});}}
 					style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 				>
 					Next
 				</button>
 				<button
 					className="button"
-					disabled={reversed?!firstMatchup(args):!lastMatchup(args)}
-					onClick={() => {dispatch({ type: "setMatchup", matchup:reversed?firstMatchup(args):lastMatchup(args)});}}
+					disabled={!lastMatchup(args)}
+					onClick={() => {dispatch({ type: "setMatchup", matchup:lastMatchup(args)});}}
 					style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 				>
 					Last
