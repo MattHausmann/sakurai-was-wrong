@@ -15,17 +15,18 @@ const GameSelect = ({ games }) => {
 	const getImageUrl = (gameId) => {
 		return "/characters/" + gameId + (videogameIds.includes(gameId)?"/selected":"/unselected")+".png";
 	};
-	
-	
+
+
 	const toggleGameSelected = (videogameId, dialogRef) => {
 		dispatch({type:"toggleGameSelected", val:videogameId});
 	}
-	
+
 
 	return (
 		<div className="game-select">
 			{games.map((game) => (
 				<button
+					className={videogameIds.includes(game.id) ? "enabled" : ""}
 					gameId={game.id}
 					gameName={game.name}
 					isSelected={videogameIds.includes(game.id)}
@@ -41,7 +42,7 @@ const GameSelect = ({ games }) => {
 								cannotChangeRef.current.showModal();
 								return;
 							}
-						} 
+						}
 						clicked = game.id;
 						if(matchingGameId&&videogameIdInList&&longerList) {
 							dialogRef.current.showModal();
@@ -49,7 +50,7 @@ const GameSelect = ({ games }) => {
 							dialogRef.current.showModal();
 						} else {
 							dispatch({type:"toggleGameSelected",val:game.id})
-						}						
+						}
 					}}
 				>
 					<img src={getImageUrl(game.id)} alt={game.name}/>
@@ -76,7 +77,7 @@ const GameSelect = ({ games }) => {
 					cannotChangeRef.current.close();
 					setConfirming(false);
 				}}>OK</button>
-				
+
 			</dialog>
 
 		</div>
