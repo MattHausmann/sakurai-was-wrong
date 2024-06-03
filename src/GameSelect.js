@@ -2,13 +2,14 @@
 import React, { useState, useRef } from "react";
 import GameButton from "./GameButton"; // Import the GameButton component
 import { useDispatch, useSelector } from 'react-redux';
-
+import { getTotalMatchups } from './MatchupNavigator';
 
 const GameSelect = ({ games }) => {	
 
-	const {matchup, videogameIds} = useSelector((state) => state);
+	const {matchup, minimumGames, videogameIds} = useSelector((state) => state);
 	const dispatch = useDispatch();
 	const dialogRef = useRef();
+	const cannotChangeRef = useRef();
 	const [confirming, setConfirming] = useState(false);
 	let clicked = "";
 	
@@ -18,8 +19,6 @@ const GameSelect = ({ games }) => {
 	
 	
 	const toggleGameSelected = (videogameId, dialogRef) => {
-		console.log(videogameId);
-		console.log(videogameIds);
 		dispatch({type:"toggleGameSelected", val:videogameId});
 	}
 	
@@ -36,6 +35,14 @@ const GameSelect = ({ games }) => {
 						let matchingGameId = matchup.videogameId == game.id;
 						let videogameIdInList = videogameIds.includes(game.id);
 						let longerList = videogameIds.length > 1;
+						if(longerList && videogameIds.includes(game.id)) {
+							console.log("hi");
+							let newVideogameIds = [...videogameIds].filter(e=>e!=game.id);
+							if(!getTotalMatchups(minimumGames, newVideogameIds)) {
+								cannotChangeRef.current.showModal();
+								return;
+							}
+						} 
 						clicked = game.id;
 						if(matchingGameId&&videogameIdInList&&longerList) {
 							dialogRef.current.showModal();
@@ -43,7 +50,7 @@ const GameSelect = ({ games }) => {
 							dialogRef.current.showModal();
 						} else {
 							dispatch({type:"toggleGameSelected",val:game.id})
-						}
+						}						
 					}}
 				>
 					<img src={getImageUrl(game.id)} />
@@ -63,6 +70,14 @@ const GameSelect = ({ games }) => {
 					dialogRef.current.close();
 					setConfirming(false);
 				}}>No</button>
+			</dialog>
+			<dialog ref={cannotChangeRef}>
+				<span>There are no matchups meeting the selected criteria</span>
+				<button onClick={()=>{
+					cannotChangeRef.current.close();
+					setConfirming(false);
+				}}>OK</button>
+				
 			</dialog>
 
 		</div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getTotalGames, fromMinimumGamesToTotalMatchups } from './MatchupNavigator.js';
+import { getTotalGames, getTotalMatchups, fromMinimumGamesToTotalMatchups } from './MatchupNavigator.js';
 import { useSelector, useDispatch } from 'react-redux';
 
 let sortedKeys = Object.keys(fromMinimumGamesToTotalMatchups).map(Number).sort((a,b) => a-b);
@@ -8,14 +8,15 @@ let sortedKeys = Object.keys(fromMinimumGamesToTotalMatchups).map(Number).sort((
 
 function MatchupSlider({value}) {
 	const dispatch = useDispatch();
-	const {matchup, minimumGames} = useSelector((state) => state);
+	const {matchup, minimumGames, videogameIds} = useSelector((state) => state);
 	const [sliderValue, setSliderValue] = useState(value);
 	
 	const [confirming, setConfirming] = useState(false);
 	
 	const dialogRef = useRef();
 	const confirmRef = useRef();
-	
+	const cannotChangeRef = useRef();
+
 	const getMaxIndex = (matchup) => {
 		let totalGames = getTotalGames(matchup);
 		let idx = sortedKeys.length - 1;
@@ -34,7 +35,8 @@ function MatchupSlider({value}) {
 		}
 		const newMinimumGames = sortedKeys[newIndex];
 		if(newMinimumGames > getTotalGames(matchup)) {
-			return;
+			confirmRef.current.show();
+			setConfirming(true);
 		}
 		const newTotalMatchups = fromMinimumGamesToTotalMatchups[newMinimumGames];
 		if(newMinimumGames <= maximumMinimum) {
@@ -51,7 +53,8 @@ function MatchupSlider({value}) {
 		}
 		const newMinimumGames = sortedKeys[newIndex];
 		if(newMinimumGames > getTotalGames(matchup)) {
-			return;
+			confirmRef.current.show();
+			setConfirming(true);
 		}
 		const newTotalMatchups = fromMinimumGamesToTotalMatchups[newMinimumGames];
 		if(newMinimumGames <= maximumMinimum) {
@@ -70,6 +73,11 @@ function MatchupSlider({value}) {
 	const handleOnMouseUp = (event) => {
 		let newMinimumGames=sortedKeys[sliderValue];
 		let maximumMinimum = getTotalGames(matchup);
+		
+		if(!getTotalMatchups(newMinimumGames, videogameIds)) {
+			cannotChangeRef.current.showModal();
+			return;
+		}
 		
 		if(newMinimumGames > maximumMinimum) {
 			confirmRef.current.show();
@@ -115,10 +123,25 @@ function MatchupSlider({value}) {
 					setConfirming(false);
 				}}>Yes</button>
 				<button onClick={()=>{
-					setSliderValue(getMaxIndex(matchup));
+					let newIndex = getMaxIndex(matchup);
+					let minGames = sortedKeys[newIndex];
+					setSliderValue(newIndex);
+					dispatch({type:"setMinimumGames", val:minGames});
 					confirmRef.current.close();
 					setConfirming(false);
 				}}>No</button>
+			</dialog>
+			<dialog ref={cannotChangeRef}>
+				<span>There are no matchups meeting the selected criteria</span>
+				<button onClick={()=>{
+					let newIndex = getMaxIndex(matchup);
+					let minGames = sortedKeys[newIndex];
+					setSliderValue(newIndex);
+					dispatch({type:"setMinimumGames", val:minGames});
+					cannotChangeRef.current.close();
+					setConfirming(false);
+				}}>OK</button>
+
 			</dialog>
 		</div>
 	);

@@ -27,6 +27,21 @@ const defaultCompareMatchups = (a, b) => {
 	}
 	return leftCompare;
 };
+export const getTotalMatchups = (minimumGames, videogameIds) => {
+	let totalMatchups = 0;
+	let idx = firstIndexAtOrAboveThreshold(minimumGames);
+	while(idx < totalGamesList.length) {
+		let matchup = totalGamesList[idx];
+		let enoughGames = getTotalGames(matchup) >= minimumGames;
+		let correctVideogameId = videogameIds.length == 0;
+		correctVideogameId = correctVideogameId || videogameIds.includes(""+matchup.videogameId);
+		if(enoughGames && correctVideogameId) {
+			totalMatchups += 1;
+		}
+		idx += 1;
+	}
+	return totalMatchups;
+};
 
 export function getWins(matchup) {
 	let { videogameId, left, right } = matchup;
@@ -228,12 +243,10 @@ function binarySearchListForObjectWithComparator(list, matchup, comparator) {
 export function nextMatchup(args) {
 	let {matchup, minimumGames, videogameIds, lockLeft} = args;
 	let goalMatchup = {...matchup};
-	console.log(matchup, goalMatchup, matchup==goalMatchup);
 	if(lockLeft) {
 		let list = matchupsPerCharacter[goalMatchup.left];
 		let comparator = compareByLeftWinPercent;
 		let idx = binarySearchListForObjectWithComparator(list, goalMatchup, comparator);
-		console.log(list);
 		while(idx < list.length) {
 			let newMatchup = list[idx];
 			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
@@ -243,8 +256,6 @@ export function nextMatchup(args) {
 							&& goalMatchup.left == newMatchup.left
 							&& goalMatchup.right== newMatchup.right;
 			if(!sameMatchup && enoughGames && correctVideogameId) {
-				console.log('returning new matchup');
-				console.log(newMatchup);
 				return newMatchup;
 			}
 			idx += 1;

@@ -1,5 +1,5 @@
 import { createStore } from "redux";
-import { getWins, getTotalGames, totalGamesList, firstIndexAtOrAboveThreshold, randomMatchup, unreverse, fromMinimumGamesToTotalMatchups } from "./MatchupNavigator";
+import { getWins, getTotalGames, getTotalMatchups, totalGamesList, firstIndexAtOrAboveThreshold, randomMatchup, unreverse, fromMinimumGamesToTotalMatchups } from "./MatchupNavigator";
 import wins from "./wins.json";
 
 let initialState = {
@@ -157,8 +157,6 @@ const newWinsDisplay = (quizMode, matchup) => {
 // this is distinct from mutating due to a quiz guess
 const mutateStateFromNav = (prevState, newMatchup) => {
 	
-	console.log(prevState, newMatchup);
-	
 	let {videogameId, left, right} = newMatchup;
 	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
 	
@@ -233,6 +231,20 @@ initialState = mutateStateFromNav(initialState, firstMatchup);
 
 
 const getTotalScore = (minimumGames, videogameIds) => {
+	
+	let idx = firstIndexAtOrAboveThreshold(minimumGames);
+	let totalScore = 0;
+	while(idx < totalGamesList.length) {
+		let matchup = totalGamesList[idx];
+		let enoughGames = getTotalGames(matchup) >= minimumGames;
+		let correctVideogameId = videogameIds.length == 0;
+		correctVideogameId = correctVideogameId || videogameIds.includes(""+matchup.videogameId);
+		if(enoughGames && correctVideogameId) {
+			totalScore += scoreMatchup(matchup);
+		}
+		idx += 1;
+	}
+/*	
 	let totalScore = 0;
 	let videogameIdKeys = videogameIds;
 	if(videogameIdKeys.length == 0) {
@@ -243,32 +255,15 @@ const getTotalScore = (minimumGames, videogameIds) => {
 		let videogame = guessedMatchups[videogameId];
 		for(let alphabeticallyFirst in videogame) {
 			let character = videogame[alphabeticallyFirst];
-			for(let alphabeticallyLast in character) {
+			for(let alphabeticallyLast in character) {				
 				totalScore += scoreMatchup({videogameId:videogameId, left:alphabeticallyFirst, right:alphabeticallyLast});
 			}
 		}
 	}
+*/
 	return totalScore;
 }
 
-
-
-const getTotalMatchups = (minimumGames, videogameIds) => {
-	let totalMatchups = 0;
-	let idx = firstIndexAtOrAboveThreshold(minimumGames);
-	while(idx < totalGamesList.length) {
-		let matchup = totalGamesList[idx];
-		let enoughGames = getTotalGames(matchup) >= minimumGames;
-		let correctVideogameId = videogameIds.length == 0;
-		correctVideogameId = correctVideogameId || videogameIds.includes(""+matchup.videogameId);
-		if(enoughGames && correctVideogameId) {
-			totalMatchups += 1;
-		}
-		idx += 1;
-	}
-	return totalMatchups;
-};
-console.log(initialState.minimumGames, initialState.videogameIds);
 initialState.totalMatchups = getTotalMatchups(initialState.minimumGames, initialState.videogameIds);
 
 const countSeenMatchupsMinimumGames = (minimumGames, videogameIds) => {
@@ -290,7 +285,6 @@ const countSeenMatchupsMinimumGames = (minimumGames, videogameIds) => {
 }
 
 const countGuessedMatchupsMinimumGames = (minimumGames, videogameIds) => {
-	console.log("counting guessed matchups", minimumGames,videogameIds);
 	let guessed = 0;
 	let videogameIdKeys = videogameIds;
 	if(videogameIds.length == 0) {
@@ -298,7 +292,6 @@ const countGuessedMatchupsMinimumGames = (minimumGames, videogameIds) => {
 	}
 	
 	for(let videogameId of videogameIdKeys) {
-		console.log(videogameId);
 		for(let alphabeticallyFirst in guessedMatchups[videogameId]) {
 			for(let alphabeticallyLast in guessedMatchups[videogameId][alphabeticallyFirst]) {
 				if(getTotalGames({videogameId, left:alphabeticallyFirst, right:alphabeticallyLast}) >= minimumGames) {
@@ -307,8 +300,6 @@ const countGuessedMatchupsMinimumGames = (minimumGames, videogameIds) => {
 			}
 		}
 	}
-	console.log(guessed);
-	
 	return guessed;
 }
 
@@ -405,6 +396,7 @@ const reducer = (prevState = initialState, action) => {
 				totalGuessed:countGuessedMatchupsMinimumGames(action.val, prevState.videogameIds),
 				totalSeen:countSeenMatchupsMinimumGames(action.val, prevState.videogameIds),
 				matchup:randomMatchup({...prevState, minimumGames:action.val}),
+				totalScore: getTotalScore(action.val, prevState.videogameIds),
 			}
 		}
 		
@@ -432,12 +424,10 @@ const reducer = (prevState = initialState, action) => {
 
 
 		case "forceToggleGameSelected": {
-			console.log(action.val);
 			let filteredMatchups = prevState.videogameIds.filter(e => e!=action.val);
 			if(prevState.videogameIds.length == 0) {
 				filteredMatchups = [action.val];
 			}
-			console.log(filteredMatchups);
 			prevState.videogameIds = filteredMatchups;
 			return {
 				...prevState,
