@@ -23,10 +23,9 @@ body {
 .app-content {
 	display: flex;
 	flex-direction: row;
-	flex-grow: 1; /* Allow content to take remaining height */
+	flex-grow: 1;
 }
 
-/* Left column */
 .left-column {
 	flex: 3;
 	border: 2px solid #333;
@@ -34,7 +33,6 @@ body {
 	box-sizing: border-box;
 }
 
-/* Right column */
 .right-column {
 	display: flex;
 	flex: 2;
@@ -135,7 +133,7 @@ body {
 	top: -10px;
 	left: 1%;
 	padding: 0 10px;
-	background-color:#dadaee;
+	background-color: #dadaee;
 }
 
 /* Style for the score value */
@@ -144,16 +142,15 @@ body {
 	line-height: 40px;
 }
 
-
 button {
 	display: inline-block;
-	border: 1px solid transparent;
+	border: 1px solid #555;
 	border-radius: 6px;
 	padding: 0.5rem 1rem;
 	margin: 0 0.1em;
 	text-decoration: none;
-	background: #007ec0;
-	color: #ffffff;
+	background: #92afd7;
+	color: #2a2a2a;
 	font-family: sans-serif;
 	font-size: 1rem;
 	cursor: pointer;
@@ -164,25 +161,32 @@ button {
 }
 
 .align {
-	color:#dadaee;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+	color: #dadaee;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 button:hover,
 button:focus {
-	background: #bad1de;
+	background: #92afd7;
 }
 
 button:focus {
 	outline: none;
+	/* background: #235789; */
 }
 
 button:active {
-	transform: scale(0.98);
-	background: #004f7a;
+	background: #759c9b;
+	color: #dadaee;
+	transform: scale(0.9);
+	transition: transform 200ms ease;
+}
+
+button.enabled {
+	background: #58895E;
 }

@@ -1,10 +1,9 @@
 // GameSelect.js
 import React, { useState, useRef } from "react";
-import GameButton from "./GameButton"; // Import the GameButton component
 import { useDispatch, useSelector } from 'react-redux';
 import { getTotalMatchups } from './MatchupNavigator';
 
-const GameSelect = ({ games }) => {	
+const GameSelect = ({ games }) => {
 
 	const {matchup, minimumGames, videogameIds} = useSelector((state) => state);
 	const dispatch = useDispatch();
@@ -12,7 +11,7 @@ const GameSelect = ({ games }) => {
 	const cannotChangeRef = useRef();
 	const [confirming, setConfirming] = useState(false);
 	let clicked = "";
-	
+
 	const getImageUrl = (gameId) => {
 		return "/characters/" + gameId + (videogameIds.includes(gameId)?"/selected":"/unselected")+".png";
 	};
@@ -53,7 +52,7 @@ const GameSelect = ({ games }) => {
 						}						
 					}}
 				>
-					<img src={getImageUrl(game.id)} />
+					<img src={getImageUrl(game.id)} alt={game.name}/>
 				</button>
 			))}
 			<dialog ref={dialogRef}>
