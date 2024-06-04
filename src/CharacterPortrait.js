@@ -1,10 +1,11 @@
 // CharacterPortrait.js
 import React, { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import CharacterDropdown from './CharacterDropdown';
 import "./CharacterPortrait.css"
 
 const LabeledCharacterPortrait = ({ side, lockSwitch, onClick }) => {
-	let { matchup, lockLeft } = useSelector((state) => state);
+	let { matchup, minimumGames, videogameIds, lockLeft, quizMode } = useSelector((state) => state);
 	let [name, setName] = useState("");
 	let [baseImagePath, setBaseImagePath] = useState("");
 	let [loading, setLoading] = useState(true);
@@ -45,11 +46,14 @@ const LabeledCharacterPortrait = ({ side, lockSwitch, onClick }) => {
 				alt={loading ? "Loading..." : resolvedName}
 				onLoad={() => setLoading(false)}
 			/>
-			<p>{resolvedName}</p>
+			{quizMode?
+				<div className="character-label">{resolvedName}</div>:
+				<CharacterDropdown side={side} />
+			}
 				{lockSwitch && (
 					<label>
 						Lock Character:
-						<input type="checkbox" onChange={() => {dispatch({type:"toggleLockLeft"});}} />
+						<input type="checkbox" checked={lockLeft} onChange={() => {dispatch({type:"toggleLockLeft"});}} />
 					</label>
 				)}
 		</div>

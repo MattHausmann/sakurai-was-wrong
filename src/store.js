@@ -159,6 +159,16 @@ const mutateStateFromNav = (prevState, newMatchup) => {
 	
 	let {videogameId, left, right} = newMatchup;
 	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
+	let newLockLeft = prevState.lockLeft;
+	
+	
+	if(wins[videogameId][left][right]<wins[videogameId][right][left]) {
+		newLockLeft = true;
+	}
+	if(wins[videogameId][left][right]==wins[videogameId][right][left]) {
+		newLockLeft = left != alphabeticallyFirst;
+	}
+	
 	
 	let newTotalSeen = prevState.totalSeen + 1;
 	
@@ -185,6 +195,8 @@ const mutateStateFromNav = (prevState, newMatchup) => {
 	
 	
 	let winsDisplay =  newWinsDisplay(prevState.quizMode, newMatchup); 
+	
+	
 
 	return {
 		...prevState,
@@ -193,6 +205,7 @@ const mutateStateFromNav = (prevState, newMatchup) => {
 		matchup: newMatchup,
 		mostRecentScore: scoreMatchup(newMatchup),
 		winsDisplay: winsDisplay,
+		lockLeft:newLockLeft,
 	};
 };
 
@@ -324,10 +337,14 @@ const reducer = (prevState = initialState, action) => {
 		case "setMatchup":
 			return mutateStateFromNav(prevState, action.matchup);
 		case "toggleLockLeft":
+			let unreversedMatchup = prevState.matchup;
+			if(prevState.lockLeft) {
+				unreversedMatchup = unreverse(unreversedMatchup);
+			}
 			return {
 				...prevState,
 				lockLeft: !prevState.lockLeft,
-				matchup:unreverse(prevState.matchup),
+				matchup:unreversedMatchup,
 			};
 
 		// quiz muts
