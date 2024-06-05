@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getTotalGames, getTotalMatchups, fromMinimumGamesToTotalMatchups } from './MatchupNavigator.js';
+import { getTotalGames, getTotalMatchups, fromMinimumGamesToTotalMatchups, matchupsPerCharacter } from './MatchupNavigator.js';
 import { useSelector, useDispatch } from 'react-redux';
 
 let sortedKeys = Object.keys(fromMinimumGamesToTotalMatchups).map(Number).sort((a,b) => a-b);
@@ -8,7 +8,7 @@ let sortedKeys = Object.keys(fromMinimumGamesToTotalMatchups).map(Number).sort((
 
 function MatchupSlider({value}) {
 	const dispatch = useDispatch();
-	const {matchup, minimumGames, videogameIds} = useSelector((state) => state);
+	const {matchup, minimumGames, videogameIds, lockLeft} = useSelector((state) => state);
 	const [sliderValue, setSliderValue] = useState(value);
 	
 	const [confirming, setConfirming] = useState(false);
@@ -65,8 +65,8 @@ function MatchupSlider({value}) {
   
 	const handleChange = (event) => {
 		const newIndex = parseInt(event.target.value, 10);
-		let newMinimumGames=sortedKeys[sliderValue];
 		setSliderValue(newIndex);
+		let newMinimumGames=sortedKeys[newIndex];
 		dispatch({type:"setMinimumGames", val:newMinimumGames});
 	}
 	
@@ -74,7 +74,7 @@ function MatchupSlider({value}) {
 		let newMinimumGames=sortedKeys[sliderValue];
 		let maximumMinimum = getTotalGames(matchup);
 		
-		if(!getTotalMatchups(newMinimumGames, videogameIds)) {
+		if(!getTotalMatchups(newMinimumGames, videogameIds, matchup, lockLeft)) {
 			cannotChangeRef.current.showModal();
 			return;
 		}

@@ -1,5 +1,6 @@
 // GameSelect.js
 import React, { useState, useRef } from "react";
+import GameButton from "./GameButton";
 import { useDispatch, useSelector } from 'react-redux';
 import { getTotalMatchups } from './MatchupNavigator';
 
@@ -36,7 +37,6 @@ const GameSelect = ({ games }) => {
 						let videogameIdInList = videogameIds.includes(game.id);
 						let longerList = videogameIds.length > 1;
 						if(longerList && videogameIds.includes(game.id)) {
-							console.log("hi");
 							let newVideogameIds = [...videogameIds].filter(e=>e!=game.id);
 							if(!getTotalMatchups(minimumGames, newVideogameIds)) {
 								cannotChangeRef.current.showModal();
