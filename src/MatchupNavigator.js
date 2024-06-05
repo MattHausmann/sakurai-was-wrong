@@ -27,8 +27,22 @@ const defaultCompareMatchups = (a, b) => {
 	}
 	return leftCompare;
 };
-export const getTotalMatchups = (minimumGames, videogameIds) => {
+export const getTotalMatchups = (minimumGames, videogameIds, matchup, lockLeft) => {
+	let list = totalGamesList;
 	let totalMatchups = 0;
+	
+	if(matchup && lockLeft) {
+		list = matchupsPerCharacter[matchup.left];
+		for(let m of list) {
+			let enoughGames = getTotalGames(m) >= minimumGames;
+			let correctVideogameId = videogameIds.length == 0;
+			correctVideogameId = correctVideogameId || videogameIds.includes(""+m.videogameId);
+			if(enoughGames && correctVideogameId) {
+				totalMatchups += 1;
+			}		
+		}
+		return totalMatchups;
+	}
 	let idx = firstIndexAtOrAboveThreshold(minimumGames);
 	while(idx < totalGamesList.length) {
 		let matchup = totalGamesList[idx];
@@ -321,6 +335,9 @@ export function randomMatchup(state, filteredMatchups) {
 	let list = state.lockLeft?matchupsPerCharacter[state.matchup.left]:totalGamesList;
 	let enoughGames = false;
 	let newState = state.matchup;
+	if(getTotalMatchups(state.minimumGames, state.videogameIds, state.matchup, state.lockLeft) == 1) {
+		return state.matchup;
+	}
 	if(state.lockLeft) {
 		list = matchupsPerCharacter[state.matchup.left];
 		if (list.length === 1) {

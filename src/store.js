@@ -156,7 +156,6 @@ const newWinsDisplay = (quizMode, matchup) => {
 
 // this is distinct from mutating due to a quiz guess
 const mutateStateFromNav = (prevState, newMatchup) => {
-	
 	let {videogameId, left, right} = newMatchup;
 	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
 	let newLockLeft = prevState.lockLeft;
