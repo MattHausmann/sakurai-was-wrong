@@ -1,6 +1,5 @@
 // GameSelect.js
 import React, { useState, useRef } from "react";
-import GameButton from "./GameButton";
 import { useDispatch, useSelector } from 'react-redux';
 import { getTotalMatchups } from './MatchupNavigator';
 
