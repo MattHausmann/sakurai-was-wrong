@@ -24,10 +24,6 @@ const App = () => {
 
 	const dialogRef = useRef();
 
-	const openDialog = () => {
-		dialogRef.current.showModal();
-	};
-
 	const handleGameSelect = (gameId) => {
 		setVideogameId(gameId);
 	};
