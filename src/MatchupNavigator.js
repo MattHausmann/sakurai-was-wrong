@@ -27,12 +27,15 @@ const defaultCompareMatchups = (a, b) => {
 	}
 	return leftCompare;
 };
-export const getTotalMatchups = (minimumGames, videogameIds, matchup, lockLeft) => {
+export const getTotalMatchups = (minimumGames, videogameIds, requiredLeft) => {
 	let list = totalGamesList;
 	let totalMatchups = 0;
 	
-	if(matchup && lockLeft) {
-		list = matchupsPerCharacter[matchup.left];
+
+	if(requiredLeft) {
+		console.log(requiredLeft);
+		console.log(matchupsPerCharacter[requiredLeft]);
+		list = matchupsPerCharacter[requiredLeft];
 		for(let m of list) {
 			let enoughGames = getTotalGames(m) >= minimumGames;
 			let correctVideogameId = videogameIds.length == 0;
@@ -331,25 +334,32 @@ export function prevMatchup(args) {
 
 
 export function randomMatchup(state, filteredMatchups) {
-
-	let list = state.lockLeft?matchupsPerCharacter[state.matchup.left]:totalGamesList;
+	let {minimumGames, videogameIds, matchup, lockLeft} = state;
+	let requiredLeft = lockLeft?matchup.left:"";
+	
+	
+	let list = lockLeft?matchupsPerCharacter[matchup.left]:totalGamesList;
 	let enoughGames = false;
 	let newState = state.matchup;
-	if(getTotalMatchups(state.minimumGames, state.videogameIds, state.matchup, state.lockLeft) == 1) {
-		return state.matchup;
+	if(getTotalMatchups(minimumGames, videogameIds, lockLeft?matchup.left:false) == 1) {
+		return matchup;
 	}
 	if(state.lockLeft) {
 		list = matchupsPerCharacter[state.matchup.left];
-		if (list.length === 1) {
-			return state.matchup;
+		let looping = true;
+		let selected = {};
+		while(looping) {
+			let newIndex = Math.floor(Math.random() * list.length);
+			let newMatchup = list[newIndex];
+			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
+			let correctVideogameId = videogameIds.length == 0 || videogameIds.includes(""+newMatchup.videogameId);
+			console.log(newMatchup, getTotalGames(newMatchup), enoughGames, videogameIds, newMatchup.videogameId, correctVideogameId)
+			if(enoughGames && correctVideogameId) {
+				return list[newIndex];
+			}
 		}
-		let newIndex = Math.floor(Math.random() * list.length);
-		while(list[newIndex] == state.matchup || !enoughGames) {
-			newIndex = Math.floor(Math.random() * list.length);
-			enoughGames = getTotalGames(list[newIndex]) >= state.minimumGames;
-		}
-		return list[newIndex];
 	}
+	
 	if(state.quizMode) {
 		let looping = true;
 		let selected = {};

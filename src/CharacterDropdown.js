@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { matchupsPerCharacter, getTotalGames } from  './MatchupNavigator';
 import './CharacterDropdown.css';
@@ -7,13 +7,17 @@ import './CharacterDropdown.css';
 const CharacterDropdown = ({side}) => {
 	const { matchup, minimumGames, videogameIds } = useSelector((state) => state);
 	
-	let [dropdownOpen, setDropdownOpen] = useState(false);
+	let [dropdownOpen, setDropdownOpen] = useState(false);	
+	let [dialogErrors, setDialogErrors] = useState("");
+	let [attemptedMatchup, setAttemptedMatchup] = useState(null);
 	
 	let selected = side=="left"?matchup.left:matchup.right;
 	let other = side=="left"?matchup.right:matchup.left;
 	
 	let dropdownId = side+"CustomDropdown";
 	let dispatch = useDispatch();
+	
+	const errorRef = useRef();
 	
 	useEffect(()=>{
 		const handleClick = (event) => {
@@ -51,13 +55,7 @@ const CharacterDropdown = ({side}) => {
 		}
 		return errors;
 	};
-/*	
-	for(let otherMatchup of matchupsPerOtherCharacter) {
-		let enoughGames = getTotalGames(otherMatchup) >= minimumGames;
-		let correctVideogameId = videogameIds.length == 0;
-		correctVideogameId = correctVideogameId || videogameIds.includes(""+otherMatchup.videogameId);		
-	}
-*/
+
 	const compareMatchups = (a, b) => {
 		if(getErrors(a) && !getErrors(b)) {
 			return 1;
@@ -84,6 +82,12 @@ const CharacterDropdown = ({side}) => {
 	}	
 	let matchupsPerOtherCharacter = [...matchupsPerCharacter[other]].sort(compareMatchups);	
 	
+	const showErrorDialog = (errors, m) => {
+		setAttemptedMatchup(m);
+		setDialogErrors(errors);
+		errorRef.current.showModal();
+	};
+	
 	return (
 		<div className="dropdown" id={dropdownId}>
 			<div className="dropdown-toggle" id="dropdownToggle" onClick={toggleDropdown}>
@@ -93,21 +97,42 @@ const CharacterDropdown = ({side}) => {
 			<div className={`dropdown-menu ${dropdownOpen?'show':''}`} id="dropdownMenu" >
 				{matchupsPerOtherCharacter.map((m) => (
 					<div className={`dropdown-item ${getErrors(m)?'errors':''}`} onClick={() => {
+						
 						if(getErrors(m)) {
+							showErrorDialog(getErrors(m), m);
+						} else {
+							if(side == "left") {
+								let oldLeft = m.left;
+								m.left = m.right;
+								m.right = oldLeft;
+							}
+							setMatchup(m);
 						}
-						console.log(getErrors(m));
-						if(side == "left") {
-							let oldLeft = m.left;
-							m.left = m.right;
-							m.right = oldLeft;
-						}
-						setMatchup(m)
 					}}>
 						<img className="selection-game" src={"characters/"+m.videogameId+"/logo.png"} />
 						<span>{m.right}</span>
 					</div>))
 				}
 			</div>
+			<dialog ref={errorRef}>
+				<p>{dialogErrors}</p>
+				
+				<button onClick={() => {
+					if(dialogErrors.includes(notEnoughGames)) {
+						dispatch({type:"setMinimumGames", val:getTotalGames(attemptedMatchup)});
+					}
+					if(dialogErrors.includes(wrongVideogameId)) {
+						dispatch({type:"toggleVideogameId", val:attemptedMatchup.videogameId});
+					}
+					dispatch({type:"setMatchup", matchup:attemptedMatchup});
+					setAttemptedMatchup(null);
+					errorRef.current.close();
+				}}>Set criteria</button>
+				
+				<button onClick={()=>{
+					errorRef.current.close()
+				}}>OK</button>
+			</dialog>
 		</div>
 	);
 };

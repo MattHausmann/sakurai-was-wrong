@@ -33,6 +33,7 @@ const ScoreDisplay = () => {
 		totalMatchups,
 		quizResults,
 		minimumGames,
+		lockLeft,
 	} = useSelector((state) => state);
 	const dispatch = useDispatch();
 
