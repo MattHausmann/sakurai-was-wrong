@@ -73,8 +73,8 @@ function MatchupSlider({value}) {
 	const handleOnMouseUp = (event) => {
 		let newMinimumGames=sortedKeys[sliderValue];
 		let maximumMinimum = getTotalGames(matchup);
-		
-		if(!getTotalMatchups(newMinimumGames, videogameIds, matchup, lockLeft)) {
+		let requiredLeft=lockLeft?matchup.left:"";
+		if(!getTotalMatchups(newMinimumGames, videogameIds, requiredLeft)) {
 			cannotChangeRef.current.showModal();
 			return;
 		}

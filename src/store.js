@@ -1,5 +1,5 @@
 import { createStore } from "redux";
-import { getWins, getTotalGames, getTotalMatchups, totalGamesList, firstIndexAtOrAboveThreshold, randomMatchup, unreverse, fromMinimumGamesToTotalMatchups } from "./MatchupNavigator";
+import { getWins, getTotalGames, getTotalMatchups, totalGamesList, firstIndexAtOrAboveThreshold, randomMatchup, unreverse, fromMinimumGamesToTotalMatchups,matchupsPerCharacter } from "./MatchupNavigator";
 import wins from "./wins.json";
 
 let initialState = {
@@ -242,12 +242,13 @@ initialState = mutateStateFromNav(initialState, firstMatchup);
 
 
 
-const getTotalScore = (minimumGames, videogameIds) => {
-	
-	let idx = firstIndexAtOrAboveThreshold(minimumGames);
+const getTotalScore = (minimumGames, videogameIds, requiredLeft) => {
+	console.log(requiredLeft);
+	let idx = requiredLeft?0:firstIndexAtOrAboveThreshold(minimumGames);
+	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:totalGamesList;
 	let totalScore = 0;
-	while(idx < totalGamesList.length) {
-		let matchup = totalGamesList[idx];
+	while(idx < list.length) {
+		let matchup = list[idx];
 		let enoughGames = getTotalGames(matchup) >= minimumGames;
 		let correctVideogameId = videogameIds.length == 0;
 		correctVideogameId = correctVideogameId || videogameIds.includes(""+matchup.videogameId);
@@ -296,7 +297,7 @@ const countSeenMatchupsMinimumGames = (minimumGames, videogameIds) => {
 	return seen;
 }
 
-const countGuessedMatchupsMinimumGames = (minimumGames, videogameIds) => {
+const countGuessedMatchupsMinimumGames = (minimumGames, videogameIds, ) => {
 	let guessed = 0;
 	let videogameIdKeys = videogameIds;
 	if(videogameIds.length == 0) {
@@ -322,6 +323,8 @@ initialState.totalGuessed = countGuessedMatchupsMinimumGames(initialState.minimu
 
 
 const reducer = (prevState = initialState, action) => {
+	let {minimumGames, videogameIds, matchup, lockLeft} = prevState;
+	let requiredLeft = lockLeft?matchup.left:"";
 	switch (action.type) {
 		case "setGameId":
 			return {
@@ -336,7 +339,7 @@ const reducer = (prevState = initialState, action) => {
 		case "setMatchup":
 			return mutateStateFromNav(prevState, action.matchup);
 		case "toggleLockLeft":
-			let unreversedMatchup = prevState.matchup;
+			let unreversedMatchup = matchup;
 			if(prevState.lockLeft) {
 				unreversedMatchup = unreverse(unreversedMatchup);
 			}
@@ -396,10 +399,10 @@ const reducer = (prevState = initialState, action) => {
 			return {
 				...prevState,
 				minimumGames:action.val,
-				totalMatchups:getTotalMatchups(action.val, prevState.videogameIds),
-				totalGuessed: countGuessedMatchupsMinimumGames(action.val, prevState.videogameIds),
+				totalMatchups:getTotalMatchups(action.val, prevState.videogameIds, requiredLeft),
+				totalGuessed: countGuessedMatchupsMinimumGames(action.val, prevState.videogameIds, prevState.lo),
 				totalSeen: countSeenMatchupsMinimumGames(action.val, prevState.videogameIds),
-				totalScore: getTotalScore(action.val, prevState.videogameIds),
+				totalScore: getTotalScore(action.val, prevState.videogameIds, requiredLeft),
 			}
 		}
 
@@ -412,7 +415,7 @@ const reducer = (prevState = initialState, action) => {
 				totalGuessed:countGuessedMatchupsMinimumGames(action.val, prevState.videogameIds),
 				totalSeen:countSeenMatchupsMinimumGames(action.val, prevState.videogameIds),
 				matchup:randomMatchup({...prevState, minimumGames:action.val}),
-				totalScore: getTotalScore(action.val, prevState.videogameIds),
+				totalScore: getTotalScore(action.val, prevState.videogameIds,requiredLeft),
 			}
 		}
 		
@@ -434,7 +437,7 @@ const reducer = (prevState = initialState, action) => {
 				totalMatchups:getTotalMatchups(prevState.minimumGames, newVideogameIds),
 				totalGuessed: countGuessedMatchupsMinimumGames(prevState.minimumGames, newVideogameIds),
 				totalSeen: countSeenMatchupsMinimumGames(prevState.minimumGames, newVideogameIds),
-				totalScore: getTotalScore(prevState.minimumGames, newVideogameIds),
+				totalScore: getTotalScore(prevState.minimumGames, newVideogameIds, requiredLeft),
 			}
 		}
 
@@ -452,7 +455,7 @@ const reducer = (prevState = initialState, action) => {
 				totalMatchups:getTotalMatchups(prevState.minimumGames, filteredMatchups),
 				totalSeen: countSeenMatchupsMinimumGames(prevState.minimumGames, filteredMatchups),
 				totalGuessed: countGuessedMatchupsMinimumGames(prevState.minimumGames, filteredMatchups),
-				totalScore: getTotalScore(prevState.minimumGames, filteredMatchups),
+				totalScore: getTotalScore(prevState.minimumGames, filteredMatchups, requiredLeft),
 			};
 		}
 

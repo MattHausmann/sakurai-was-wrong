@@ -6,7 +6,7 @@ import { getTotalMatchups } from './MatchupNavigator';
 
 const GameSelect = ({ games }) => {	
 
-	const {matchup, minimumGames, videogameIds} = useSelector((state) => state);
+	const {matchup, minimumGames, videogameIds, lockLeft} = useSelector((state) => state);
 	const dispatch = useDispatch();
 	const dialogRef = useRef();
 	const cannotChangeRef = useRef();
@@ -37,7 +37,11 @@ const GameSelect = ({ games }) => {
 						let longerList = videogameIds.length > 1;
 						if(longerList && videogameIds.includes(game.id)) {
 							let newVideogameIds = [...videogameIds].filter(e=>e!=game.id);
-							if(!getTotalMatchups(minimumGames, newVideogameIds)) {
+							let forcedLeft = null;
+							if(lockLeft) {
+								forcedLeft = matchup.left;
+							}
+							if(!getTotalMatchups(minimumGames, newVideogameIds, forcedLeft)) {
 								cannotChangeRef.current.showModal();
 								return;
 							}
