@@ -49,13 +49,16 @@ const MatchupSlider = () => {
 		<>
 			<div className="quiz-mode-slider">
 				<input
-					className="quiz-slider"
+					className={"quiz-slider" + (displayQuizResults ? " showing-results" : "")}
 					type="range"
 					min="0"
 					max={leftWins + rightWins}
 					value={sliderValue}
 					step="1"
 					onChange={(e) => {
+						if (displayQuizResults) {
+							return;
+						}
 						let l = parseInt(e.target.value, 10);
 						let r = leftWins + rightWins - l;
 						dispatch({ type: "updateWinsDisplay", winsDisplay: [l, r] });

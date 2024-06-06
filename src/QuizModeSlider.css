@@ -87,3 +87,25 @@ input.quiz-slider::-ms-fill-upper {
 	background-color: #87b38d;
 	border-radius: 25px;
 }
+/* comma seprated classes should by a 'match on any' situation, but didn't seem to work with these meta-classes (::browser-thing)  */
+input.showing-results::-webkit-slider-thumb {
+	cursor: default;
+}
+input.showing-results::-moz-range-thumb {
+	cursor: default;
+}
+input.showing-results::-webkit-slider-runnable-track {
+	cursor: default;
+}
+input.showing-results::-moz-range-track {
+	cursor: default;
+}
+input.showing-results::-moz-range-progress {
+	cursor: default;
+}
+input.showing-results::-ms-fill-lower {
+	cursor: default;
+}
+input.showing-results::-ms-fill-upper {
+	cursor: default;
+}
