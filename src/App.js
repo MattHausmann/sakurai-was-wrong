@@ -21,17 +21,13 @@ const App = () => {
 
 	const [videogameId, setVideogameId] = useState("1");
 	const rightColumnRef = useRef(null);
-	
+
 	const dialogRef = useRef();
-	
-	const openDialog = () => {
-		dialogRef.current.showModal();
-	};
 
 	const handleGameSelect = (gameId) => {
 		setVideogameId(gameId);
 	};
-	
+
 	useEffect(() => {
 		if (rightColumnRef.current) {
 			rightColumnRef.current.scrollTo({
@@ -44,14 +40,14 @@ const App = () => {
 	return (
 		<div className="app-container">
 			<div className="app-header">
-				<button 
+				<button
 					id="settingsButton"
-					onClick={()=>dialogRef.current.showModal()}
+					onClick={() => dialogRef.current.showModal()}
 				>
 					<i className="fa fa-cog"></i>
 				</button>
 				<dialog ref={dialogRef}>
-					<button onClick={()=>dialogRef.current.close()}>
+					<button onClick={() => dialogRef.current.close()}>
 						<i className="fa fa-close"></i>
 					</button>
 					<GameSelect games={games} />

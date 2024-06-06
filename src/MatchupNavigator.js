@@ -1,4 +1,4 @@
-import { useEffect, useState, React } from "react";
+import { useEffect, React } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import wins from "./wins.json";
 
@@ -304,7 +304,7 @@ export function prevMatchup(args) {
 		let comparator = compareByLeftWinPercent;
 		let idx = binarySearchListForObjectWithComparator(list, matchup, comparator);
 		let filteredVideogameIds = videogameIds;
-		
+
 		while(idx >= 0) {
 			let newMatchup = list[idx];
 			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
@@ -473,7 +473,7 @@ let winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinnerWinPerc
 export function MatchupNavigator() {
 	const dispatch = useDispatch();
 	let {matchup, minimumGames, videogameIds, lockLeft}=useSelector((state)=>state);
-	
+
 	let args = {matchup, minimumGames, videogameIds, lockLeft};
 	let videogameId = matchup.videogameId;
 
