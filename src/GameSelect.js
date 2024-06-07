@@ -21,9 +21,9 @@ const GameSelect = ({ games }) => {
 			{games.map((game) => (
 				<button
 					className={videogameIds.includes(game.id) ? "enabled" : ""}
-					gameId={game.id}
-					gameName={game.name}
-					isSelected={videogameIds.includes(game.id)}
+					key={game.id}
+					data-gameid={game.id}
+					data-gamename={game.name}
 					text={game.id}
 					onClick={()=> {
 						let matchingGameId = matchup.videogameId === game.id;

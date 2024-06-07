@@ -28,14 +28,17 @@ let initialState = {
 	selectedGames: [],
 	winsDisplay: [0, 0],
 	lockLeft: false,
-	minimumGames:1000,
-	videogameIds:["1","1386"],
-	idx:0,
+	minimumGames: 1000,
+	videogameIds: ["1", "1386"],
+	idx: 0,
 };
 
 let minGames = initialState.minimumGames;
 let keys = Object.keys(fromMinimumGamesToTotalMatchups);
-while(!(minGames in fromMinimumGamesToTotalMatchups) && minGames < keys.length) {
+while (
+	!(minGames in fromMinimumGamesToTotalMatchups) &&
+	minGames < keys.length
+) {
 	minGames += 1;
 }
 
@@ -45,16 +48,19 @@ let bestScorePerMatchup =
 	JSON.parse(localStorage.getItem("bestScorePerMatchup")) || {};
 
 const mutateStateFromGuess = (prevState, matchup, guess) => {
-	let {videogameId, left, right} = matchup;
-	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left,right);
+	let { videogameId, left, right } = matchup;
+	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
 
 	let prevGuess = 0;
-	let totalGuessed = prevState.totalGuessed+1;
+	let totalGuessed = prevState.totalGuessed + 1;
 
-	if(videogameId in guessedMatchups) {
-		if(alphabeticallyFirst in guessedMatchups[videogameId]) {
-			if(alphabeticallyLast in guessedMatchups[videogameId][alphabeticallyFirst]) {
-				prevGuess = guessedMatchups[videogameId][alphabeticallyFirst][alphabeticallyLast];
+	if (videogameId in guessedMatchups) {
+		if (alphabeticallyFirst in guessedMatchups[videogameId]) {
+			if (
+				alphabeticallyLast in guessedMatchups[videogameId][alphabeticallyFirst]
+			) {
+				prevGuess =
+					guessedMatchups[videogameId][alphabeticallyFirst][alphabeticallyLast];
 				totalGuessed -= 1;
 			}
 		}
@@ -78,8 +84,6 @@ const mutateStateFromGuess = (prevState, matchup, guess) => {
 	}
 	let newBestScore = Math.max(prevBestScore, matchupScore);
 	bestScorePerMatchup[videogameId][alphabeticallyFirst][alphabeticallyLast] = newBestScore;
-
-
 
 	if(!(videogameId in guessedMatchups)) {
 		guessedMatchups[videogameId] = {};
@@ -126,13 +130,18 @@ const mutateStateFromGuess = (prevState, matchup, guess) => {
 };
 
 const getBestScore = (matchup) => {
-	let {videogameId, left, right} = matchup;
+	let { videogameId, left, right } = matchup;
 	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
 
-	if(videogameId in bestScorePerMatchup) {
-		if(alphabeticallyFirst in bestScorePerMatchup[videogameId]) {
-			if(alphabeticallyLast in bestScorePerMatchup[videogameId][alphabeticallyFirst]) {
-				return bestScorePerMatchup[videogameId][alphabeticallyFirst][alphabeticallyLast];
+	if (videogameId in bestScorePerMatchup) {
+		if (alphabeticallyFirst in bestScorePerMatchup[videogameId]) {
+			if (
+				alphabeticallyLast in
+				bestScorePerMatchup[videogameId][alphabeticallyFirst]
+			) {
+				return bestScorePerMatchup[videogameId][alphabeticallyFirst][
+					alphabeticallyLast
+				];
 			}
 		}
 	}
@@ -160,14 +169,12 @@ const mutateStateFromNav = (prevState, newMatchup) => {
 	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
 	let newLockLeft = prevState.lockLeft;
 
-
 	if(wins[videogameId][left][right]<wins[videogameId][right][left]) {
 		newLockLeft = true;
 	}
 	if(wins[videogameId][left][right]===wins[videogameId][right][left]) {
 		newLockLeft = left !== alphabeticallyFirst;
 	}
-
 
 	let newTotalSeen = prevState.totalSeen + 1;
 
@@ -235,9 +242,10 @@ const scoreMatchup = (matchup, guess) => {
 // let firstMatchup = randomMatchup(initialState);
 let firstMatchup = { videogameId: "1", left: "Mario", right: "Luigi" };
 initialState = mutateStateFromNav(initialState, firstMatchup);
-initialState.idx = searchListForMatchingMatchup(winnerWinPercentList, firstMatchup);
-
-
+initialState.idx = searchListForMatchingMatchup(
+	winnerWinPercentList,
+	firstMatchup
+);
 
 const getTotalScore = (minimumGames, videogameIds, requiredLeft) => {
 	console.log(requiredLeft);

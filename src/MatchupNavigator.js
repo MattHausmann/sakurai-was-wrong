@@ -217,8 +217,8 @@ function binarySearchListForObjectWithComparator(list, matchup, comparator) {
 	let idx = 0;
 
 	while(idx < list.length && !(list[idx].left === matchup.left &&
-								list[idx].right === matchup.right &&
-								list[idx].videogameId === matchup.videogameId)) {
+		list[idx].right === matchup.right &&
+		list[idx].videogameId === matchup.videogameId)) {
 		idx+=1;
 	}
 	return idx;
@@ -391,11 +391,11 @@ export function MatchupNavigator() {
 	let matchup = list[idx];
 	let args = {minimumGames, videogameIds, requiredLeft};
 
-	useEffect(() => {
-		if(!requiredLeft) {
-			dispatch({type:"setMatchup", matchup:matchup});
-		}
-	}, [dispatch, matchup, requiredLeft]);
+	// useEffect(() => {
+	// 	if(!requiredLeft) {
+	// 		dispatch({type:"setMatchup", matchup:matchup});
+	// 	}
+	// }, [dispatch, matchup, requiredLeft]);
 
 	return (
 		<div className="matchup-navigator">
