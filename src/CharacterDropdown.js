@@ -6,19 +6,19 @@ import './CharacterDropdown.css';
 
 const CharacterDropdown = ({side}) => {
 	const { matchup, minimumGames, videogameIds } = useSelector((state) => state);
-	
-	let [dropdownOpen, setDropdownOpen] = useState(false);	
+
+	let [dropdownOpen, setDropdownOpen] = useState(false);
 	let [dialogErrors, setDialogErrors] = useState("");
 	let [attemptedMatchup, setAttemptedMatchup] = useState(null);
-	
-	let selected = side=="left"?matchup.left:matchup.right;
-	let other = side=="left"?matchup.right:matchup.left;
-	
+
+	let selected = side==="left"?matchup.left:matchup.right;
+	let other = side==="left"?matchup.right:matchup.left;
+
 	let dropdownId = side+"CustomDropdown";
 	let dispatch = useDispatch();
-	
+
 	const errorRef = useRef();
-	
+
 	useEffect(()=>{
 		const handleClick = (event) => {
 			const dropdownMenu = document.getElementById(dropdownId);
@@ -31,18 +31,18 @@ const CharacterDropdown = ({side}) => {
 			document.removeEventListener('click', handleClick);
 		};
 	});
-	
 
-	
+
+
 	const toggleDropdown = () => {
 		setDropdownOpen(!dropdownOpen);
 	}
-	
+
 	const setMatchup = (m) => {
 		dispatch({type:"setMatchup", matchup:m});
 		setDropdownOpen(false);
 	}
-	
+
 	const notEnoughGames = "Not enough games.\n";
 	const wrongVideogameId = "Matchup for wrong game.\n";
 	const getErrors = (m) => {
@@ -64,30 +64,30 @@ const CharacterDropdown = ({side}) => {
 			return -1;
 		}
 
-		if(a.videogameId == b.videogameId) {
+		if(a.videogameId === b.videogameId) {
 			return a.right.localeCompare(b.right);
 		}
-		
 
-		if(videogameIds.length == 1) {
+
+		if(videogameIds.length === 1) {
 			let targetVideogameId = videogameIds[0];
 			if(a.videogameId != b.videogameId) {
-				if(a.videogameId == targetVideogameId) {
+				if(a.videogameId === targetVideogameId) {
 					return -1;
 				}
 				return 1;
 			}
 		}
 		return a.right.localeCompare(b.right);
-	}	
-	let matchupsPerOtherCharacter = [...matchupsPerCharacter[other]].sort(compareMatchups);	
-	
+	}
+	let matchupsPerOtherCharacter = [...matchupsPerCharacter[other]].sort(compareMatchups);
+
 	const showErrorDialog = (errors, m) => {
 		setAttemptedMatchup(m);
 		setDialogErrors(errors);
 		errorRef.current.showModal();
 	};
-	
+
 	return (
 		<div className="dropdown" id={dropdownId}>
 			<div className="dropdown-toggle" id="dropdownToggle" onClick={toggleDropdown}>
@@ -97,11 +97,11 @@ const CharacterDropdown = ({side}) => {
 			<div className={`dropdown-menu ${dropdownOpen?'show':''}`} id="dropdownMenu" >
 				{matchupsPerOtherCharacter.map((m) => (
 					<div className={`dropdown-item ${getErrors(m)?'errors':''}`} onClick={() => {
-						
+
 						if(getErrors(m)) {
 							showErrorDialog(getErrors(m), m);
 						} else {
-							if(side == "left") {
+							if(side === "left") {
 								let oldLeft = m.left;
 								m.left = m.right;
 								m.right = oldLeft;
@@ -116,7 +116,7 @@ const CharacterDropdown = ({side}) => {
 			</div>
 			<dialog ref={errorRef}>
 				<p>{dialogErrors}</p>
-				
+
 				<button onClick={() => {
 					if(dialogErrors.includes(notEnoughGames)) {
 						dispatch({type:"setMinimumGames", val:getTotalGames(attemptedMatchup)});
@@ -128,7 +128,7 @@ const CharacterDropdown = ({side}) => {
 					setAttemptedMatchup(null);
 					errorRef.current.close();
 				}}>Set criteria</button>
-				
+
 				<button onClick={()=>{
 					errorRef.current.close()
 				}}>OK</button>

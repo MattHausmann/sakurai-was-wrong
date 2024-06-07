@@ -30,7 +30,7 @@ const defaultCompareMatchups = (a, b) => {
 export const getTotalMatchups = (minimumGames, videogameIds, requiredLeft) => {
 	let list = totalGamesList;
 	let totalMatchups = 0;
-	
+
 
 	if(requiredLeft) {
 		console.log(requiredLeft);
@@ -38,11 +38,11 @@ export const getTotalMatchups = (minimumGames, videogameIds, requiredLeft) => {
 		list = matchupsPerCharacter[requiredLeft];
 		for(let m of list) {
 			let enoughGames = getTotalGames(m) >= minimumGames;
-			let correctVideogameId = videogameIds.length == 0;
+			let correctVideogameId = videogameIds.length === 0;
 			correctVideogameId = correctVideogameId || videogameIds.includes(""+m.videogameId);
 			if(enoughGames && correctVideogameId) {
 				totalMatchups += 1;
-			}		
+			}
 		}
 		return totalMatchups;
 	}
@@ -50,7 +50,7 @@ export const getTotalMatchups = (minimumGames, videogameIds, requiredLeft) => {
 	while(idx < totalGamesList.length) {
 		let matchup = totalGamesList[idx];
 		let enoughGames = getTotalGames(matchup) >= minimumGames;
-		let correctVideogameId = videogameIds.length == 0;
+		let correctVideogameId = videogameIds.length === 0;
 		correctVideogameId = correctVideogameId || videogameIds.includes(""+matchup.videogameId);
 		if(enoughGames && correctVideogameId) {
 			totalMatchups += 1;
@@ -206,7 +206,7 @@ export function firstMatchup(args) {
 			let newMatchup = list[idx];
 			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
 			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
-			correctVideogameId = correctVideogameId || videogameIds.length == 0;
+			correctVideogameId = correctVideogameId || videogameIds.length === 0;
 			if(matchup != newMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
 			}
@@ -218,7 +218,7 @@ export function firstMatchup(args) {
 			let newMatchup = list[idx];
 			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
 			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
-			correctVideogameId = correctVideogameId || videogameIds.length == 0;
+			correctVideogameId = correctVideogameId || videogameIds.length === 0;
 			if(matchup != newMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
 			}
@@ -236,7 +236,7 @@ export function lastMatchup(args) {
 			let newMatchup = list[idx];
 			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
 			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
-			correctVideogameId = correctVideogameId || videogameIds.length == 0;
+			correctVideogameId = correctVideogameId || videogameIds.length === 0;
 			if(matchup != newMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
 			}
@@ -249,7 +249,7 @@ export function lastMatchup(args) {
 			let newMatchup = list[idx];
 			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
 			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
-			correctVideogameId = correctVideogameId || videogameIds.length == 0;
+			correctVideogameId = correctVideogameId || videogameIds.length === 0;
 			if(matchup != newMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
 			}
@@ -280,9 +280,9 @@ export function nextMatchup(args) {
 			let newMatchup = list[idx];
 			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
 			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
-			correctVideogameId = correctVideogameId || videogameIds.length == 0;
-			let sameMatchup = goalMatchup.videogameId == newMatchup.videogameId
-							&& goalMatchup.left == newMatchup.left
+			correctVideogameId = correctVideogameId || videogameIds.length === 0;
+			let sameMatchup = goalMatchup.videogameId === newMatchup.videogameId
+							&& goalMatchup.left === newMatchup.left
 							&& goalMatchup.right== newMatchup.right;
 			if(!sameMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
@@ -297,9 +297,9 @@ export function nextMatchup(args) {
 			let newMatchup = list[idx];
 			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
 			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
-			correctVideogameId = correctVideogameId || videogameIds.length == 0;
-			let sameMatchup = goalMatchup.videogameId == newMatchup.videogameId
-							&& goalMatchup.left == newMatchup.left
+			correctVideogameId = correctVideogameId || videogameIds.length === 0;
+			let sameMatchup = goalMatchup.videogameId === newMatchup.videogameId
+							&& goalMatchup.left === newMatchup.left
 							&& goalMatchup.right== newMatchup.right;
 			if(!sameMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
@@ -321,7 +321,7 @@ export function prevMatchup(args) {
 			let newMatchup = list[idx];
 			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
 			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
-			correctVideogameId = correctVideogameId || videogameIds.length == 0;
+			correctVideogameId = correctVideogameId || videogameIds.length === 0;
 			if(matchup != newMatchup && enoughGames && correctVideogameId) {
 				return newMatchup;
 			}
@@ -348,12 +348,12 @@ export function prevMatchup(args) {
 export function randomMatchup(state, filteredMatchups) {
 	let {minimumGames, videogameIds, matchup, lockLeft} = state;
 	let requiredLeft = lockLeft?matchup.left:"";
-	
-	
+
+
 	let list = lockLeft?matchupsPerCharacter[matchup.left]:totalGamesList;
 	let enoughGames = false;
 	let newState = state.matchup;
-	if(getTotalMatchups(minimumGames, videogameIds, lockLeft?matchup.left:false) == 1) {
+	if(getTotalMatchups(minimumGames, videogameIds, lockLeft?matchup.left:false) === 1) {
 		return matchup;
 	}
 	if(state.lockLeft) {
@@ -364,14 +364,14 @@ export function randomMatchup(state, filteredMatchups) {
 			let newIndex = Math.floor(Math.random() * list.length);
 			let newMatchup = list[newIndex];
 			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
-			let correctVideogameId = videogameIds.length == 0 || videogameIds.includes(""+newMatchup.videogameId);
+			let correctVideogameId = videogameIds.length === 0 || videogameIds.includes(""+newMatchup.videogameId);
 			console.log(newMatchup, getTotalGames(newMatchup), enoughGames, videogameIds, newMatchup.videogameId, correctVideogameId)
 			if(enoughGames && correctVideogameId) {
 				return list[newIndex];
 			}
 		}
 	}
-	
+
 	if(state.quizMode) {
 		let looping = true;
 		let selected = {};
@@ -447,8 +447,8 @@ for (let videogameId of [1, 1386]) {
 			twoSidedMatchupList.push(matchup);
 			matchupsPerCharacter[left].push(matchup);
 			let winnerWins = getWinnerWins(matchup);
-			if(wins[videogameId][left][right] == winnerWins) {
-				if(wins[videogameId][right][left] == winnerWins) {
+			if(wins[videogameId][left][right] === winnerWins) {
+				if(wins[videogameId][right][left] === winnerWins) {
 					if(left.localeCompare(right) < 0) {
 						oneSidedMatchupListA.push(matchup);
 					}

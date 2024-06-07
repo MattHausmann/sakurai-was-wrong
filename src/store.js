@@ -32,7 +32,7 @@ let bestScorePerMatchup = JSON.parse(localStorage.getItem('bestScorePerMatchup')
 
 function alphabetize(left, right) {
 	let alphabeticallyFirst = left.localeCompare(right) < 0 ? left:right;
-	let alphabeticallyLast = alphabeticallyFirst == left?right:left;
+	let alphabeticallyLast = alphabeticallyFirst === left?right:left;
 	return [alphabeticallyFirst, alphabeticallyLast];
 }
 
@@ -444,7 +444,7 @@ const reducer = (prevState = initialState, action) => {
 
 		case "forceToggleGameSelected": {
 			let filteredMatchups = prevState.videogameIds.filter(e => e!=action.val);
-			if(prevState.videogameIds.length == 0) {
+			if(prevState.videogameIds.length === 0) {
 				filteredMatchups = [action.val];
 			}
 			prevState.videogameIds = filteredMatchups;
