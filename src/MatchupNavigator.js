@@ -183,6 +183,18 @@ const reverse = function(matchup) {
 	return {videogameId:matchup.videogameId, left:matchup.right, right:matchup.left};
 }
 
+const searchListForMatchingMatchup = (list, matchup, idx) => {
+	while(idx < list.length) {
+		let newMatchup = list[idx];
+		let enoughGames = getTotalGames(newMatchup) >= minimumGames;
+		let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
+		correctVideogameId = correctVideogameId || videogameIds.length == 0;
+		if(matchup != newMatchup && enoughGames && correctVideogameId) {
+			return newMatchup;
+		}
+		idx += 1;
+	}
+}
 
 export function firstMatchup(args) {
 	let {matchup, minimumGames, videogameIds, lockLeft} = args;
