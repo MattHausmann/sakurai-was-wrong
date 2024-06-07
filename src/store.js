@@ -26,11 +26,9 @@ while(!(minGames in fromMinimumGamesToTotalMatchups) && minGames < keys.length) 
 	minGames += 1;
 }
 
-
-let guessedMatchups = JSON.parse(localStorage.getItem('guessedMatchups')) ?? {};
-let seenMatchups = JSON.parse(localStorage.getItem('seenMatchups')) ?? {};
-let bestScorePerMatchup = JSON.parse(localStorage.getItem('bestScorePerMatchup')) ?? {};
-
+let guessedMatchups = JSON.parse(localStorage.getItem('guessedMatchups')) || {};
+let seenMatchups = JSON.parse(localStorage.getItem('seenMatchups')) || {};
+let bestScorePerMatchup = JSON.parse(localStorage.getItem('bestScorePerMatchup')) || {};
 
 function alphabetize(left, right) {
 	let alphabeticallyFirst = left.localeCompare(right) < 0 ? left:right;
@@ -42,11 +40,10 @@ function alphabetize(left, right) {
 const mutateStateFromGuess = (prevState, matchup, guess) => {
 	let {videogameId, left, right} = matchup;
 	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left,right);
-	
+
 	let prevGuess = 0;
 	let totalGuessed = prevState.totalGuessed+1;
-	
-	let newGuessedMatchups = prevState.guessedMatchups;
+
 	if(videogameId in guessedMatchups) {
 		if(alphabeticallyFirst in guessedMatchups[videogameId]) {
 			if(alphabeticallyLast in guessedMatchups[videogameId][alphabeticallyFirst]) {
@@ -55,14 +52,14 @@ const mutateStateFromGuess = (prevState, matchup, guess) => {
 			}
 		}
 	}
-	
-	
+
+
 	let prevMatchupScore = scoreMatchup(matchup, prevGuess);
 	let matchupScore = scoreMatchup(matchup, guess);
 	let newTotalScore = prevState.totalScore - prevMatchupScore + matchupScore;
-	
+
 	let prevBestScore = getBestScore(matchup);
-	
+
 	if(!(videogameId in bestScorePerMatchup)) {
 		bestScorePerMatchup[videogameId] = {};
 	}
@@ -76,8 +73,8 @@ const mutateStateFromGuess = (prevState, matchup, guess) => {
 	let newBestScore = Math.max(prevBestScore, matchupScore);
 	bestScorePerMatchup[videogameId][alphabeticallyFirst][alphabeticallyLast] = newBestScore;
 
-	
-	
+
+
 	if(!(videogameId in guessedMatchups)) {
 		guessedMatchups[videogameId] = {};
 	}
@@ -85,11 +82,11 @@ const mutateStateFromGuess = (prevState, matchup, guess) => {
 		guessedMatchups[videogameId][alphabeticallyFirst] = {};
 	}
 	guessedMatchups[videogameId][alphabeticallyFirst][alphabeticallyLast] = guess;
-	
-	
+
+
 	localStorage.setItem("guessedMatchups", JSON.stringify(guessedMatchups));
 	localStorage.setItem("bestScorePerMatchup", JSON.stringify(bestScorePerMatchup));
-	
+
 	let newTotalSeen = prevState.totalSeen+1;
 
 	if(videogameId in seenMatchups) {
@@ -99,7 +96,7 @@ const mutateStateFromGuess = (prevState, matchup, guess) => {
 			}
 		}
 	}
-	
+
 	if(!(videogameId in seenMatchups)) {
 		seenMatchups[videogameId] = {};
 	}
@@ -111,18 +108,17 @@ const mutateStateFromGuess = (prevState, matchup, guess) => {
 	}
 	localStorage.setItem("seenMatchups", JSON.stringify(seenMatchups));
 
-	
-	
+
 	return {
-		...prevState, 
-		totalSeen:newTotalSeen, 
-		totalGuessed:totalGuessed, 
+		...prevState,
+		totalSeen:newTotalSeen,
+		totalGuessed:totalGuessed,
 		totalScore:newTotalScore,
 		mostRecentScore:matchupScore,
 		bestScore:newBestScore,
 		displayQuizResults:true,
 		winsDisplay: newWinsDisplay(false, prevState.matchup),
-	}	
+	}
 }
 
 const getBestScore = (matchup) => {
@@ -160,19 +156,19 @@ const XmutateStateFromNav = (prevState, newMatchup) => {
 	let {videogameId, left, right} = newMatchup;
 	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
 	let newLockLeft = prevState.lockLeft;
-	
-	
+
+
 	if(wins[videogameId][left][right]<wins[videogameId][right][left]) {
 		newLockLeft = true;
 	}
-	if(wins[videogameId][left][right]==wins[videogameId][right][left]) {
-		newLockLeft = left != alphabeticallyFirst;
+	if(wins[videogameId][left][right]===wins[videogameId][right][left]) {
+		newLockLeft = left !== alphabeticallyFirst;
 	}
-	
-	
+
+
 	let newTotalSeen = prevState.totalSeen + 1;
-	
-	
+
+
 	if(videogameId in seenMatchups) {
 		if(alphabeticallyFirst in seenMatchups[videogameId]) {
 			if(seenMatchups[videogameId][alphabeticallyFirst].includes(alphabeticallyLast)) {
@@ -189,14 +185,10 @@ const XmutateStateFromNav = (prevState, newMatchup) => {
 	if(!(seenMatchups[videogameId][alphabeticallyFirst].includes(alphabeticallyLast))) {
 		seenMatchups[videogameId][alphabeticallyFirst].push(alphabeticallyLast);
 	}
-	
+
 	localStorage.setItem("seenMatchups", JSON.stringify(seenMatchups));
-	
-	
-	
-	let winsDisplay =  newWinsDisplay(prevState.quizMode, newMatchup); 
-	
-	
+
+	let winsDisplay =  newWinsDisplay(prevState.quizMode, newMatchup);
 
 	return {
 		...prevState,
@@ -248,30 +240,13 @@ const getTotalScore = (minimumGames, videogameIds, requiredLeft) => {
 	while(idx < list.length) {
 		let matchup = list[idx];
 		let enoughGames = getTotalGames(matchup) >= minimumGames;
-		let correctVideogameId = videogameIds.length == 0;
+		let correctVideogameId = videogameIds.length === 0;
 		correctVideogameId = correctVideogameId || videogameIds.includes(""+matchup.videogameId);
 		if(enoughGames && correctVideogameId) {
 			totalScore += scoreMatchup(matchup);
 		}
 		idx += 1;
 	}
-/*	
-	let totalScore = 0;
-	let videogameIdKeys = videogameIds;
-	if(videogameIdKeys.length == 0) {
-		videogameIdKeys = Object.keys(guessedMatchups);
-	}
-	
-	for(let videogameId of videogameIdKeys) {
-		let videogame = guessedMatchups[videogameId];
-		for(let alphabeticallyFirst in videogame) {
-			let character = videogame[alphabeticallyFirst];
-			for(let alphabeticallyLast in character) {				
-				totalScore += scoreMatchup({videogameId:videogameId, left:alphabeticallyFirst, right:alphabeticallyLast});
-			}
-		}
-	}
-*/
 	return totalScore;
 }
 
@@ -300,7 +275,7 @@ const countSeenMatchupsMinimumGames = (minimumGames, videogameIds, requiredChara
 const countGuessedMatchupsMinimumGames = (minimumGames, videogameIds, requiredCharacter) => {
 	let guessed = 0;
 	let videogameIdKeys = videogameIds;
-	if(videogameIds.length == 0) {
+	if(videogameIds.length === 0) {
 		videogameIdKeys = Object.keys(guessedMatchups);
 	}
 
@@ -317,8 +292,15 @@ const countGuessedMatchupsMinimumGames = (minimumGames, videogameIds, requiredCh
 	return guessed;
 }
 
-initialState.totalScore = getTotalScore(initialState.minimumGames, initialState.videogameIds, "");
-initialState.totalSeen = countSeenMatchupsMinimumGames(initialState.minimumGames, initialState.videogameIds);
+initialState.totalScore = getTotalScore(
+	initialState.minimumGames,
+	initialState.videogameIds,
+	""
+);
+initialState.totalSeen = countSeenMatchupsMinimumGames(
+	initialState.minimumGames,
+	initialState.videogameIds
+);
 initialState.totalGuessed = countGuessedMatchupsMinimumGames(initialState.minimumGames, initialState.videogameIds);
 
 
@@ -327,6 +309,7 @@ const reducer = (prevState = initialState, action) => {
 	let {minimumGames, videogameIds, requiredLeft, idx, totalSeen, totalGuessed, } = prevState;
 	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let matchup = list[idx];
+	console.log(videogameIds);
 	switch (action.type) {
 		case "setGameId":
 			return {
@@ -409,18 +392,10 @@ const reducer = (prevState = initialState, action) => {
 			};
 
 		case "submitGuess": {
-			let actual = [
-				wins[prevState.matchup.videogameId][prevState.matchup.left][
-					prevState.matchup.right
-				],
-				wins[prevState.matchup.videogameId][prevState.matchup.right][
-					prevState.matchup.left
-				],
-			];
-			let[alphabeticallyFirst , alphabeticallyLast] = alphabetize(prevState.matchup.left, prevState.matchup.right);
-			let guess = alphabeticallyFirst == prevState.matchup.left?prevState.winsDisplay[0]:prevState.winsDisplay[1];
+			let[alphabeticallyFirst, _alphabeticallyLast] = alphabetize(prevState.matchup.left, prevState.matchup.right);
+			let guess = alphabeticallyFirst === prevState.matchup.left?prevState.winsDisplay[0]:prevState.winsDisplay[1];
 			let newGuessedMatchups = mutateStateFromGuess(prevState, prevState.matchup, guess);
-			
+
 			return newGuessedMatchups;
 		}
 
@@ -459,18 +434,15 @@ const reducer = (prevState = initialState, action) => {
 			}
 		}
 
-		
-		
+
 		case "toggleGameSelected": {
 			const videogameId = ""+action.val;
 			let newVideogameIds;
 			if(prevState.videogameIds.includes(videogameId)) {
-				newVideogameIds = prevState.videogameIds.filter(e => e!=videogameId);
+				newVideogameIds = prevState.videogameIds.filter(e => e!==videogameId);
 			} else {
 				newVideogameIds = [...prevState.videogameIds, videogameId];
 			}
-			
-
 
 			return {
 				...prevState,
@@ -482,9 +454,8 @@ const reducer = (prevState = initialState, action) => {
 			}
 		}
 
-
 		case "forceToggleGameSelected": {
-			let filteredMatchups = prevState.videogameIds.filter(e => e!=action.val);
+			let filteredMatchups = prevState.videogameIds.filter(e => e!==action.val);
 			if(prevState.videogameIds.length === 0) {
 				filteredMatchups = [action.val];
 			}

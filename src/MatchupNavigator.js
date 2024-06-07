@@ -1,5 +1,6 @@
 import { useEffect, React } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { gameIdMap } from "./consts";
 import wins from "./wins.json";
 
 const defaultCompareMatchups = (a, b) => {
@@ -7,14 +8,12 @@ const defaultCompareMatchups = (a, b) => {
 
 	let alphabeticalOrderA = a.left.localeCompare(a.right) < 0;
 	let alphabeticalOrderB = b.left.localeCompare(b.right) < 0;
-
 	if(alphabeticalOrderB & !alphabeticalOrderA) {
 		return 1;
 	}
 	if(alphabeticalOrderA & !alphabeticalOrderB) {
 		return -1;
 	}
-
 
 	let leftCompare = a.left.localeCompare(b.left)
 	//if it's in alphabetical order
@@ -27,35 +26,14 @@ const defaultCompareMatchups = (a, b) => {
 	}
 	return leftCompare;
 };
+
 export const getTotalMatchups = (minimumGames, videogameIds, requiredLeft) => {
-	let list = totalGamesList;
 	let totalMatchups = 0;
-
-
-	if(requiredLeft) {
-		console.log(requiredLeft);
-		console.log(matchupsPerCharacter[requiredLeft]);
-		list = matchupsPerCharacter[requiredLeft];
-		for(let m of list) {
-			let enoughGames = getTotalGames(m) >= minimumGames;
-			let correctVideogameId = videogameIds.length === 0;
-			correctVideogameId = correctVideogameId || videogameIds.includes(""+m.videogameId);
-			if(enoughGames && correctVideogameId) {
-				totalMatchups += 1;
-			}
-		}
-		return totalMatchups;
-	}
-	let idx = firstIndexAtOrAboveThreshold(minimumGames);
-	while(idx < totalGamesList.length) {
-		let matchup = totalGamesList[idx];
-		let enoughGames = getTotalGames(matchup) >= minimumGames;
-		let correctVideogameId = videogameIds.length === 0;
-		correctVideogameId = correctVideogameId || videogameIds.includes(""+matchup.videogameId);
-		if(enoughGames && correctVideogameId) {
+	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	for(let m of list) {
+		if(matchupSatisfiesCriteria(m, minimumGames, videogameIds, requiredLeft)) {
 			totalMatchups += 1;
 		}
-		idx += 1;
 	}
 	return totalMatchups;
 };
@@ -135,8 +113,6 @@ const compareByWinnerWinPercent = (a, b) => {
 };
 
 export const firstIndexAtOrAboveThreshold = function (threshold) {
-	let listName = "Total Games";
-
 	let b = 0;
 	let e = totalGamesList.length - 1;
 
@@ -187,7 +163,7 @@ export const searchListForMatchingMatchup = (list, matchup) => {
 	let idx = 0;
 	while(idx < list.length) {
 		let newMatchup = list[idx];
-		if(newMatchup.left==matchup.left && newMatchup.right == matchup.right && newMatchup.videogameId == matchup.videogameId) {
+		if(newMatchup.left===matchup.left && newMatchup.right === matchup.right && newMatchup.videogameId === matchup.videogameId) {
 			return idx;
 		}
 		idx += 1;
@@ -196,7 +172,7 @@ export const searchListForMatchingMatchup = (list, matchup) => {
 }
 
 export function firstMatchup(args) {
-	let {idx, minimumGames, videogameIds, requiredLeft} = args;
+	let {minimumGames, videogameIds, requiredLeft} = args;
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	for(let i = 0; i < list.length; i++) {
 		if(matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
@@ -207,7 +183,7 @@ export function firstMatchup(args) {
 }
 
 export function lastMatchup(args) {
-	let {idx, minimumGames, videogameIds, requiredLeft} = args;
+	let {minimumGames, videogameIds, requiredLeft} = args;
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	for(let i = list.length-1; i >= 0; i--) {
 		if(matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
@@ -271,16 +247,16 @@ export function randomMatchup(args) {
 		i = Math.floor(Math.random()*list.length);
 	}
 	return i;
+
 }
 
 
 function leftButtonsVisible(args) {
-	return prevMatchup(args) != -1;
+	return prevMatchup(args) !== -1;
 }
 
-
 function rightButtonsVisible(args) {
-	return nextMatchup(args) != -1;
+	return nextMatchup(args) !== -1;
 }
 
 function randomButtonVisible(args) {
@@ -296,21 +272,20 @@ function isReversed(matchup) {
 	return left.localeCompare(right) > 0;
 }
 
-
 const oneSidedMatchupListA = [];
-const twoSidedMatchupList = []
+
+
 export const matchupsPerCharacter = {};
-
-
-for (let videogameId of [1, 1386]) {
+for (let videogame of gameIdMap) {
+	
+	let videogameId = videogame.id;
 	for (let left in wins[videogameId]) {
 		if(!(left in matchupsPerCharacter)) {
 			matchupsPerCharacter[left] = []
 		}
 		for (let right in wins[videogameId][left]) {
-		if(left != right) {
+		if(left !== right) {
 			let matchup = {videogameId, left, right};
-			twoSidedMatchupList.push(matchup);
 			matchupsPerCharacter[left].push(matchup);
 			let winnerWins = getWinnerWins(matchup);
 			if(wins[videogameId][left][right] === winnerWins) {
@@ -326,7 +301,6 @@ for (let videogameId of [1, 1386]) {
 		}
 	}
 }
-
 
 export const totalGamesList = [...oneSidedMatchupListA].sort(compareByTotalGames);
 
@@ -344,32 +318,27 @@ while(numMatchups <= totalGamesList.length) {
 	numMatchups += 1;
 }
 
-let leftPercentList = [...twoSidedMatchupList].sort(compareByLeftWinPercent);
 export const winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinnerWinPercent);
-
 
 export function MatchupNavigator() {
 	const dispatch = useDispatch();
 	let {idx, minimumGames, videogameIds, requiredLeft}=useSelector((state)=>state);
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let matchup = list[idx];
-	
-	let args = {idx, minimumGames, videogameIds, requiredLeft};
-	let videogameId = matchup.videogameId;
+	let args = {minimumGames, videogameIds, requiredLeft};
 
 	useEffect(() => {
 		if(!requiredLeft) {
 			dispatch({type:"setMatchupIdx", idx:idx});
 		}
 	}, [dispatch, idx, requiredLeft]);
-	
 
 	return (
 		<div className="matchup-navigator">
 			<div className="matchup-navigator-bottom-row">
 				<button
 					className="button"
-					disabled={firstMatchup(args) == -1}
+					disabled={firstMatchup(args) === -1}
 					onClick={() => {dispatch({ type: "setMatchupIdx", idx:firstMatchup(args)});}}
 					style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 				>
@@ -377,7 +346,7 @@ export function MatchupNavigator() {
 				</button>
 				<button
 					className="button"
-					disabled={prevMatchup(args) == -1}
+					disabled={prevMatchup(args) === -1}
 					onClick={() => {dispatch({ type: "setMatchupIdx", idx:prevMatchup(args)});}}
 					style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 				>
@@ -394,7 +363,7 @@ export function MatchupNavigator() {
 				</button>
 				<button
 					className="button"
-					disabled={nextMatchup(args) == -1}
+					disabled={nextMatchup(args) === -1}
 					onClick={() => {dispatch({ type: "setMatchupIdx", idx:nextMatchup(args)});}}
 					style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 				>
@@ -402,7 +371,7 @@ export function MatchupNavigator() {
 				</button>
 				<button
 					className="button"
-					disabled={lastMatchup(args) == -1}
+					disabled={lastMatchup(args) === -1}
 					onClick={() => {dispatch({ type: "setMatchupIdx", idx:lastMatchup(args)});}}
 					style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 				>

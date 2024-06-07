@@ -49,7 +49,9 @@ const MatchupSlider = () => {
 		<>
 			<div className="quiz-mode-slider">
 				<input
-					className={"quiz-slider" + (displayQuizResults ? " showing-results" : "")}
+					className={
+						"quiz-slider" + (displayQuizResults ? " showing-results" : "")
+					}
 					type="range"
 					min="0"
 					max={leftWins + rightWins}
