@@ -1,5 +1,5 @@
 import { createStore } from "redux";
-import { getWins, getTotalGames, getTotalMatchups, totalGamesList, firstIndexAtOrAboveThreshold, randomMatchup, unreverse, fromMinimumGamesToTotalMatchups,matchupsPerCharacter } from "./MatchupNavigator";
+import { getWins, getTotalGames, getTotalMatchups, totalGamesList, firstIndexAtOrAboveThreshold, randomMatchup, unreverse, fromMinimumGamesToTotalMatchups,matchupsPerCharacter, searchListForMatchingMatchup, winnerWinPercentList } from "./MatchupNavigator";
 import wins from "./wins.json";
 
 let initialState = {
@@ -16,6 +16,7 @@ let initialState = {
 	lockLeft: false,
 	minimumGames:1000,
 	videogameIds:["1","1386"],
+	idx:0,
 };
 
 let minGames = initialState.minimumGames;
@@ -238,7 +239,7 @@ const scoreMatchup = (matchup, guess) => {
 
 let firstMatchup = randomMatchup(initialState);
 initialState = mutateStateFromNav(initialState, firstMatchup);
-
+initialState.idx = searchListForMatchingMatchup(winnerWinPercentList, firstMatchup);
 
 
 
@@ -338,6 +339,11 @@ const reducer = (prevState = initialState, action) => {
 			};
 		case "setMatchup":
 			return mutateStateFromNav(prevState, action.matchup);
+		case "setMatchupIdx":
+			return {
+				...prevState,
+				idx:action.idx,
+			}
 		case "toggleLockLeft":
 			let unreversedMatchup = matchup;
 			if(prevState.lockLeft) {
