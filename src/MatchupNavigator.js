@@ -1,5 +1,6 @@
 import { useEffect, React } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { gameIdMap } from "./consts";
 import wins from "./wins.json";
 
 const defaultCompareMatchups = (a, b) => {
@@ -182,7 +183,7 @@ export const searchListForMatchingMatchup = (list, matchup) => {
 	let idx = 0;
 	while(idx < list.length) {
 		let newMatchup = list[idx];
-		if(newMatchup.left==matchup.left && newMatchup.right == matchup.right && newMatchup.videogameId == matchup.videogameId) {
+		if(newMatchup.left===matchup.left && newMatchup.right === matchup.right && newMatchup.videogameId === matchup.videogameId) {
 			return idx;
 		}
 		idx += 1;
@@ -191,7 +192,7 @@ export const searchListForMatchingMatchup = (list, matchup) => {
 }
 
 export function firstMatchup(args) {
-	let {idx, minimumGames, videogameIds, requiredLeft} = args;
+	let {minimumGames, videogameIds, requiredLeft} = args;
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	for(let i = 0; i < list.length; i++) {
 		if(matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
@@ -202,7 +203,7 @@ export function firstMatchup(args) {
 }
 
 export function lastMatchup(args) {
-	let {idx, minimumGames, videogameIds, requiredLeft} = args;
+	let {minimumGames, videogameIds, requiredLeft} = args;
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	for(let i = list.length-1; i >= 0; i--) {
 		if(matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
@@ -257,12 +258,8 @@ export function prevMatchup(args) {
 
 export function randomMatchup(state, filteredMatchups) {
 	let {minimumGames, videogameIds, matchup, lockLeft} = state;
-	let requiredLeft = lockLeft?matchup.left:"";
-
 
 	let list = lockLeft?matchupsPerCharacter[matchup.left]:totalGamesList;
-	let enoughGames = false;
-	let newState = state.matchup;
 	if(getTotalMatchups(minimumGames, videogameIds, lockLeft?matchup.left:false) === 1) {
 		return matchup;
 	}
@@ -291,7 +288,7 @@ export function randomMatchup(state, filteredMatchups) {
 			let randomCharacter = characters[Math.floor(Math.random()*characters.length)];
 			let matchups = matchupsPerCharacter[randomCharacter];
 			selected = matchups[Math.floor(Math.random()*matchups.length)];
-			let noGameRequirements=state.videogameIds.length==0;
+			let noGameRequirements=state.videogameIds.length===0;
 			let videogameIdInList = state.videogameIds.includes(""+selected.videogameId)
 			let correctVideogameId = noGameRequirements||videogameIdInList;
 			let enoughGames=getTotalGames(selected) >= state.minimumGames
@@ -304,28 +301,27 @@ export function randomMatchup(state, filteredMatchups) {
 	}
 	const index0 = firstIndexAtOrAboveThreshold(state.minimumGames);
 	let looping = true;
-	let newIndex = index0 + Math.floor(Math.random() * (list.length-index0));
+	let newIndex = index0 + Math.floor(Math.random() * (list.length - index0));
 	while(looping) {
-		newIndex = index0 + Math.floor(Math.random() * (list.length-index0));
+		newIndex = index0 + Math.floor(Math.random() * (list.length - index0));
 		let newMatchup = totalGamesList[newIndex];
 
-		let noGameRequirements=state.videogameIds.length==0;
+		let noGameRequirements = state.videogameIds.length === 0;
 		let videogameIdInList = state.videogameIds.includes(""+newMatchup.videogameId)
 		let correctVideogameId = noGameRequirements||videogameIdInList;
-		if(correctVideogameId) {
-			looping=false;
+		if (correctVideogameId) {
+			looping = false;
 		}
 	}
 	return totalGamesList[newIndex];
 }
 
 function leftButtonsVisible(args) {
-	return prevMatchup(args) != -1;
+	return prevMatchup(args) !== -1;
 }
 
-
 function rightButtonsVisible(args) {
-	return nextMatchup(args) != -1;
+	return nextMatchup(args) !== -1;
 }
 
 function randomButtonVisible(args) {
@@ -341,19 +337,17 @@ function isReversed(matchup) {
 	return left.localeCompare(right) > 0;
 }
 
-
 const oneSidedMatchupListA = [];
 const twoSidedMatchupList = []
 export const matchupsPerCharacter = {};
 
-
-for (let videogameId of [1, 1386]) {
+for (let videogameId of gameIdMap.keys()) {
 	for (let left in wins[videogameId]) {
 		if(!(left in matchupsPerCharacter)) {
 			matchupsPerCharacter[left] = []
 		}
 		for (let right in wins[videogameId][left]) {
-		if(left != right) {
+		if(left !== right) {
 			let matchup = {videogameId, left, right};
 			twoSidedMatchupList.push(matchup);
 			matchupsPerCharacter[left].push(matchup);
@@ -371,7 +365,6 @@ for (let videogameId of [1, 1386]) {
 		}
 	}
 }
-
 
 export const totalGamesList = [...oneSidedMatchupListA].sort(compareByTotalGames);
 
@@ -392,15 +385,12 @@ while(numMatchups <= totalGamesList.length) {
 let leftPercentList = [...twoSidedMatchupList].sort(compareByLeftWinPercent);
 export const winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinnerWinPercent);
 
-
 export function MatchupNavigator() {
 	const dispatch = useDispatch();
 	let {idx, minimumGames, videogameIds, requiredLeft}=useSelector((state)=>state);
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let matchup = list[idx];
-	
-	let args = {idx, minimumGames, videogameIds, requiredLeft};
-	let videogameId = matchup.videogameId;
+	let args = {minimumGames, videogameIds, requiredLeft};
 
 	useEffect(() => {
 		if(!requiredLeft) {

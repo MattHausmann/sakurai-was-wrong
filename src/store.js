@@ -29,7 +29,6 @@ let guessedMatchups = JSON.parse(localStorage.getItem('guessedMatchups')) || {};
 let seenMatchups = JSON.parse(localStorage.getItem('seenMatchups')) || {};
 let bestScorePerMatchup = JSON.parse(localStorage.getItem('bestScorePerMatchup')) || {};
 
-
 function alphabetize(left, right) {
 	let alphabeticallyFirst = left.localeCompare(right) < 0 ? left:right;
 	let alphabeticallyLast = alphabeticallyFirst === left?right:left;
@@ -44,7 +43,6 @@ const mutateStateFromGuess = (prevState, matchup, guess) => {
 	let prevGuess = 0;
 	let totalGuessed = prevState.totalGuessed+1;
 
-	let newGuessedMatchups = prevState.guessedMatchups;
 	if(videogameId in guessedMatchups) {
 		if(alphabeticallyFirst in guessedMatchups[videogameId]) {
 			if(alphabeticallyLast in guessedMatchups[videogameId][alphabeticallyFirst]) {
@@ -163,8 +161,8 @@ const mutateStateFromNav = (prevState, newMatchup) => {
 	if(wins[videogameId][left][right]<wins[videogameId][right][left]) {
 		newLockLeft = true;
 	}
-	if(wins[videogameId][left][right]==wins[videogameId][right][left]) {
-		newLockLeft = left != alphabeticallyFirst;
+	if(wins[videogameId][left][right]===wins[videogameId][right][left]) {
+		newLockLeft = left !== alphabeticallyFirst;
 	}
 
 
@@ -245,7 +243,7 @@ const getTotalScore = (minimumGames, videogameIds, requiredLeft) => {
 	while(idx < list.length) {
 		let matchup = list[idx];
 		let enoughGames = getTotalGames(matchup) >= minimumGames;
-		let correctVideogameId = videogameIds.length == 0;
+		let correctVideogameId = videogameIds.length === 0;
 		correctVideogameId = correctVideogameId || videogameIds.includes(""+matchup.videogameId);
 		if(enoughGames && correctVideogameId) {
 			totalScore += scoreMatchup(matchup);
@@ -260,7 +258,7 @@ initialState.totalMatchups = getTotalMatchups(initialState.minimumGames, initial
 const countSeenMatchupsMinimumGames = (minimumGames, videogameIds) => {
 	let seen = 0;
 	let videogameIdKeys = videogameIds;
-	if(videogameIds.length == 0) {
+	if(videogameIds.length === 0) {
 		videogameIdKeys=Object.keys(seenMatchups);
 	}
 	for(let videogameId of videogameIdKeys) {
@@ -278,7 +276,7 @@ const countSeenMatchupsMinimumGames = (minimumGames, videogameIds) => {
 const countGuessedMatchupsMinimumGames = (minimumGames, videogameIds, ) => {
 	let guessed = 0;
 	let videogameIdKeys = videogameIds;
-	if(videogameIds.length == 0) {
+	if(videogameIds.length === 0) {
 		videogameIdKeys = Object.keys(guessedMatchups);
 	}
 
@@ -405,12 +403,10 @@ const reducer = (prevState = initialState, action) => {
 			const videogameId = ""+action.val;
 			let newVideogameIds;
 			if(prevState.videogameIds.includes(videogameId)) {
-				newVideogameIds = prevState.videogameIds.filter(e => e!=videogameId);
+				newVideogameIds = prevState.videogameIds.filter(e => e!==videogameId);
 			} else {
 				newVideogameIds = [...prevState.videogameIds, videogameId];
 			}
-
-
 
 			return {
 				...prevState,
@@ -422,9 +418,8 @@ const reducer = (prevState = initialState, action) => {
 			}
 		}
 
-
 		case "forceToggleGameSelected": {
-			let filteredMatchups = prevState.videogameIds.filter(e => e!=action.val);
+			let filteredMatchups = prevState.videogameIds.filter(e => e!==action.val);
 			if(prevState.videogameIds.length === 0) {
 				filteredMatchups = [action.val];
 			}
