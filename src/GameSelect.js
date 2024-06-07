@@ -1,5 +1,5 @@
 // GameSelect.js
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { getTotalMatchups } from './MatchupNavigator';
 
@@ -9,17 +9,11 @@ const GameSelect = ({ games }) => {
 	const dispatch = useDispatch();
 	const dialogRef = useRef();
 	const cannotChangeRef = useRef();
-	const [confirming, setConfirming] = useState(false);
 	let clicked = "";
 
 	const getImageUrl = (gameId) => {
 		return "/characters/" + gameId + (videogameIds.includes(gameId)?"/selected":"/unselected")+".png";
 	};
-
-
-	const toggleGameSelected = (videogameId, dialogRef) => {
-		dispatch({type:"toggleGameSelected", val:videogameId});
-	}
 
 
 	return (
@@ -32,11 +26,11 @@ const GameSelect = ({ games }) => {
 					isSelected={videogameIds.includes(game.id)}
 					text={game.id}
 					onClick={()=> {
-						let matchingGameId = matchup.videogameId == game.id;
+						let matchingGameId = matchup.videogameId === game.id;
 						let videogameIdInList = videogameIds.includes(game.id);
 						let longerList = videogameIds.length > 1;
 						if(longerList && videogameIds.includes(game.id)) {
-							let newVideogameIds = [...videogameIds].filter(e=>e!=game.id);
+							let newVideogameIds = [...videogameIds].filter(e=>e!==game.id);
 							let forcedLeft = null;
 							if(lockLeft) {
 								forcedLeft = matchup.left;
@@ -49,7 +43,7 @@ const GameSelect = ({ games }) => {
 						clicked = game.id;
 						if(matchingGameId&&videogameIdInList&&longerList) {
 							dialogRef.current.showModal();
-						} else if(videogameIds.length==0&&game.id!=matchup.videogameId) {
+						} else if(videogameIds.length===0&&game.id!==matchup.videogameId) {
 							dialogRef.current.showModal();
 						} else {
 							dispatch({type:"toggleGameSelected",val:game.id})
@@ -66,19 +60,17 @@ const GameSelect = ({ games }) => {
 				<button onClick={()=>{
 					dispatch({type:"forceToggleGameSelected",val:clicked});
 					dialogRef.current.close();
-				setConfirming(false);}}>
+				}}>
 				Yes
 				</button>
 				<button onClick={()=>{
 					dialogRef.current.close();
-					setConfirming(false);
 				}}>No</button>
 			</dialog>
 			<dialog ref={cannotChangeRef}>
 				<span>There are no matchups meeting the selected criteria</span>
 				<button onClick={()=>{
 					cannotChangeRef.current.close();
-					setConfirming(false);
 				}}>OK</button>
 
 			</dialog>
