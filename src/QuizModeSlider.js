@@ -1,8 +1,9 @@
 // MatchupSlider.js
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import NumberInput from "./NumberInput";
 import { colors } from "./colors";
+import { submitGuessClick } from "./events";
+import NumberInput from "./NumberInput";
 import "./QuizModeSlider.css";
 
 const isValid = (num) => {
@@ -104,7 +105,7 @@ const MatchupSlider = () => {
 					<button
 						type="button"
 						onClick={(_e) => {
-							dispatch({ type: "submitGuess" });
+							dispatch(submitGuessClick());
 						}}
 					>
 						submit
