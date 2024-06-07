@@ -5,8 +5,7 @@ import CharacterDropdown from './CharacterDropdown';
 import "./CharacterPortrait.css"
 
 const LabeledCharacterPortrait = ({ side, lockSwitch, onClick }) => {
-	let { matchup, minimumGames, videogameIds, lockLeft, quizMode } = useSelector((state) => state);
-	let [name, setName] = useState("");
+	let { matchup, lockLeft, quizMode } = useSelector((state) => state);
 	let [baseImagePath, setBaseImagePath] = useState("");
 	let [loading, setLoading] = useState(true);
 	let [resolvedName, setResolvedName] = useState("");

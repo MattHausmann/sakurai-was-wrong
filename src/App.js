@@ -1,32 +1,24 @@
 // App.js
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import GameSelect from "./GameSelect";
 import MatchupContainer from "./MatchupContainer";
 import MatchupSlider from "./MatchupSlider";
 import ScoreDisplay from "./ScoreDisplay";
 import Switch from "@mui/material/Switch";
+import { gameIdMap as games } from "./consts";
 
 import "./App.css";
 
 const App = () => {
 	// Define your list of games (you can add more games here)
-	const games = [
-		{ id: "1", name: "Melee" },
-		{ id: "1386", name: "Ultimate" },
-	];
 
 	const dispatch = useDispatch();
 	const { quizMode, quizResults } = useSelector((state) => state);
 
-	const [videogameId, setVideogameId] = useState("1");
 	const rightColumnRef = useRef(null);
 
 	const dialogRef = useRef();
-
-	const handleGameSelect = (gameId) => {
-		setVideogameId(gameId);
-	};
 
 	useEffect(() => {
 		if (rightColumnRef.current) {
@@ -62,7 +54,7 @@ const App = () => {
 						}}
 						value={quizMode}
 					/>
-					<MatchupContainer videogameId={videogameId} quizMode={quizMode} />
+					<MatchupContainer quizMode={quizMode} />
 				</div>
 				<div className="right-column" ref={rightColumnRef}>
 					<ScoreDisplay />
