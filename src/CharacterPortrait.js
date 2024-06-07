@@ -3,11 +3,15 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import CharacterDropdown from './CharacterDropdown';
 import "./CharacterPortrait.css"
+import { matchupsPerCharacter, winnerWinPercentList } from './MatchupNavigator';
 
 const LabeledCharacterPortrait = ({ side, lockSwitch, onClick }) => {
-	let { matchup, lockLeft, quizMode } = useSelector((state) => state.main);
+	let { idx, requiredLeft, quizMode } = useSelector((state) => state.main);
+	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	let matchup = list[idx];
 	let [baseImagePath, setBaseImagePath] = useState("");
 	let [loading, setLoading] = useState(true);
+	let [name, setName] = useState("");
 	let [resolvedName, setResolvedName] = useState("");
 
 	let fromNameToResolvedName = useMemo(() => {
@@ -27,6 +31,9 @@ const LabeledCharacterPortrait = ({ side, lockSwitch, onClick }) => {
 		if (side === "right") {
 			newName = matchup.right;
 		}
+
+		setName(newName);
+
 		if (newName in fromNameToResolvedName) {
 			newName = fromNameToResolvedName[newName];
 		}
@@ -52,7 +59,7 @@ const LabeledCharacterPortrait = ({ side, lockSwitch, onClick }) => {
 				{lockSwitch && (
 					<label>
 						Lock Character:
-						<input type="checkbox" checked={lockLeft} onChange={() => {dispatch({type:"toggleLockLeft"});}} />
+						<input type="checkbox" checked={requiredLeft} onChange={() => {dispatch({type:"toggleRequiredLeft", val:name});}} />
 					</label>
 				)}
 		</div>

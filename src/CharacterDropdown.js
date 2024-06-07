@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { matchupsPerCharacter, getTotalGames } from "./MatchupNavigator";
+import { matchupsPerCharacter, winnerWinPercentList, getTotalGames, searchListForMatchingMatchup } from "./MatchupNavigator";
 import {gameIdMap } from "./consts";
 import "./CharacterDropdown.css";
+import wins from './wins.json';
 
 const CharacterDropdown = ({ side }) => {
-	const { matchup, minimumGames, videogameIds } = useSelector((state) => state.main);
+	const { idx, minimumGames, videogameIds, requiredLeft } = useSelector((state) => state.main);
+	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	let matchup = list[idx];
 
 	let [dropdownOpen, setDropdownOpen] = useState(false);
 	let [dialogErrors, setDialogErrors] = useState("");
@@ -37,7 +40,14 @@ const CharacterDropdown = ({ side }) => {
 	};
 
 	const setMatchup = (m) => {
-		dispatch({ type: "setMatchup", matchup: m });
+		let {left,right, videogameId} = m;
+		let leftWins = wins[videogameId][left][right];
+		let rightWins = wins[videogameId][right][left];
+		if(rightWins > leftWins) {
+			dispatch({ type: "setRequiredLeft", requiredLeft:left });
+		}
+		console.log(list, m);
+		dispatch({ type: "setMatchupIdx", idx:searchListForMatchingMatchup(list, m)});
 		setDropdownOpen(false);
 	};
 
@@ -151,7 +161,7 @@ const CharacterDropdown = ({ side }) => {
 								val: attemptedMatchup.videogameId,
 							});
 						}
-						dispatch({ type: "setMatchup", matchup: attemptedMatchup });
+						dispatch({ type: "setMatchupIdx", idx:searchListForMatchingMatchup(list, attemptedMatchup)});
 						setAttemptedMatchup(null);
 						errorRef.current.close();
 					}}

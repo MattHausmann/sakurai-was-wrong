@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { PieChart } from "@mui/x-charts/PieChart";
+import { matchupsPerCharacter, winnerWinPercentList } from './MatchupNavigator';
 
 import wins from "./wins.json";
 
+
 const PieChartComponent = ({ pieChartDisplay }) => {
-	const { displayQuizResults, matchup, reversed } = useSelector((state) => state.main);
+	const { idx, requiredLeft, displayQuizResults, reversed } = useSelector((state) => state.main);
+	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	let matchup = list[idx];
 
 	const [data, setData] = useState([
 		{

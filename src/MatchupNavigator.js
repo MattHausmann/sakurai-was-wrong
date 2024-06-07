@@ -26,34 +26,14 @@ const defaultCompareMatchups = (a, b) => {
 	}
 	return leftCompare;
 };
-export const getTotalMatchups = (minimumGames, videogameIds, requiredLeft) => {
-	let list = totalGamesList;
-	let totalMatchups = 0;
 
-	if(requiredLeft) {
-		console.log(requiredLeft);
-		console.log(matchupsPerCharacter[requiredLeft]);
-		list = matchupsPerCharacter[requiredLeft];
-		for(let m of list) {
-			let enoughGames = getTotalGames(m) >= minimumGames;
-			let correctVideogameId = videogameIds.length === 0;
-			correctVideogameId = correctVideogameId || videogameIds.includes(""+m.videogameId);
-			if(enoughGames && correctVideogameId) {
-				totalMatchups += 1;
-			}
-		}
-		return totalMatchups;
-	}
-	let idx = firstIndexAtOrAboveThreshold(minimumGames);
-	while(idx < totalGamesList.length) {
-		let matchup = totalGamesList[idx];
-		let enoughGames = getTotalGames(matchup) >= minimumGames;
-		let correctVideogameId = videogameIds.length === 0;
-		correctVideogameId = correctVideogameId || videogameIds.includes(""+matchup.videogameId);
-		if(enoughGames && correctVideogameId) {
+export const getTotalMatchups = (minimumGames, videogameIds, requiredLeft) => {
+	let totalMatchups = 0;
+	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	for(let m of list) {
+		if(matchupSatisfiesCriteria(m, minimumGames, videogameIds, requiredLeft)) {
 			totalMatchups += 1;
 		}
-		idx += 1;
 	}
 	return totalMatchups;
 };
@@ -224,12 +204,15 @@ function binarySearchListForObjectWithComparator(list, matchup, comparator) {
 	return idx;
 }
 
-const matchupSatisfiesCriteria = (m, minimumGames, videogameIds) => {
+export const matchupSatisfiesCriteria = (m, minimumGames, videogameIds, requiredCharacter) => {
 	if(getTotalGames(m) < minimumGames) {
 		return false;
 	}
 	if(!videogameIds) {
 		return true;
+	}
+	if(requiredCharacter && m.left!=requiredCharacter && m.right!=requiredCharacter) {
+		return false;
 	}
 	return videogameIds.includes(""+m.videogameId);
 };
@@ -256,64 +239,17 @@ export function prevMatchup(args) {
 	return -1;
 }
 
-export function randomMatchup(mainState, filteredMatchups) {
-	let {minimumGames, videogameIds, matchup, lockLeft} = mainState;
 
-	let list = lockLeft?matchupsPerCharacter[matchup.left]:totalGamesList;
-	if(getTotalMatchups(minimumGames, videogameIds, lockLeft?matchup.left:false) === 1) {
-		return matchup;
+export function randomMatchup(args) {
+	let {idx, minimumGames, videogameIds, requiredLeft} = args;
+	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	let i = Math.floor(Math.random()*list.length);
+	while(i == idx || !matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
+		i = Math.floor(Math.random()*list.length);
 	}
-	if(mainState.lockLeft) {
-		list = matchupsPerCharacter[mainState.matchup.left];
-		let looping = true;
-		while(looping) {
-			let newIndex = Math.floor(Math.random() * list.length);
-			let newMatchup = list[newIndex];
-			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
-			let correctVideogameId = videogameIds.length === 0 || videogameIds.includes(""+newMatchup.videogameId);
-			console.log(newMatchup, getTotalGames(newMatchup), enoughGames, videogameIds, newMatchup.videogameId, correctVideogameId)
-			if(enoughGames && correctVideogameId) {
-				return list[newIndex];
-			}
-		}
-	}
-
-	if(mainState.quizMode) {
-		let looping = true;
-		let selected = {};
-
-		while(looping) {
-			let characters = Object.keys(matchupsPerCharacter);
-			let randomCharacter = characters[Math.floor(Math.random()*characters.length)];
-			let matchups = matchupsPerCharacter[randomCharacter];
-			selected = matchups[Math.floor(Math.random()*matchups.length)];
-			let noGameRequirements=mainState.videogameIds.length===0;
-			let videogameIdInList = mainState.videogameIds.includes(""+selected.videogameId)
-			let correctVideogameId = noGameRequirements||videogameIdInList;
-			let enoughGames=getTotalGames(selected) >= mainState.minimumGames
-
-			if(enoughGames && correctVideogameId) {
-				looping = false;
-			}
-		}
-		return selected;
-	}
-	const index0 = firstIndexAtOrAboveThreshold(mainState.minimumGames);
-	let looping = true;
-	let newIndex = index0 + Math.floor(Math.random() * (list.length - index0));
-	while(looping) {
-		newIndex = index0 + Math.floor(Math.random() * (list.length - index0));
-		let newMatchup = totalGamesList[newIndex];
-
-		let noGameRequirements = mainState.videogameIds.length === 0;
-		let videogameIdInList = mainState.videogameIds.includes(""+newMatchup.videogameId)
-		let correctVideogameId = noGameRequirements||videogameIdInList;
-		if (correctVideogameId) {
-			looping = false;
-		}
-	}
-	return totalGamesList[newIndex];
+	return i;
 }
+
 
 function leftButtonsVisible(args) {
 	return prevMatchup(args) !== -1;
@@ -337,10 +273,12 @@ function isReversed(matchup) {
 }
 
 const oneSidedMatchupListA = [];
-const twoSidedMatchupList = []
-export const matchupsPerCharacter = {};
 
-for (let videogameId of gameIdMap.keys()) {
+
+export const matchupsPerCharacter = {};
+for (let videogame of gameIdMap) {
+
+	let videogameId = videogame.id;
 	for (let left in wins[videogameId]) {
 		if(!(left in matchupsPerCharacter)) {
 			matchupsPerCharacter[left] = []
@@ -348,7 +286,6 @@ for (let videogameId of gameIdMap.keys()) {
 		for (let right in wins[videogameId][left]) {
 		if(left !== right) {
 			let matchup = {videogameId, left, right};
-			twoSidedMatchupList.push(matchup);
 			matchupsPerCharacter[left].push(matchup);
 			let winnerWins = getWinnerWins(matchup);
 			if(wins[videogameId][left][right] === winnerWins) {
@@ -381,7 +318,6 @@ while(numMatchups <= totalGamesList.length) {
 	numMatchups += 1;
 }
 
-let leftPercentList = [...twoSidedMatchupList].sort(compareByLeftWinPercent);
 export const winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinnerWinPercent);
 
 export function MatchupNavigator() {
@@ -391,11 +327,11 @@ export function MatchupNavigator() {
 	let matchup = list[idx];
 	let args = {minimumGames, videogameIds, requiredLeft};
 
-	// useEffect(() => {
-	// 	if(!requiredLeft) {
-	// 		dispatch({type:"setMatchup", matchup:matchup});
-	// 	}
-	// }, [dispatch, matchup, requiredLeft]);
+	useEffect(() => {
+		if(!requiredLeft) {
+			dispatch({type:"setMatchupIdx", idx});
+		}
+	}, [dispatch, idx, requiredLeft]);
 
 	return (
 		<div className="matchup-navigator">
@@ -420,8 +356,7 @@ export function MatchupNavigator() {
 				<button
 					className="button"
 					onClick={() => {
-						let newMatchup = randomMatchup(args);
-						dispatch({ type: "setMatchup", matchup:newMatchup});
+						dispatch({ type: "setMatchupIdx", idx:randomMatchup(args)});
 					}}
 				>
 					New

@@ -1,36 +1,23 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import {
-	getWins,
-	getTotalGames,
-	getTotalMatchups,
-	totalGamesList,
-	firstIndexAtOrAboveThreshold,
-	randomMatchup,
-	unreverse,
-	fromMinimumGamesToTotalMatchups,
-	matchupsPerCharacter,
-	searchListForMatchingMatchup,
-	winnerWinPercentList,
-} from "./MatchupNavigator";
-import { alphabetize } from "./utils";
-import async_reducer from "./async_reducer";
+import { createStore } from "redux";
+import { getWins, getTotalGames, getTotalMatchups, totalGamesList, firstIndexAtOrAboveThreshold, randomMatchup, unreverse, fromMinimumGamesToTotalMatchups,matchupsPerCharacter, searchListForMatchingMatchup, winnerWinPercentList, matchupSatisfiesCriteria } from "./MatchupNavigator";
 import wins from "./wins.json";
 
 let initialState = {
 	currentIndex: 1,
-	matchup: {},
 	orderBy: "Left Win %",
 	quizMode: false,
 	quizResults: [],
+	bestScore: 0,
 	totalScore: 0,
 	mostRecentScore: 0,
 	scoreDisplay: [],
 	selectedGames: [],
 	winsDisplay: [0, 0],
 	lockLeft: false,
-	minimumGames: 1000,
-	videogameIds: ["1", "1386"],
-	idx: 0,
+	minimumGames:1000,
+	videogameIds:["1","1386"],
+	idx:0,
+	requiredLeft:"",
 };
 
 let minGames = initialState.minimumGames;
@@ -164,7 +151,7 @@ const newWinsDisplay = (quizMode, matchup) => {
 };
 
 // this is distinct from mutating due to a quiz guess
-const mutateStateFromNav = (prevState, newMatchup) => {
+const XmutateStateFromNav = (prevState, newMatchup) => {
 	let {videogameId, left, right} = newMatchup;
 	let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
 	let newLockLeft = prevState.lockLeft;
@@ -239,18 +226,13 @@ const scoreMatchup = (matchup, guess) => {
 	return totalScore;
 };
 
-// let firstMatchup = randomMatchup(initialState);
-let firstMatchup = { videogameId: "1", left: "Mario", right: "Luigi" };
-initialState = mutateStateFromNav(initialState, firstMatchup);
-initialState.idx = searchListForMatchingMatchup(
-	winnerWinPercentList,
-	firstMatchup
-);
+initialState.idx = randomMatchup(initialState);
+
+
 
 const getTotalScore = (minimumGames, videogameIds, requiredLeft) => {
-	console.log(requiredLeft);
-	let idx = requiredLeft ? 0 : firstIndexAtOrAboveThreshold(minimumGames);
-	let list = requiredLeft ? matchupsPerCharacter[requiredLeft] : totalGamesList;
+	let idx = requiredLeft?0:firstIndexAtOrAboveThreshold(minimumGames);
+	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:totalGamesList;
 	let totalScore = 0;
 	while (idx < list.length) {
 		let matchup = list[idx];
@@ -267,16 +249,18 @@ const getTotalScore = (minimumGames, videogameIds, requiredLeft) => {
 
 initialState.totalMatchups = getTotalMatchups(initialState.minimumGames, initialState.videogameIds);
 
-const countSeenMatchupsMinimumGames = (minimumGames, videogameIds) => {
+const countSeenMatchupsMinimumGames = (minimumGames, videogameIds, requiredCharacter) => {
 	let seen = 0;
 	let videogameIdKeys = videogameIds;
-	if(videogameIds.length === 0) {
-		videogameIdKeys=Object.keys(seenMatchups);
+	if(videogameIds.length == 0) {
+		videogameIdKeys = Object.keys(seenMatchups);
 	}
+
 	for(let videogameId of videogameIdKeys) {
 		for(let alphabeticallyFirst in seenMatchups[videogameId]) {
 			for(let alphabeticallyLast of seenMatchups[videogameId][alphabeticallyFirst]) {
-				if(getTotalGames({videogameId, left:alphabeticallyFirst, right:alphabeticallyLast}) >= minimumGames) {
+				let m = ({videogameId, left:alphabeticallyFirst, right:alphabeticallyLast});
+				if(matchupSatisfiesCriteria(m, minimumGames, videogameIds, requiredCharacter)) {
 					seen += 1;
 				}
 			}
@@ -285,7 +269,7 @@ const countSeenMatchupsMinimumGames = (minimumGames, videogameIds) => {
 	return seen;
 };
 
-const countGuessedMatchupsMinimumGames = (minimumGames, videogameIds) => {
+const countGuessedMatchupsMinimumGames = (minimumGames, videogameIds, requiredCharacter) => {
 	let guessed = 0;
 	let videogameIdKeys = videogameIds;
 	if (videogameIds.length === 0) {
@@ -295,7 +279,8 @@ const countGuessedMatchupsMinimumGames = (minimumGames, videogameIds) => {
 	for(let videogameId of videogameIdKeys) {
 		for(let alphabeticallyFirst in guessedMatchups[videogameId]) {
 			for(let alphabeticallyLast in guessedMatchups[videogameId][alphabeticallyFirst]) {
-				if(getTotalGames({videogameId, left:alphabeticallyFirst, right:alphabeticallyLast}) >= minimumGames) {
+				let m = ({videogameId, left:alphabeticallyFirst, right:alphabeticallyLast});
+				if(matchupSatisfiesCriteria(m, minimumGames, videogameIds, requiredCharacter)) {
 					guessed += 1;
 				}
 			}
@@ -306,7 +291,8 @@ const countGuessedMatchupsMinimumGames = (minimumGames, videogameIds) => {
 
 initialState.totalScore = getTotalScore(
 	initialState.minimumGames,
-	initialState.videogameIds
+	initialState.videogameIds,
+	""
 );
 initialState.totalSeen = countSeenMatchupsMinimumGames(
 	initialState.minimumGames,
@@ -316,9 +302,11 @@ initialState.totalGuessed = countGuessedMatchupsMinimumGames(initialState.minimu
 
 
 
-const main_reducer = (prevState = initialState, action) => {
-	let { matchup, lockLeft } = prevState;
-	let requiredLeft = lockLeft ? matchup.left : "";
+const reducer = (prevState = initialState, action) => {
+	let {minimumGames, videogameIds, requiredLeft, idx, totalSeen, totalGuessed, } = prevState;
+	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	let matchup = list[idx];
+	console.log(videogameIds);
 	switch (action.type) {
 		case "setGameId":
 			return {
@@ -331,22 +319,55 @@ const main_reducer = (prevState = initialState, action) => {
 				winsDisplay: action.winsDisplay,
 			};
 		case "setMatchup":
-			return mutateStateFromNav(prevState, action.matchup);
+			return XmutateStateFromNav(prevState, action.matchup);
 		case "setMatchupIdx":
+			let matchup = list[action.idx];
+			let { videogameId, left, right } = matchup;
+			console.log(matchup);
+			let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
+			if(!(videogameId in seenMatchups)) {
+				seenMatchups[videogameId] = {};
+			}
+			if(!(alphabeticallyFirst in seenMatchups[videogameId])) {
+				seenMatchups[videogameId][alphabeticallyFirst] = [];
+			}
+			if(!(seenMatchups[videogameId][alphabeticallyFirst].includes(alphabeticallyLast))) {
+				seenMatchups[videogameId][alphabeticallyFirst].push(alphabeticallyLast);
+				totalSeen += 1;
+				localStorage.setItem("seenMatchups", JSON.stringify(seenMatchups));
+			}
+			let bestScore = 0;
+			if(videogameId in bestScorePerMatchup) {
+				if(alphabeticallyFirst in bestScorePerMatchup[videogameId]) {
+					if(alphabeticallyLast in bestScorePerMatchup[videogameId][alphabeticallyFirst]) {
+						bestScore = bestScorePerMatchup[videogameId][alphabeticallyFirst][alphabeticallyLast];
+					}
+				}
+			}
+			
+			let mostRecentScore = scoreMatchup(matchup);
+			
 			return {
 				...prevState,
 				idx:action.idx,
+				mostRecentScore:mostRecentScore,
+				bestScore:bestScore,
+				totalSeen:totalSeen,
 			}
-		case "toggleLockLeft":
-			let unreversedMatchup = matchup;
-			if(prevState.lockLeft) {
-				unreversedMatchup = unreverse(unreversedMatchup);
-			}
+
+		case "toggleRequiredLeft":
+			let oldList = prevState.requiredLeft?matchupsPerCharacter[prevState.requiredLeft]:winnerWinPercentList;
+			let newRequiredLeft=prevState.requiredLeft?"":action.val;
+			let newList = newRequiredLeft?matchupsPerCharacter[newRequiredLeft]:winnerWinPercentList;
+			let newIdx = searchListForMatchingMatchup(newList, unreverse(oldList[idx]));
 			return {
 				...prevState,
-				lockLeft: !prevState.lockLeft,
-				matchup:unreversedMatchup,
-			};
+				requiredLeft:newRequiredLeft,
+				idx:newIdx,
+				totalGuessed:countGuessedMatchupsMinimumGames(minimumGames, videogameIds, newRequiredLeft),
+				totalSeen:countSeenMatchupsMinimumGames(minimumGames, videogameIds, newRequiredLeft),
+				totalMatchups:getTotalMatchups(minimumGames, videogameIds, newRequiredLeft),
+			}
 
 		// quiz muts
 		case "pushQuizResult":
@@ -401,23 +422,13 @@ const main_reducer = (prevState = initialState, action) => {
 			prevState.minimumGames = action.val;
 			return {
 				...prevState,
-				minimumGames: action.val,
-				totalMatchups: getTotalMatchups(action.val, prevState.videogameIds),
-				totalGuessed: countGuessedMatchupsMinimumGames(
-					action.val,
-					prevState.videogameIds
-				),
-				totalSeen: countSeenMatchupsMinimumGames(
-					action.val,
-					prevState.videogameIds
-				),
-				matchup: randomMatchup({ ...prevState, minimumGames: action.val }),
-				totalScore: getTotalScore(
-					action.val,
-					prevState.videogameIds,
-					requiredLeft
-				),
-			};
+				minimumGames:action.val,
+				totalMatchups:getTotalMatchups(action.val, prevState.videogameIds),
+				totalGuessed:countGuessedMatchupsMinimumGames(action.val, prevState.videogameIds),
+				totalSeen:countSeenMatchupsMinimumGames(action.val, prevState.videogameIds),
+				idx:randomMatchup({...prevState, minimumGames:action.val}),
+				totalScore: getTotalScore(action.val, prevState.videogameIds,requiredLeft),
+			}
 		}
 
 		case "toggleGameSelected": {
