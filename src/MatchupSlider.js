@@ -83,9 +83,16 @@ function MatchupSlider({value}) {
 			confirmRef.current.show();
 			setConfirming(true);
 		}
+	};
 
-	}
-
+	const dialogOnClick = () => {
+		let newIndex = getMaxIndex(matchup);
+		let minGames = sortedKeys[newIndex];
+		setSliderValue(newIndex);
+		dispatch({ type: "setMinimumGames", val: minGames });
+		confirmRef.current.close();
+		setConfirming(false);
+	};
 
 	return (
 		<div className="slider-container">
@@ -122,26 +129,11 @@ function MatchupSlider({value}) {
 					confirmRef.current.close();
 					setConfirming(false);
 				}}>Yes</button>
-				<button onClick={()=>{
-					let newIndex = getMaxIndex(matchup);
-					let minGames = sortedKeys[newIndex];
-					setSliderValue(newIndex);
-					dispatch({type:"setMinimumGames", val:minGames});
-					confirmRef.current.close();
-					setConfirming(false);
-				}}>No</button>
+				<button onClick={dialogOnClick}>No</button>
 			</dialog>
 			<dialog ref={cannotChangeRef}>
 				<span>There are no matchups meeting the selected criteria</span>
-				<button onClick={()=>{
-					let newIndex = getMaxIndex(matchup);
-					let minGames = sortedKeys[newIndex];
-					setSliderValue(newIndex);
-					dispatch({type:"setMinimumGames", val:minGames});
-					cannotChangeRef.current.close();
-					setConfirming(false);
-				}}>OK</button>
-
+				<button onClick={dialogOnClick}>OK</button>
 			</dialog>
 		</div>
 	);
