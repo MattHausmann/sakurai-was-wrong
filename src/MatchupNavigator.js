@@ -196,66 +196,25 @@ export const searchListForMatchingMatchup = (list, matchup) => {
 }
 
 export function firstMatchup(args) {
-	let {matchup, minimumGames, videogameIds, lockLeft} = args;
-	let idx = 0;
-
-	if(lockLeft) {
-		let list = matchupsPerCharacter[matchup.left];
-		while(idx < list.length) {
-			let newMatchup = list[idx];
-			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
-			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
-			correctVideogameId = correctVideogameId || videogameIds.length === 0;
-			if(matchup != newMatchup && enoughGames && correctVideogameId) {
-				return newMatchup;
-			}
-			idx += 1;
-		}
-	} else {
-		let list = winnerWinPercentList;
-		while(idx < list.length) {
-			let newMatchup = list[idx];
-			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
-			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
-			correctVideogameId = correctVideogameId || videogameIds.length === 0;
-			if(matchup != newMatchup && enoughGames && correctVideogameId) {
-				return newMatchup;
-			}
-			idx += 1;
+	let {idx, minimumGames, videogameIds, requiredLeft} = args;
+	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	for(let i = 0; i < list.length; i++) {
+		if(matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
+			return i;
 		}
 	}
+	return -1;
 }
 
 export function lastMatchup(args) {
-	let {matchup, minimumGames, videogameIds, lockLeft} = args;
-	let requiredLeft = lockLeft?matchup.left:"";
-	if(lockLeft) {
-		let list = matchupsPerCharacter[matchup.left];
-		let idx = list.length - 1;
-		while(idx > 0) {
-			let newMatchup = list[idx];
-			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
-			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
-			correctVideogameId = correctVideogameId || videogameIds.length === 0;
-			if(matchup != newMatchup && enoughGames && correctVideogameId) {
-				return newMatchup;
-			}
-			idx -= 1;
-		}
-	} else {
-		let list = winnerWinPercentList;
-		let idx = list.length - 1;
-		while(idx >= 0) {
-			let newMatchup = list[idx];
-			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
-			let correctVideogameId = videogameIds.includes(""+newMatchup.videogameId);
-			correctVideogameId = correctVideogameId || videogameIds.length === 0;
-			if(matchup != newMatchup && enoughGames && correctVideogameId) {
-				return newMatchup;
-			}
-			idx -= 1;
+	let {idx, minimumGames, videogameIds, requiredLeft} = args;
+	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	for(let i = list.length-1; i >= 0; i--) {
+		if(matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
+			return i;
 		}
 	}
+	return -1;
 }
 
 function binarySearchListForObjectWithComparator(list, matchup, comparator) {
@@ -280,14 +239,10 @@ const matchupSatisfiesCriteria = (m, minimumGames, videogameIds) => {
 };
 
 export function nextMatchup(args) {
-	let {matchup, minimumGames, videogameIds, lockLeft} = args;
-	let requiredLeft=lockLeft?matchup.left:"";
-	let list=lockLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
-	let idx = searchListForMatchingMatchup(list, matchup);
-	console.log(matchup, minimumGames, videogameIds, lockLeft, requiredLeft, list, idx);
+	let {idx, minimumGames, videogameIds, requiredLeft} = args;
+	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	for(let i = idx+1; i < list.length; i++) {
 		if(matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
-			console.log(list[i]);
 			return i;
 		}
 	}
@@ -295,10 +250,8 @@ export function nextMatchup(args) {
 }
 
 export function prevMatchup(args) {
-	let {matchup, minimumGames, videogameIds, lockLeft} = args;
-	let requiredLeft=lockLeft?matchup.left:"";
-	let list=lockLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
-	let idx = searchListForMatchingMatchup(list, matchup);
+	let {idx, minimumGames, videogameIds, requiredLeft} = args;
+	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	for(let i = idx-1; i >= 0; i--) {
 		if(matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
 			return i;
@@ -306,9 +259,6 @@ export function prevMatchup(args) {
 	}
 	return -1;
 }
-
-
-
 
 export function randomMatchup(state, filteredMatchups) {
 	let {minimumGames, videogameIds, matchup, lockLeft} = state;
@@ -450,36 +400,34 @@ export const winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinn
 
 export function MatchupNavigator() {
 	const dispatch = useDispatch();
-	let {matchup, minimumGames, videogameIds, lockLeft}=useSelector((state)=>state);
-
-	let args = {matchup, minimumGames, videogameIds, lockLeft};
+	let {idx, minimumGames, videogameIds, requiredLeft}=useSelector((state)=>state);
+	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	let matchup = list[idx];
+	
+	let args = {idx, minimumGames, videogameIds, requiredLeft};
 	let videogameId = matchup.videogameId;
 
 	useEffect(() => {
-		if(!lockLeft) {
+		if(!requiredLeft) {
 			dispatch({type:"setMatchup", matchup:matchup});
 		}
-	}, [dispatch, matchup, lockLeft]);
-
-	let currentList = lockLeft?matchupsPerCharacter[matchup.left]:winnerWinPercentList;
-
+	}, [dispatch, matchup, requiredLeft]);
+	
 	return (
 		<div className="matchup-navigator">
 			<div className="matchup-navigator-bottom-row">
 				<button
 					className="button"
-					disabled={!firstMatchup(args)}
-					onClick={() => {dispatch({ type: "setMatchup", matchup:firstMatchup(args)});}}
+					disabled={firstMatchup(args) == -1}
+					onClick={() => {dispatch({ type: "setMatchupIdx", idx:firstMatchup(args)});}}
 					style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 				>
 					First
 				</button>
 				<button
 					className="button"
-					disabled={!prevMatchup(args)}
-					onClick={() => {
-						dispatch({ type: "setMatchup", matchup:prevMatchup(args)});
-					}}
+					disabled={prevMatchup(args) == -1}
+					onClick={() => {dispatch({ type: "setMatchupIdx", idx:prevMatchup(args)});}}
 					style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 				>
 					Previous
@@ -504,8 +452,8 @@ export function MatchupNavigator() {
 				</button>
 				<button
 					className="button"
-					disabled={!lastMatchup(args)}
-					onClick={() => {dispatch({ type: "setMatchup", matchup:lastMatchup(args)});}}
+					disabled={lastMatchup(args) == -1}
+					onClick={() => {dispatch({ type: "setMatchupIdx", idx:lastMatchup(args)});}}
 					style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 				>
 					Last
