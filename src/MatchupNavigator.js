@@ -228,12 +228,15 @@ function binarySearchListForObjectWithComparator(list, matchup, comparator) {
 	return idx;
 }
 
-const matchupSatisfiesCriteria = (m, minimumGames, videogameIds) => {
+export const matchupSatisfiesCriteria = (m, minimumGames, videogameIds, requiredCharacter) => {
 	if(getTotalGames(m) < minimumGames) {
 		return false;
 	}
 	if(!videogameIds) {
 		return true;
+	}
+	if(requiredCharacter && m.left!=requiredCharacter && m.right!=requiredCharacter) {
+		return false;
 	}
 	return videogameIds.includes(""+m.videogameId);
 };
@@ -260,69 +263,16 @@ export function prevMatchup(args) {
 	return -1;
 }
 
-export function randomMatchup(state, filteredMatchups) {
-	let {minimumGames, videogameIds, matchup, lockLeft} = state;
-	let requiredLeft = lockLeft?matchup.left:"";
-
-
-	let list = lockLeft?matchupsPerCharacter[matchup.left]:totalGamesList;
-	let enoughGames = false;
-	let newState = state.matchup;
-	if(getTotalMatchups(minimumGames, videogameIds, lockLeft?matchup.left:false) === 1) {
-		return matchup;
+export function randomMatchup(args) {
+	let {idx, minimumGames, videogameIds, requiredLeft} = args;
+	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	let i = Math.floor(Math.random()*list.length);
+	while(i == idx || !matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
+		i = Math.floor(Math.random()*list.length);
 	}
-	if(state.lockLeft) {
-		list = matchupsPerCharacter[state.matchup.left];
-		let looping = true;
-		let selected = {};
-		while(looping) {
-			let newIndex = Math.floor(Math.random() * list.length);
-			let newMatchup = list[newIndex];
-			let enoughGames = getTotalGames(newMatchup) >= minimumGames;
-			let correctVideogameId = videogameIds.length === 0 || videogameIds.includes(""+newMatchup.videogameId);
-			console.log(newMatchup, getTotalGames(newMatchup), enoughGames, videogameIds, newMatchup.videogameId, correctVideogameId)
-			if(enoughGames && correctVideogameId) {
-				return list[newIndex];
-			}
-		}
-	}
-
-	if(state.quizMode) {
-		let looping = true;
-		let selected = {};
-
-		while(looping) {
-			let characters = Object.keys(matchupsPerCharacter);
-			let randomCharacter = characters[Math.floor(Math.random()*characters.length)];
-			let matchups = matchupsPerCharacter[randomCharacter];
-			selected = matchups[Math.floor(Math.random()*matchups.length)];
-			let noGameRequirements=state.videogameIds.length==0;
-			let videogameIdInList = state.videogameIds.includes(""+selected.videogameId)
-			let correctVideogameId = noGameRequirements||videogameIdInList;
-			let enoughGames=getTotalGames(selected) >= state.minimumGames
-
-			if(enoughGames && correctVideogameId) {
-				looping = false;
-			}
-		}
-		return selected;
-	}
-	const index0 = firstIndexAtOrAboveThreshold(state.minimumGames);
-	let looping = true;
-	let newIndex = index0 + Math.floor(Math.random() * (list.length-index0));
-	while(looping) {
-		newIndex = index0 + Math.floor(Math.random() * (list.length-index0));
-		let newMatchup = totalGamesList[newIndex];
-
-		let noGameRequirements=state.videogameIds.length==0;
-		let videogameIdInList = state.videogameIds.includes(""+newMatchup.videogameId)
-		let correctVideogameId = noGameRequirements||videogameIdInList;
-		if(correctVideogameId) {
-			looping=false;
-		}
-	}
-	return totalGamesList[newIndex];
+	return i;
 }
+
 
 function leftButtonsVisible(args) {
 	return prevMatchup(args) != -1;
@@ -409,10 +359,11 @@ export function MatchupNavigator() {
 
 	useEffect(() => {
 		if(!requiredLeft) {
-			dispatch({type:"setMatchup", matchup:matchup});
+			dispatch({type:"setMatchupIdx", idx:idx});
 		}
-	}, [dispatch, matchup, requiredLeft]);
+	}, [dispatch, idx, requiredLeft]);
 	
+
 	return (
 		<div className="matchup-navigator">
 			<div className="matchup-navigator-bottom-row">
@@ -436,8 +387,7 @@ export function MatchupNavigator() {
 				<button
 					className="button"
 					onClick={() => {
-						let newMatchup = randomMatchup(args);
-						dispatch({ type: "setMatchup", matchup:newMatchup});
+						dispatch({ type: "setMatchupIdx", idx:randomMatchup(args)});
 					}}
 				>
 					New
