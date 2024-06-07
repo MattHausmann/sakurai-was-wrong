@@ -7,14 +7,12 @@ const defaultCompareMatchups = (a, b) => {
 
 	let alphabeticalOrderA = a.left.localeCompare(a.right) < 0;
 	let alphabeticalOrderB = b.left.localeCompare(b.right) < 0;
-
 	if(alphabeticalOrderB & !alphabeticalOrderA) {
 		return 1;
 	}
 	if(alphabeticalOrderA & !alphabeticalOrderB) {
 		return -1;
 	}
-
 
 	let leftCompare = a.left.localeCompare(b.left)
 	//if it's in alphabetical order
@@ -30,7 +28,6 @@ const defaultCompareMatchups = (a, b) => {
 export const getTotalMatchups = (minimumGames, videogameIds, requiredLeft) => {
 	let list = totalGamesList;
 	let totalMatchups = 0;
-
 
 	if(requiredLeft) {
 		console.log(requiredLeft);
@@ -135,8 +132,6 @@ const compareByWinnerWinPercent = (a, b) => {
 };
 
 export const firstIndexAtOrAboveThreshold = function (threshold) {
-	let listName = "Total Games";
-
 	let b = 0;
 	let e = totalGamesList.length - 1;
 
@@ -412,13 +407,13 @@ export function MatchupNavigator() {
 			dispatch({type:"setMatchup", matchup:matchup});
 		}
 	}, [dispatch, matchup, requiredLeft]);
-	
+
 	return (
 		<div className="matchup-navigator">
 			<div className="matchup-navigator-bottom-row">
 				<button
 					className="button"
-					disabled={firstMatchup(args) == -1}
+					disabled={firstMatchup(args) === -1}
 					onClick={() => {dispatch({ type: "setMatchupIdx", idx:firstMatchup(args)});}}
 					style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 				>
@@ -426,7 +421,7 @@ export function MatchupNavigator() {
 				</button>
 				<button
 					className="button"
-					disabled={prevMatchup(args) == -1}
+					disabled={prevMatchup(args) === -1}
 					onClick={() => {dispatch({ type: "setMatchupIdx", idx:prevMatchup(args)});}}
 					style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 				>
@@ -444,7 +439,7 @@ export function MatchupNavigator() {
 				</button>
 				<button
 					className="button"
-					disabled={nextMatchup(args) == -1}
+					disabled={nextMatchup(args) === -1}
 					onClick={() => {dispatch({ type: "setMatchupIdx", idx:nextMatchup(args)});}}
 					style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 				>
@@ -452,7 +447,7 @@ export function MatchupNavigator() {
 				</button>
 				<button
 					className="button"
-					disabled={lastMatchup(args) == -1}
+					disabled={lastMatchup(args) === -1}
 					onClick={() => {dispatch({ type: "setMatchupIdx", idx:lastMatchup(args)});}}
 					style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 				>
