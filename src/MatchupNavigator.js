@@ -256,17 +256,16 @@ export function prevMatchup(args) {
 	return -1;
 }
 
-export function randomMatchup(state, filteredMatchups) {
-	let {minimumGames, videogameIds, matchup, lockLeft} = state;
+export function randomMatchup(mainState, filteredMatchups) {
+	let {minimumGames, videogameIds, matchup, lockLeft} = mainState;
 
 	let list = lockLeft?matchupsPerCharacter[matchup.left]:totalGamesList;
 	if(getTotalMatchups(minimumGames, videogameIds, lockLeft?matchup.left:false) === 1) {
 		return matchup;
 	}
-	if(state.lockLeft) {
-		list = matchupsPerCharacter[state.matchup.left];
+	if(mainState.lockLeft) {
+		list = matchupsPerCharacter[mainState.matchup.left];
 		let looping = true;
-		let selected = {};
 		while(looping) {
 			let newIndex = Math.floor(Math.random() * list.length);
 			let newMatchup = list[newIndex];
@@ -279,7 +278,7 @@ export function randomMatchup(state, filteredMatchups) {
 		}
 	}
 
-	if(state.quizMode) {
+	if(mainState.quizMode) {
 		let looping = true;
 		let selected = {};
 
@@ -288,10 +287,10 @@ export function randomMatchup(state, filteredMatchups) {
 			let randomCharacter = characters[Math.floor(Math.random()*characters.length)];
 			let matchups = matchupsPerCharacter[randomCharacter];
 			selected = matchups[Math.floor(Math.random()*matchups.length)];
-			let noGameRequirements=state.videogameIds.length===0;
-			let videogameIdInList = state.videogameIds.includes(""+selected.videogameId)
+			let noGameRequirements=mainState.videogameIds.length===0;
+			let videogameIdInList = mainState.videogameIds.includes(""+selected.videogameId)
 			let correctVideogameId = noGameRequirements||videogameIdInList;
-			let enoughGames=getTotalGames(selected) >= state.minimumGames
+			let enoughGames=getTotalGames(selected) >= mainState.minimumGames
 
 			if(enoughGames && correctVideogameId) {
 				looping = false;
@@ -299,15 +298,15 @@ export function randomMatchup(state, filteredMatchups) {
 		}
 		return selected;
 	}
-	const index0 = firstIndexAtOrAboveThreshold(state.minimumGames);
+	const index0 = firstIndexAtOrAboveThreshold(mainState.minimumGames);
 	let looping = true;
 	let newIndex = index0 + Math.floor(Math.random() * (list.length - index0));
 	while(looping) {
 		newIndex = index0 + Math.floor(Math.random() * (list.length - index0));
 		let newMatchup = totalGamesList[newIndex];
 
-		let noGameRequirements = state.videogameIds.length === 0;
-		let videogameIdInList = state.videogameIds.includes(""+newMatchup.videogameId)
+		let noGameRequirements = mainState.videogameIds.length === 0;
+		let videogameIdInList = mainState.videogameIds.includes(""+newMatchup.videogameId)
 		let correctVideogameId = noGameRequirements||videogameIdInList;
 		if (correctVideogameId) {
 			looping = false;
@@ -387,7 +386,7 @@ export const winnerWinPercentList = [...oneSidedMatchupListA].sort(compareByWinn
 
 export function MatchupNavigator() {
 	const dispatch = useDispatch();
-	let {idx, minimumGames, videogameIds, requiredLeft}=useSelector((state)=>state);
+	let {idx, minimumGames, videogameIds, requiredLeft}=useSelector((state)=>state.main);
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let matchup = list[idx];
 	let args = {minimumGames, videogameIds, requiredLeft};

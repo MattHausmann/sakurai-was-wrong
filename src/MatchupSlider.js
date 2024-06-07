@@ -11,7 +11,7 @@ let sortedKeys = Object.keys(fromMinimumGamesToTotalMatchups).map(Number).sort((
 
 function MatchupSlider({value}) {
 	const dispatch = useDispatch();
-	const {matchup, minimumGames, videogameIds, lockLeft} = useSelector((state) => state);
+	const {matchup, minimumGames, videogameIds, lockLeft} = useSelector((state) => state.main);
 	const [sliderValue, setSliderValue] = useState(value);
 
 	const [confirming, setConfirming] = useState(false);

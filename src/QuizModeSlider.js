@@ -10,7 +10,9 @@ const isValid = (num) => {
 };
 
 const MatchupSlider = () => {
-	const { displayQuizResults, winsDisplay } = useSelector((state) => state);
+	const { displayQuizResults, winsDisplay } = useSelector(
+		(state) => state.main
+	);
 	const dispatch = useDispatch();
 
 	const [sliderValue, setSliderValue] = useState(winsDisplay[0]);

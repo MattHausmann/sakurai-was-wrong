@@ -13,7 +13,7 @@ import "./MatchupContainer.css";
 const MatchupContainer = () => {
 	const dispatch = useDispatch();
 	const { displayQuizResults, quizMode, winsDisplay, lockLeft } = useSelector(
-		(state) => state
+		(state) => state.main
 	);
 	const [pieChartDisplay, setPieChartDisplay] = useState(winsDisplay);
 

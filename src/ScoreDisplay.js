@@ -21,7 +21,7 @@ const ScoreDisplay = () => {
 		totalSeen,
 		totalGuessed,
 		totalMatchups,
-	} = useSelector((state) => state);
+	} = useSelector((state) => state.main);
 
 	return (
 		<div className="score-display">

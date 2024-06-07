@@ -14,7 +14,7 @@ const App = () => {
 	// Define your list of games (you can add more games here)
 
 	const dispatch = useDispatch();
-	const { quizMode, quizResults } = useSelector((state) => state);
+	const { quizMode, quizResults } = useSelector((state) => state.main);
 
 	const rightColumnRef = useRef(null);
 

@@ -5,7 +5,7 @@ import {gameIdMap } from "./consts";
 import "./CharacterDropdown.css";
 
 const CharacterDropdown = ({ side }) => {
-	const { matchup, minimumGames, videogameIds } = useSelector((state) => state);
+	const { matchup, minimumGames, videogameIds } = useSelector((state) => state.main);
 
 	let [dropdownOpen, setDropdownOpen] = useState(false);
 	let [dialogErrors, setDialogErrors] = useState("");

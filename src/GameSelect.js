@@ -5,7 +5,7 @@ import { getTotalMatchups } from './MatchupNavigator';
 
 const GameSelect = ({ games }) => {
 
-	const {matchup, minimumGames, videogameIds, lockLeft} = useSelector((state) => state);
+	const {matchup, minimumGames, videogameIds, lockLeft} = useSelector((state) => state.main);
 	const dispatch = useDispatch();
 	const dialogRef = useRef();
 	const cannotChangeRef = useRef();
