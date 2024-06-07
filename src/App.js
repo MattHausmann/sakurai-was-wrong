@@ -1,12 +1,12 @@
 // App.js
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Switch from "@mui/material/Switch";
+import { gameIdMap as games } from "./consts";
 import GameSelect from "./GameSelect";
 import MatchupContainer from "./MatchupContainer";
 import MatchupSlider from "./MatchupSlider";
 import ScoreDisplay from "./ScoreDisplay";
-import Switch from "@mui/material/Switch";
-import { gameIdMap as games } from "./consts";
 
 import "./App.css";
 
