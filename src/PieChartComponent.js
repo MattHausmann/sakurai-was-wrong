@@ -5,7 +5,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import wins from "./wins.json";
 
 const PieChartComponent = ({ pieChartDisplay }) => {
-	const { displayQuizResults, matchup, reversed } = useSelector((state) => state);
+	const { displayQuizResults, matchup, reversed } = useSelector((state) => state.main);
 
 	const [data, setData] = useState([
 		{
