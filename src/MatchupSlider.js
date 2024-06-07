@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { getTotalGames, getTotalMatchups, fromMinimumGamesToTotalMatchups, matchupsPerCharacter } from './MatchupNavigator.js';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useRef } from "react";
+import {
+	getTotalGames,
+	getTotalMatchups,
+	fromMinimumGamesToTotalMatchups,
+} from "./MatchupNavigator.js";
+import { useSelector, useDispatch } from "react-redux";
 
 let sortedKeys = Object.keys(fromMinimumGamesToTotalMatchups).map(Number).sort((a,b) => a-b);
-
 
 
 function MatchupSlider({value}) {
@@ -86,8 +89,7 @@ function MatchupSlider({value}) {
 	};
 
 	const dialogOnClick = () => {
-		let newIndex = getMaxIndex(matchup);
-		let minGames = sortedKeys[newIndex];
+		let newIndex = getMaxIndex(matchup);		let minGames = sortedKeys[newIndex];
 		setSliderValue(newIndex);
 		dispatch({ type: "setMinimumGames", val: minGames });
 		confirmRef.current.close();
