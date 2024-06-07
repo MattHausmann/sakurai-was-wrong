@@ -183,7 +183,8 @@ const reverse = function(matchup) {
 	return {videogameId:matchup.videogameId, left:matchup.right, right:matchup.left};
 }
 
-const searchListForMatchingMatchup = (list, matchup, idx) => {
+const searchListForMatchingMatchup = (list, matchup) => {
+	let idx = 0;
 	while(idx < list.length) {
 		let newMatchup = list[idx];
 		let enoughGames = getTotalGames(newMatchup) >= minimumGames;
@@ -194,6 +195,7 @@ const searchListForMatchingMatchup = (list, matchup, idx) => {
 		}
 		idx += 1;
 	}
+	return idx;
 }
 
 export function firstMatchup(args) {
