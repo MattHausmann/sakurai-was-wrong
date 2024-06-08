@@ -325,7 +325,7 @@ export function MatchupNavigator() {
 	let {idx, minimumGames, videogameIds, requiredLeft}=useSelector((state)=>state.main);
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let matchup = list[idx];
-	let args = {minimumGames, videogameIds, requiredLeft};
+	let args = {idx, minimumGames, videogameIds, requiredLeft};
 
 	useEffect(() => {
 		if(!requiredLeft) {
