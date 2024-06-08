@@ -1,5 +1,7 @@
-import { createStore } from "redux";
 import { getWins, getTotalGames, getTotalMatchups, totalGamesList, firstIndexAtOrAboveThreshold, randomMatchup, unreverse, fromMinimumGamesToTotalMatchups,matchupsPerCharacter, searchListForMatchingMatchup, winnerWinPercentList, matchupSatisfiesCriteria } from "./MatchupNavigator";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import  async_reducer  from "./async_reducer";
+import { alphabetize } from "./utils";
 import wins from "./wins.json";
 
 let initialState = {
