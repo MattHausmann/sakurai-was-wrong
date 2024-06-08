@@ -242,9 +242,9 @@ export function prevMatchup(args) {
 
 export function randomMatchup(args) {
 	let {idx, minimumGames, videogameIds, requiredLeft} = args;
-	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let i = Math.floor(Math.random()*list.length);
-	while(i == idx || !matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
+	while(i === idx || !matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
 		i = Math.floor(Math.random()*list.length);
 	}
 	return i;
