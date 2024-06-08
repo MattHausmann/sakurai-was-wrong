@@ -105,7 +105,8 @@ const MatchupSlider = () => {
 					<button
 						type="button"
 						onClick={(_e) => {
-							dispatch(submitGuessClick());
+							dispatch({ type: "submitGuess" });
+							// dispatch(submitGuessClick());
 						}}
 					>
 						submit
