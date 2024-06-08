@@ -6,6 +6,7 @@ import "./CharacterDropdown.css";
 import wins from './wins.json';
 
 const CharacterDropdown = ({ side }) => {
+	let dispatch = useDispatch();
 	const { idx, minimumGames, videogameIds, requiredLeft } = useSelector((state) => state.main);
 	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let matchup = list[idx];
@@ -14,26 +15,20 @@ const CharacterDropdown = ({ side }) => {
 	let [dialogErrors, setDialogErrors] = useState("");
 	let [attemptedMatchup, setAttemptedMatchup] = useState(null);
 
-	let selected = side === "left" ? matchup.left : matchup.right;
-	let other = side === "left" ? matchup.right : matchup.left;
-
-	let dropdownId = side + "CustomDropdown";
-	let dispatch = useDispatch();
-
-	const errorRef = useRef();
+	let [dropdownId, setDropdownId] = useState(side + "CustomDropdown");
+	let [selected, setSelected] = useState(side === "left" ? matchup.left : matchup.right);
+	let [other, setOther] = useState(side === "left" ? matchup.right : matchup.left);
 
 	useEffect(() => {
-		const handleClick = (event) => {
-			const dropdownMenu = document.getElementById(dropdownId);
-			if (dropdownMenu && !dropdownMenu.contains(event.target)) {
-				setDropdownOpen(false);
-			}
-		};
-		document.addEventListener("click", handleClick);
-		return () => {
-			document.removeEventListener("click", handleClick);
-		};
-	});
+		setSelected(side === "left" ? matchup.left : matchup.right);
+		setOther(side === "left" ? matchup.right : matchup.left);
+	}, [side, matchup]);
+
+	useEffect(()=>{
+		setDropdownId(side + "CustomDropdown")
+	}, [side]);
+
+	const errorRef = useRef();
 
 	const toggleDropdown = () => {
 		setDropdownOpen(!dropdownOpen);
@@ -46,7 +41,6 @@ const CharacterDropdown = ({ side }) => {
 		if(rightWins > leftWins) {
 			dispatch({ type: "setRequiredLeft", requiredLeft:left });
 		}
-		console.log(list, m);
 		dispatch({ type: "setMatchupIdx", idx:searchListForMatchingMatchup(list, m)});
 		setDropdownOpen(false);
 	};
@@ -120,7 +114,7 @@ const CharacterDropdown = ({ side }) => {
 			>
 				{matchupsPerOtherCharacter.map((m) => (
 					<div
-						key={m.right}
+						key={m.videogameId + m.right}
 						className={`dropdown-item ${getErrors(m) ? "errors" : ""}`}
 						onClick={() => {
 							if (getErrors(m)) {
