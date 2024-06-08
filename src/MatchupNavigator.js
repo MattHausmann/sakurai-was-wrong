@@ -211,7 +211,7 @@ export const matchupSatisfiesCriteria = (m, minimumGames, videogameIds, required
 	if(!videogameIds) {
 		return true;
 	}
-	if(requiredCharacter && m.left!=requiredCharacter && m.right!=requiredCharacter) {
+	if(requiredCharacter && m.left!==requiredCharacter && m.right!==requiredCharacter) {
 		return false;
 	}
 	return videogameIds.includes(""+m.videogameId);

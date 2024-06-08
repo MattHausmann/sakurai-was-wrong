@@ -120,7 +120,7 @@ const CharacterDropdown = ({ side }) => {
 			>
 				{matchupsPerOtherCharacter.map((m) => (
 					<div
-						key={m.right}
+						key={m.videogameId + m.right}
 						className={`dropdown-item ${getErrors(m) ? "errors" : ""}`}
 						onClick={() => {
 							if (getErrors(m)) {
