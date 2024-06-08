@@ -207,8 +207,6 @@ const XmutateStateFromNav = (prevState, newMatchup) => {
 		seenMatchups[videogameId][alphabeticallyFirst].push(alphabeticallyLast);
 	}
 
-	localStorage.setItem("seenMatchups", JSON.stringify(seenMatchups));
-
 	let winsDisplay = newWinsDisplay(prevState.quizMode, newMatchup);
 
 	return {
@@ -376,11 +374,9 @@ const main_reducer = (prevState = initialState, action) => {
 		totalSeen,
 		totalGuessed,
 	} = prevState;
-	let list = requiredLeft
-		? matchupsPerCharacter[requiredLeft]
-		: winnerWinPercentList;
+	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let matchup = list[idx];
-	console.log(videogameIds);
+	let {videogameId, left, right} = matchup;
 	switch (action.type) {
 		case "setGameId":
 			return {
@@ -430,6 +426,8 @@ const main_reducer = (prevState = initialState, action) => {
 			}
 
 			let mostRecentScore = scoreMatchup(matchup);
+			
+			let winsDisplay = [ wins[videogameId][left][right], wins[videogameId][right][left] ]
 
 			return {
 				...prevState,
@@ -437,6 +435,7 @@ const main_reducer = (prevState = initialState, action) => {
 				mostRecentScore: mostRecentScore,
 				bestScore: bestScore,
 				totalSeen: totalSeen,
+				winsDisplay: winsDisplay,
 			};
 
 		case "toggleRequiredLeft":
@@ -481,9 +480,7 @@ const main_reducer = (prevState = initialState, action) => {
 
 		case "toggleQuizMode":
 			prevState.lockLeft = false;
-			let newMatchup = action.val
-				? randomMatchup(prevState)
-				: prevState.matchup;
+			let newMatchup = action.val?randomMatchup(prevState):prevState.matchup;
 			return {
 				...prevState,
 				quizMode: action.val,
@@ -512,7 +509,9 @@ const main_reducer = (prevState = initialState, action) => {
 		}
 
 		case "resetQuizSubmitDisplay": {
-			let newMatchup = randomMatchup(prevState);
+			let newIdx = randomMatchup(prevState);
+			let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+			let newMatchup = list[newIdx];
 			return {
 				...prevState,
 				displayQuizResults: false,
