@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-	quizSliderAnimation: false,
+	quizSliderIsAnimating: false,
 };
 
 const slice = createSlice({
@@ -9,13 +9,11 @@ const slice = createSlice({
 	initialState,
 	reducers: {
 		startGuessAnimation(state) {
-			console.log("startQuizSliderAnimation");
-			state.quizSliderAnimation = true;
+			state.quizSliderIsAnimating = true;
 		},
 		endGuessAnimation(state) {
-			console.log("endQuizSliderAnimation");
-			state.quizSliderAnimation = false;
-		}
+			state.quizSliderIsAnimating = false;
+		},
 	},
 });
 
