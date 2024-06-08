@@ -156,18 +156,14 @@ const getBestScore = (matchup) => {
 
 const newWinsDisplay = (quizMode, matchup) => {
 	if (quizMode) {
-		let sum =
-			wins[matchup.videogameId][matchup.left][matchup.right] +
-			wins[matchup.videogameId][matchup.right][matchup.left];
+		let sum = wins[matchup.videogameId][matchup.left][matchup.right]+wins[matchup.videogameId][matchup.right][matchup.left];
 		let halfWins = Math.ceil(sum / 2);
 		return [halfWins, sum - halfWins];
 	} else {
-		return [
-			wins[matchup.videogameId][matchup.left][matchup.right],
-			wins[matchup.videogameId][matchup.right][matchup.left],
-		];
+		return [wins[matchup.videogameId][matchup.left][matchup.right],wins[matchup.videogameId][matchup.right][matchup.left]];
 	}
 };
+
 
 const scoreMatchup = (matchup, guess) => {
 	let { videogameId, left, right } = matchup;
@@ -396,6 +392,21 @@ const main_reducer = (prevState = initialState, action) => {
 				totalScore: getTotalScore(minimumGames, videogameIds, newRequiredLeft),
 			};
 
+		case "setRequiredLeft":
+			requiredLeft = action.requiredLeft;
+			list = matchupsPerCharacter[requiredLeft];
+			newIdx = searchListForMatchingMatchup(list, ({videogameId, left:requiredLeft, right}));
+			return {
+				...prevState,
+				requiredLeft: newRequiredLeft,
+				idx: newIdx,
+				totalGuessed: countGuessedMatchupsMinimumGames(minimumGames, videogameIds, requiredLeft),
+				totalSeen: countSeenMatchupsMinimumGames(minimumGames, videogameIds, requiredLeft),
+				totalMatchups: getTotalMatchups(minimumGames, videogameIds, requiredLeft),
+				totalScore: getTotalScore(minimumGames, videogameIds, requiredLeft),
+			};
+
+
 		// quiz muts
 		case "pushQuizResult":
 			return {
@@ -403,14 +414,16 @@ const main_reducer = (prevState = initialState, action) => {
 				quizResults: [...prevState.quizResults, action.result],
 			};
 
+
 		case "toggleQuizMode":
 			prevState.lockLeft = false;
-			let newMatchup = action.val?randomMatchup(prevState):prevState.matchup;
+			let idx = action.val?randomMatchup(prevState):prevState.idx;
+			let newMatchup = list[idx];
 			return {
 				...prevState,
 				quizMode: action.val,
 				winsDisplay: newWinsDisplay(action.val, newMatchup),
-				matchup: newMatchup,
+				idx: idx,
 				displayQuizResults: false,
 				lockLeft: false,
 			};
