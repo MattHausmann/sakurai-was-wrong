@@ -208,7 +208,7 @@ export const matchupSatisfiesCriteria = (m, minimumGames, videogameIds, required
 	if(getTotalGames(m) < minimumGames) {
 		return false;
 	}
-	if(!videogameIds) {
+	if(!videogameIds.length) {
 		return true;
 	}
 	if(requiredCharacter && m.left!=requiredCharacter && m.right!=requiredCharacter) {
