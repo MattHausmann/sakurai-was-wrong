@@ -330,9 +330,7 @@ const main_reducer = (prevState = initialState, action) => {
 				winsDisplay: action.winsDisplay,
 			};
 		case "setMatchupIdx":
-			
 			let requiredLeft = action.requiredLeft?action.requiredLeft:prevState.requiredLeft;
-			
 			let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 			console.log(requiredLeft, action.idx);
 			let matchup = list[action.idx];
@@ -433,7 +431,6 @@ const main_reducer = (prevState = initialState, action) => {
 			let newGuessedMatchups = mutateStateFromGuess(prevState, matchup, guess);
 			return newGuessedMatchups;
 		}
-
 
 		case "resetQuizSubmitDisplay": {
 			let newIdx = randomMatchup(prevState);

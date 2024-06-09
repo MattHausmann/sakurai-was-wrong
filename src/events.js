@@ -1,18 +1,28 @@
-import { startGuessAnimation, endGuessAnimation } from "./async_reducer";
-import wins from "./wins.json";
+import {
+	animationTick,
+	startGuessAnimation,
+	endGuessAnimation,
+} from "./async_reducer";
+
+const fps = 120;
+const sliderAnimationDuration = 750;
+
+const lerp = (a, b, t) => {
+	return (1 - t) * a + t * b;
+};
 
 const submitGuessClick = () => {
 	return async (dispatch, getState) => {
 		dispatch(startGuessAnimation());
-		const state = getState();
-		const currentMatchup = state.main.matchup;
-		console.log(currentMatchup);
-		const t = 750;
+		let interval = setInterval(() => {
+			dispatch(animationTick());
+		}, 1000 / fps);
 		setTimeout(() => {
-			console.log("end guess animation");
+			clearInterval(interval);
 			dispatch(endGuessAnimation());
-		}, t);
+			dispatch({ type: "submitGuess" });
+		}, sliderAnimationDuration);
 	};
 };
 
-export { submitGuessClick };
+export { sliderAnimationDuration, submitGuessClick, lerp };
