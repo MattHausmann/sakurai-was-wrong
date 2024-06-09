@@ -526,23 +526,23 @@ const main_reducer = (prevState = initialState, action) => {
 				totalScore: getTotalScore(
 					prevState.minimumGames,
 					newVideogameIds,
-					requiredLeft
+					prevState.requiredLeft
 				),
 			};
 		}
 
 		case "forceToggleGameSelected": {
-			let filteredMatchups = prevState.videogameIds.filter(
+			let filteredMatchups = [...prevState.videogameIds].filter(
 				(e) => e !== action.val
 			);
 			if (prevState.videogameIds.length === 0) {
 				filteredMatchups = [action.val];
 			}
-			prevState.videogameIds = filteredMatchups;
+			let idx = randomMatchup({...prevState, videogameIds:filteredMatchups})
 			return {
 				...prevState,
 				videogameIds: filteredMatchups,
-				matchup: randomMatchup(prevState),
+				idx: idx,
 				totalMatchups: getTotalMatchups(
 					prevState.minimumGames,
 					filteredMatchups
@@ -558,7 +558,7 @@ const main_reducer = (prevState = initialState, action) => {
 				totalScore: getTotalScore(
 					prevState.minimumGames,
 					filteredMatchups,
-					requiredLeft
+					prevState.requiredLeft
 				),
 			};
 		}
