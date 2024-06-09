@@ -7,7 +7,7 @@ import wins from './wins.json';
 
 
 const CharacterDropdown = ({ side }) => {
-	const { idx, minimumGames, videogameIds, requiredLeft } = useSelector((state) => state.main);
+	let { idx, minimumGames, videogameIds, requiredLeft } = useSelector((state) => state.main);
 	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let matchup = list[idx];
 
@@ -40,17 +40,25 @@ const CharacterDropdown = ({ side }) => {
 		setDropdownOpen(!dropdownOpen);
 	};
 
+
 	const setMatchup = (m) => {
 		let {left,right, videogameId} = m;
 		let leftWins = wins[videogameId][left][right];
 		let rightWins = wins[videogameId][right][left];
-		if(rightWins > leftWins) {
-			dispatch({ type: "setRequiredLeft", requiredLeft:left });
+		if(requiredLeft) {
+			requiredLeft = left;
 		}
-		console.log(list, m);
-		dispatch({ type: "setMatchupIdx", idx:searchListForMatchingMatchup(list, m)});
+		if(rightWins > leftWins) {
+			requiredLeft = right;
+			m = {videogameId, right:left, left:right};
+		}
+		list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+		let idx = searchListForMatchingMatchup(list, m);
+		console.log(requiredLeft, list, idx);
+		dispatch({ type: "setMatchupIdx", idx:idx, requiredLeft:requiredLeft});
 		setDropdownOpen(false);
 	};
+
 
 	const notEnoughGames = "Not enough games.\n";
 	const wrongVideogameId = "Matchup for wrong game.\n";

@@ -1,11 +1,14 @@
 // GameSelect.js
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { getTotalMatchups } from './MatchupNavigator';
+import { getTotalMatchups, matchupsPerCharacter, winnerWinPercentList } from './MatchupNavigator';
 
 const GameSelect = ({ games }) => {
 
-	const {matchup, minimumGames, videogameIds, lockLeft} = useSelector((state) => state.main);
+	const {idx, minimumGames, videogameIds, requiredLeft} = useSelector((state) => state.main);
+	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	let matchup = list[idx];
+	
 	const dispatch = useDispatch();
 	const dialogRef = useRef();
 	const cannotChangeRef = useRef();
@@ -31,11 +34,7 @@ const GameSelect = ({ games }) => {
 						let longerList = videogameIds.length > 1;
 						if(longerList && videogameIds.includes(game.id)) {
 							let newVideogameIds = [...videogameIds].filter(e=>e!==game.id);
-							let forcedLeft = null;
-							if(lockLeft) {
-								forcedLeft = matchup.left;
-							}
-							if(!getTotalMatchups(minimumGames, newVideogameIds, forcedLeft)) {
+							if(!getTotalMatchups(minimumGames, newVideogameIds, requiredLeft)) {
 								cannotChangeRef.current.showModal();
 								return;
 							}
