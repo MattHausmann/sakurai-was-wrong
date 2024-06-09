@@ -208,7 +208,7 @@ export const matchupSatisfiesCriteria = (m, minimumGames, videogameIds, required
 	if(getTotalGames(m) < minimumGames) {
 		return false;
 	}
-	if(!videogameIds) {
+	if(!videogameIds.length) {
 		return true;
 	}
 	if(requiredCharacter && m.left!=requiredCharacter && m.right!=requiredCharacter) {
@@ -220,7 +220,6 @@ export const matchupSatisfiesCriteria = (m, minimumGames, videogameIds, required
 export function nextMatchup(args) {
 	let {idx, minimumGames, videogameIds, requiredLeft} = args;
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
-	console.log(idx, minimumGames, videogameIds, requiredLeft, list);
 	for(let i = idx+1; i < list.length; i++) {
 		if(matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
 			return i;
