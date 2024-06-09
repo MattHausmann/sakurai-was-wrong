@@ -9,7 +9,6 @@ function MatchupSlider({value}) {
 	const dispatch = useDispatch();
 	const {idx, minimumGames, videogameIds, requiredLeft} = useSelector((state) => state.main);
 	const [sliderValue, setSliderValue] = useState(value);
-
 	const [confirming, setConfirming] = useState(false);
 
 	const list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;

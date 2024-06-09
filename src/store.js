@@ -382,7 +382,6 @@ const main_reducer = (prevState = initialState, action) => {
 			let newRequiredLeft = prevState.requiredLeft?"":action.val;
 			let newList = newRequiredLeft?matchupsPerCharacter[newRequiredLeft]:winnerWinPercentList;
 			let newIdx = searchListForMatchingMatchup(newList, unreverse(oldList[prevState.idx]));
-			console.log(oldList,newRequiredLeft, newList, newIdx);
 			return {
 				...prevState,
 				requiredLeft: newRequiredLeft,
@@ -444,6 +443,7 @@ const main_reducer = (prevState = initialState, action) => {
 			};
 		}
 		case "setMinimumGames": {
+			let requiredLeft = prevState.requiredLeft;
 			return {
 				...prevState,
 				minimumGames: action.val,
@@ -471,7 +471,7 @@ const main_reducer = (prevState = initialState, action) => {
 		}
 
 		case "forceMinimumGames": {
-			prevState.minimumGames = action.val;
+			let requiredLeft = prevState.requiredLeft;
 			return {
 				...prevState,
 				minimumGames: action.val,

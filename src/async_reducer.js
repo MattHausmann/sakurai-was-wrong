@@ -11,17 +11,14 @@ const slice = createSlice({
 	initialState,
 	reducers: {
 		animationTick(state) {
-			console.log("animationTick");
 			state.quizSliderAnimation += 1;
 			state.elapsed = Date.now() - state.startTime;
 		},
 		startGuessAnimation(state) {
-			console.log("startQuizSliderAnimation");
 			state.quizSliderAnimation = 0;
 			state.startTime = Date.now();
 		},
 		endGuessAnimation(state) {
-			console.log("endQuizSliderAnimation");
 			state.quizSliderAnimation = 0;
 			state.elapsed = 0;
 		},

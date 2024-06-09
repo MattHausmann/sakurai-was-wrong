@@ -254,12 +254,12 @@ export function randomQuizQuestion(args) {
 	let {minimumGames, videogameIds, idx, requiredLeft} = args;
 	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let matchup = list[idx];
-	
-	
+
+
 	let i = Math.floor(Math.random() * winnerWinPercentList.length);
-	
+
 	if(!videogameIds) {
-		
+
 	}
 }
 
