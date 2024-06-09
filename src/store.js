@@ -333,6 +333,11 @@ const main_reducer = (prevState = initialState, action) => {
 				winsDisplay: action.winsDisplay,
 			};
 		case "setMatchupIdx":
+			
+			let requiredLeft = action.requiredLeft?action.requiredLeft:prevState.requiredLeft;
+			
+			let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+			console.log(requiredLeft, action.idx);
 			let matchup = list[action.idx];
 			let { videogameId, left, right } = matchup;
 			let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
@@ -369,6 +374,7 @@ const main_reducer = (prevState = initialState, action) => {
 
 			return {
 				...prevState,
+				requiredLeft:requiredLeft,
 				idx: action.idx,
 				bestScore: bestScore,
 				mostRecentScore: mostRecentScore,
@@ -382,6 +388,7 @@ const main_reducer = (prevState = initialState, action) => {
 			let newRequiredLeft = prevState.requiredLeft?"":action.val;
 			let newList = newRequiredLeft?matchupsPerCharacter[newRequiredLeft]:winnerWinPercentList;
 			let newIdx = searchListForMatchingMatchup(newList, unreverse(oldList[prevState.idx]));
+			console.log(oldList,newRequiredLeft, newList, newIdx);
 			return {
 				...prevState,
 				requiredLeft: newRequiredLeft,
@@ -394,12 +401,9 @@ const main_reducer = (prevState = initialState, action) => {
 
 		case "setRequiredLeft":
 			requiredLeft = action.requiredLeft;
-			list = matchupsPerCharacter[requiredLeft];
-			newIdx = searchListForMatchingMatchup(list, ({videogameId:prevState.videogameId, left:requiredLeft, right}));
 			return {
 				...prevState,
-				requiredLeft: newRequiredLeft,
-				idx: newIdx,
+				requiredLeft: requiredLeft,
 				totalGuessed: countGuessedMatchupsMinimumGames(minimumGames, videogameIds, requiredLeft),
 				totalSeen: countSeenMatchupsMinimumGames(minimumGames, videogameIds, requiredLeft),
 				totalMatchups: getTotalMatchups(minimumGames, videogameIds, requiredLeft),
