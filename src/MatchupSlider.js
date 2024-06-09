@@ -1,9 +1,5 @@
 import React, { useState, useRef } from "react";
-import {
-	getTotalGames,
-	getTotalMatchups,
-	fromMinimumGamesToTotalMatchups,
-} from "./MatchupNavigator.js";
+import {getTotalGames, getTotalMatchups, fromMinimumGamesToTotalMatchups, matchupsPerCharacter, winnerWinPercentList} from "./MatchupNavigator.js";
 import { useSelector, useDispatch } from "react-redux";
 
 let sortedKeys = Object.keys(fromMinimumGamesToTotalMatchups).map(Number).sort((a,b) => a-b);
@@ -11,10 +7,13 @@ let sortedKeys = Object.keys(fromMinimumGamesToTotalMatchups).map(Number).sort((
 
 function MatchupSlider({value}) {
 	const dispatch = useDispatch();
-	const {matchup, minimumGames, videogameIds, lockLeft} = useSelector((state) => state.main);
+	const {idx, minimumGames, videogameIds, requiredLeft} = useSelector((state) => state.main);
 	const [sliderValue, setSliderValue] = useState(value);
 
 	const [confirming, setConfirming] = useState(false);
+
+	const list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	const matchup = list[idx];
 
 	const dialogRef = useRef();
 	const confirmRef = useRef();
@@ -56,7 +55,6 @@ function MatchupSlider({value}) {
 	const handleOnMouseUp = (event) => {
 		let newMinimumGames=sortedKeys[sliderValue];
 		let maximumMinimum = getTotalGames(matchup);
-		let requiredLeft=lockLeft?matchup.left:"";
 		if(!getTotalMatchups(newMinimumGames, videogameIds, requiredLeft)) {
 			cannotChangeRef.current.showModal();
 			return;

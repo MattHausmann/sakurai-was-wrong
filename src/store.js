@@ -332,7 +332,6 @@ const main_reducer = (prevState = initialState, action) => {
 		case "setMatchupIdx":
 			let requiredLeft = action.requiredLeft?action.requiredLeft:prevState.requiredLeft;
 			let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
-			console.log(requiredLeft, action.idx);
 			let matchup = list[action.idx];
 			let { videogameId, left, right } = matchup;
 			let [alphabeticallyFirst, alphabeticallyLast] = alphabetize(left, right);
@@ -451,21 +450,22 @@ const main_reducer = (prevState = initialState, action) => {
 				totalMatchups: getTotalMatchups(
 					action.val,
 					prevState.videogameIds,
-					requiredLeft
+					prevState.requiredLeft
 				),
 				totalGuessed: countGuessedMatchupsMinimumGames(
 					action.val,
 					prevState.videogameIds,
-					prevState.lo
+					prevState.requiredLeft
 				),
 				totalSeen: countSeenMatchupsMinimumGames(
 					action.val,
-					prevState.videogameIds
+					prevState.videogameIds,
+					prevState.requiredLeft
 				),
 				totalScore: getTotalScore(
 					action.val,
 					prevState.videogameIds,
-					requiredLeft
+					prevState.requiredLeft
 				),
 			};
 		}
@@ -478,24 +478,26 @@ const main_reducer = (prevState = initialState, action) => {
 				totalMatchups: getTotalMatchups(action.val, prevState.videogameIds),
 				totalGuessed: countGuessedMatchupsMinimumGames(
 					action.val,
-					prevState.videogameIds
+					prevState.videogameIds,
+					prevState.requiredLeft
 				),
 				totalSeen: countSeenMatchupsMinimumGames(
 					action.val,
-					prevState.videogameIds
+					prevState.videogameIds,
+					prevState.requiredLeft
 				),
 				idx: randomMatchup({ ...prevState, minimumGames: action.val }),
 				totalScore: getTotalScore(
 					action.val,
 					prevState.videogameIds,
-					requiredLeft
+					prevState.requiredLeft
 				),
 			};
 		}
 
 		case "toggleGameSelected": {
 			const videogameId = "" + action.val;
-			let newVideogameIds = prevState.videogameIds;
+			let newVideogameIds = [...prevState.videogameIds];
 			let videoGameIdIndex = prevState.videogameIds.indexOf(videogameId);
 			if (videoGameIdIndex !== -1) {
 				newVideogameIds.splice(videoGameIdIndex, 1);
@@ -508,15 +510,18 @@ const main_reducer = (prevState = initialState, action) => {
 				videogameIds: newVideogameIds,
 				totalMatchups: getTotalMatchups(
 					prevState.minimumGames,
-					newVideogameIds
+					newVideogameIds,
+					prevState.requiredLeft
 				),
 				totalGuessed: countGuessedMatchupsMinimumGames(
 					prevState.minimumGames,
-					newVideogameIds
+					newVideogameIds,
+					prevState.requiredLeft
 				),
 				totalSeen: countSeenMatchupsMinimumGames(
 					prevState.minimumGames,
-					newVideogameIds
+					newVideogameIds,
+					prevState.requiredLeft
 				),
 				totalScore: getTotalScore(
 					prevState.minimumGames,
