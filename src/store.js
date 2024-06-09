@@ -493,7 +493,7 @@ const main_reducer = (prevState = initialState, action) => {
 
 		case "toggleGameSelected": {
 			const videogameId = "" + action.val;
-			let newVideogameIds = prevState.videogameIds;
+			let newVideogameIds = [...prevState.videogameIds];
 			let videoGameIdIndex = prevState.videogameIds.indexOf(videogameId);
 			if (videoGameIdIndex !== -1) {
 				newVideogameIds.splice(videoGameIdIndex, 1);
