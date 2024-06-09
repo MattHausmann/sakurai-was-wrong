@@ -443,6 +443,7 @@ const main_reducer = (prevState = initialState, action) => {
 			};
 		}
 		case "setMinimumGames": {
+			let requiredLeft = prevState.requiredLeft;
 			return {
 				...prevState,
 				minimumGames: action.val,
@@ -454,7 +455,6 @@ const main_reducer = (prevState = initialState, action) => {
 				totalGuessed: countGuessedMatchupsMinimumGames(
 					action.val,
 					prevState.videogameIds,
-					prevState.lo
 				),
 				totalSeen: countSeenMatchupsMinimumGames(
 					action.val,
@@ -469,7 +469,7 @@ const main_reducer = (prevState = initialState, action) => {
 		}
 
 		case "forceMinimumGames": {
-			prevState.minimumGames = action.val;
+			let requiredLeft = prevState.requiredLeft;
 			return {
 				...prevState,
 				minimumGames: action.val,
