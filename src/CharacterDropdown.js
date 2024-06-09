@@ -5,6 +5,7 @@ import {gameIdMap } from "./consts";
 import "./CharacterDropdown.css";
 import wins from './wins.json';
 
+
 const CharacterDropdown = ({ side }) => {
 	const { idx, minimumGames, videogameIds, requiredLeft } = useSelector((state) => state.main);
 	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
@@ -58,7 +59,7 @@ const CharacterDropdown = ({ side }) => {
 		if (getTotalGames(m) < minimumGames) {
 			errors += notEnoughGames;
 		}
-		if (videogameIds.length > 0 && !videogameIds.includes("" + m.videogameId)) {
+		if (videogameIds.length > 0 && !(videogameIds.includes("" + m.videogameId))) {
 			errors += wrongVideogameId;
 		}
 		return errors;
@@ -120,7 +121,7 @@ const CharacterDropdown = ({ side }) => {
 			>
 				{matchupsPerOtherCharacter.map((m) => (
 					<div
-						key={m.right}
+						key={m.videogameId+m.right}
 						className={`dropdown-item ${getErrors(m) ? "errors" : ""}`}
 						onClick={() => {
 							if (getErrors(m)) {
