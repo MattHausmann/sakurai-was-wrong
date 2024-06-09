@@ -364,7 +364,7 @@ const main_reducer = (prevState = initialState, action) => {
 
 			let mostRecentScore = scoreMatchup(matchup);
 			let totalScore = getTotalScore(minimumGames, videogameIds, requiredLeft)
-			
+
 			let winsDisplay = [ wins[videogameId][left][right], wins[videogameId][right][left] ]
 
 			return {
@@ -414,19 +414,20 @@ const main_reducer = (prevState = initialState, action) => {
 				quizResults: [...prevState.quizResults, action.result],
 			};
 
-		case "toggleQuizMode":
-			prevState.lockLeft = false;
+		case "toggleQuizMode": {
+			let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+			console.log(prevState)
+			console.log(list[prevState.idx])
 			let idx = action.val?randomMatchup(prevState):prevState.idx;
-			let newMatchup = list[idx];
 			return {
 				...prevState,
 				quizMode: action.val,
-				winsDisplay: newWinsDisplay(action.val, newMatchup),
-				idx: idx,
+				winsDisplay: newWinsDisplay(action.val, list[idx]),
+				idx,
 				displayQuizResults: false,
 				requiredLeft:"",
 			};
-
+		}
 		case "submitGuess": {
 			let [alphabeticallyFirst, _alphabeticallyLast] = alphabetize(
 				prevState.matchup.left,
