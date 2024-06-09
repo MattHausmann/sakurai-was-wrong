@@ -14,7 +14,6 @@ const MatchupSlider = () => {
 	const { displayQuizResults, winsDisplay } = useSelector(
 		(state) => state.main
 	);
-	const { quizSliderIsAnimating } = useSelector((state) => state.async);
 	const dispatch = useDispatch();
 
 	const [sliderValue, setSliderValue] = useState(winsDisplay[0]);
@@ -22,13 +21,10 @@ const MatchupSlider = () => {
 	const [rightWins, setRightWins] = useState(winsDisplay[1]);
 
 	useEffect(() => {
-		if (quizSliderIsAnimating) {
-			return;
-		}
 		setLeftWins(winsDisplay[0]);
 		setRightWins(winsDisplay[1]);
 		setSliderValue(winsDisplay[0]);
-	}, [quizSliderIsAnimating, winsDisplay]);
+	}, [winsDisplay]);
 
 	useEffect(() => {
 		const percentage = (leftWins / (leftWins + rightWins)) * 100;
@@ -109,7 +105,8 @@ const MatchupSlider = () => {
 					<button
 						type="button"
 						onClick={(_e) => {
-							dispatch(submitGuessClick());
+							dispatch({ type: "submitGuess" });
+							// dispatch(submitGuessClick());
 						}}
 					>
 						submit

@@ -211,7 +211,7 @@ export const matchupSatisfiesCriteria = (m, minimumGames, videogameIds, required
 	if(!videogameIds) {
 		return true;
 	}
-	if(requiredCharacter && m.left!==requiredCharacter && m.right!==requiredCharacter) {
+	if(requiredCharacter && m.left!=requiredCharacter && m.right!=requiredCharacter) {
 		return false;
 	}
 	return videogameIds.includes(""+m.videogameId);
@@ -242,9 +242,9 @@ export function prevMatchup(args) {
 
 export function randomMatchup(args) {
 	let {idx, minimumGames, videogameIds, requiredLeft} = args;
-	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let i = Math.floor(Math.random()*list.length);
-	while(i === idx || !matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
+	while(i == idx || !matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
 		i = Math.floor(Math.random()*list.length);
 	}
 	return i;
