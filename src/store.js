@@ -330,9 +330,7 @@ const main_reducer = (prevState = initialState, action) => {
 				winsDisplay: action.winsDisplay,
 			};
 		case "setMatchupIdx":
-			
 			let requiredLeft = action.requiredLeft?action.requiredLeft:prevState.requiredLeft;
-			
 			let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 			console.log(requiredLeft, action.idx);
 			let matchup = list[action.idx];
@@ -407,7 +405,6 @@ const main_reducer = (prevState = initialState, action) => {
 				totalScore: getTotalScore(minimumGames, videogameIds, requiredLeft),
 			};
 
-
 		// quiz muts
 		case "pushQuizResult":
 			return {
@@ -434,7 +431,6 @@ const main_reducer = (prevState = initialState, action) => {
 			let newGuessedMatchups = mutateStateFromGuess(prevState, matchup, guess);
 			return newGuessedMatchups;
 		}
-
 
 		case "resetQuizSubmitDisplay": {
 			let newIdx = randomMatchup(prevState);
@@ -499,11 +495,10 @@ const main_reducer = (prevState = initialState, action) => {
 
 		case "toggleGameSelected": {
 			const videogameId = "" + action.val;
-			let newVideogameIds;
-			if (prevState.videogameIds.includes(videogameId)) {
-				newVideogameIds = prevState.videogameIds.filter(
-					(e) => e !== videogameId
-				);
+			let newVideogameIds = prevState.videogameIds;
+			let videoGameIdIndex = prevState.videogameIds.indexOf(videogameId);
+			if (videoGameIdIndex !== -1) {
+				newVideogameIds.splice(videoGameIdIndex, 1);
 			} else {
 				newVideogameIds = [...prevState.videogameIds, videogameId];
 			}

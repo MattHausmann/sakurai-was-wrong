@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { colors } from "./colors";
-import { submitGuessClick } from "./events";
+import { sliderAnimationDuration, submitGuessClick, lerp } from "./events";
 import NumberInput from "./NumberInput";
+import { winnerWinPercentList } from "./MatchupNavigator";
+import wins from "./wins.json";
 import "./QuizModeSlider.css";
 
 const isValid = (num) => {
@@ -11,14 +13,16 @@ const isValid = (num) => {
 };
 
 const MatchupSlider = () => {
-	const { displayQuizResults, winsDisplay } = useSelector(
+	const { displayQuizResults, idx, winsDisplay } = useSelector(
 		(state) => state.main
 	);
+	const { elapsed, quizSliderAnimation } = useSelector((state) => state.async);
 	const dispatch = useDispatch();
 
 	const [sliderValue, setSliderValue] = useState(winsDisplay[0]);
 	const [leftWins, setLeftWins] = useState(winsDisplay[0]);
 	const [rightWins, setRightWins] = useState(winsDisplay[1]);
+	const [leftWinsGuess, setLeftWinsGuess] = useState(leftWins);
 
 	useEffect(() => {
 		setLeftWins(winsDisplay[0]);
@@ -32,6 +36,23 @@ const MatchupSlider = () => {
 			".quiz-slider"
 		).style.background = `linear-gradient(to right, ${colors.winGreen} ${percentage}%, ${colors.loseRed} ${percentage}%)`;
 	}, [leftWins, rightWins]);
+
+	useEffect(() => {
+		if (quizSliderAnimation) {
+			const totalWins = leftWins + rightWins;
+			let { left, right, videogameId } = winnerWinPercentList[idx];
+			let actual = [
+				wins[videogameId][left][right],
+				wins[videogameId][right][left],
+			];
+			const animatedLeftVal = Math.floor(
+				lerp(leftWinsGuess, actual[0], elapsed / sliderAnimationDuration)
+			);
+			setLeftWins(animatedLeftVal);
+			setRightWins(totalWins - animatedLeftVal);
+			setSliderValue(animatedLeftVal);
+		}
+	}, [elapsed, idx, leftWins, leftWinsGuess, rightWins, quizSliderAnimation]);
 
 	const handleInputChange = (e, isLeft) => {
 		if (isValid(e.target.value)) {
@@ -105,8 +126,11 @@ const MatchupSlider = () => {
 					<button
 						type="button"
 						onClick={(_e) => {
-							dispatch({ type: "submitGuess" });
-							// dispatch(submitGuessClick());
+							// setLeftWinsGuess is only used for the lerping here
+							// the main_reducer is able to read the users guess from the leftover winsDisplay value
+							// which never gets updated during the animation
+							setLeftWinsGuess(leftWins);
+							dispatch(submitGuessClick());
 						}}
 					>
 						submit
