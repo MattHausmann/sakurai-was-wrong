@@ -406,7 +406,6 @@ const main_reducer = (prevState = initialState, action) => {
 				totalScore: getTotalScore(minimumGames, videogameIds, requiredLeft),
 			};
 
-
 		// quiz muts
 		case "pushQuizResult":
 			return {
@@ -510,11 +509,10 @@ const main_reducer = (prevState = initialState, action) => {
 
 		case "toggleGameSelected": {
 			const videogameId = "" + action.val;
-			let newVideogameIds;
-			if (prevState.videogameIds.includes(videogameId)) {
-				newVideogameIds = prevState.videogameIds.filter(
-					(e) => e !== videogameId
-				);
+			let newVideogameIds = prevState.videogameIds;
+			let videoGameIdIndex = prevState.videogameIds.indexOf(videogameId);
+			if (videoGameIdIndex !== -1) {
+				newVideogameIds.splice(videoGameIdIndex, 1);
 			} else {
 				newVideogameIds = [...prevState.videogameIds, videogameId];
 			}
