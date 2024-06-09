@@ -54,7 +54,6 @@ const CharacterDropdown = ({ side }) => {
 		}
 		list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 		let idx = searchListForMatchingMatchup(list, m);
-		console.log(requiredLeft, list, idx);
 		dispatch({ type: "setMatchupIdx", idx:idx, requiredLeft:requiredLeft});
 		setDropdownOpen(false);
 	};

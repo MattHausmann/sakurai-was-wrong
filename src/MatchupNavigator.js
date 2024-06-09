@@ -220,7 +220,6 @@ export const matchupSatisfiesCriteria = (m, minimumGames, videogameIds, required
 export function nextMatchup(args) {
 	let {idx, minimumGames, videogameIds, requiredLeft} = args;
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
-	console.log(idx, minimumGames, videogameIds, requiredLeft, list);
 	for(let i = idx+1; i < list.length; i++) {
 		if(matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
 			return i;
@@ -255,12 +254,12 @@ export function randomQuizQuestion(args) {
 	let {minimumGames, videogameIds, idx, requiredLeft} = args;
 	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let matchup = list[idx];
-	
-	
+
+
 	let i = Math.floor(Math.random() * winnerWinPercentList.length);
-	
+
 	if(!videogameIds) {
-		
+
 	}
 }
 
