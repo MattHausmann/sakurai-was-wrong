@@ -7,27 +7,12 @@ import GameSelect from "./GameSelect";
 import MatchupContainer from "./MatchupContainer";
 import MatchupSlider from "./MatchupSlider";
 import ScoreDisplay from "./ScoreDisplay";
-
 import "./App.css";
 
 const App = () => {
-	// Define your list of games (you can add more games here)
-
 	const dispatch = useDispatch();
 	const { quizMode, quizResults } = useSelector((state) => state.main);
-
-	const rightColumnRef = useRef(null);
-
 	const dialogRef = useRef();
-
-	useEffect(() => {
-		if (rightColumnRef.current) {
-			rightColumnRef.current.scrollTo({
-				top: rightColumnRef.current.scrollHeight,
-				behavior: "smooth",
-			});
-		}
-	}, [quizResults]);
 
 	return (
 		<div className="app-container">
@@ -43,7 +28,7 @@ const App = () => {
 						<i className="fa fa-close"></i>
 					</button>
 					<GameSelect games={games} />
-					<MatchupSlider value={1000} />
+					<MatchupSlider />
 				</dialog>
 			</div>
 			<div className="app-content">
@@ -56,7 +41,7 @@ const App = () => {
 					/>
 					<MatchupContainer quizMode={quizMode} />
 				</div>
-				<div className="right-column" ref={rightColumnRef}>
+				<div className="right-column" >
 					<ScoreDisplay />
 				</div>
 			</div>

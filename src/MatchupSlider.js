@@ -5,15 +5,14 @@ import { useSelector, useDispatch } from "react-redux";
 let sortedKeys = Object.keys(fromMinimumGamesToTotalMatchups).map(Number).sort((a,b) => a-b);
 
 
-function MatchupSlider({value}) {
+function MatchupSlider() {
 	const dispatch = useDispatch();
 	const {idx, minimumGames, videogameIds, requiredLeft} = useSelector((state) => state.main);
-	const [sliderValue, setSliderValue] = useState(value);
+	const [sliderValue, setSliderValue] = useState(minimumGames);
 	const [confirming, setConfirming] = useState(false);
 
 	const list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	const matchup = list[idx];
-
 	const dialogRef = useRef();
 	const confirmRef = useRef();
 	const cannotChangeRef = useRef();
@@ -21,7 +20,6 @@ function MatchupSlider({value}) {
 	const getMaxIndex = (matchup) => {
 		let totalGames = getTotalGames(matchup);
 		let idx = sortedKeys.length - 1;
-
 		while(sortedKeys[idx] > totalGames) {
 			idx--;
 		}
@@ -51,7 +49,7 @@ function MatchupSlider({value}) {
 		dispatch({type:"setMinimumGames", val:newMinimumGames});
 	}
 
-	const handleOnMouseUp = (event) => {
+	const handleOnMouseUp = () => {
 		let newMinimumGames=sortedKeys[sliderValue];
 		let maximumMinimum = getTotalGames(matchup);
 		if(!getTotalMatchups(newMinimumGames, videogameIds, requiredLeft)) {
@@ -106,7 +104,8 @@ function MatchupSlider({value}) {
 				</button>
 			</dialog>
 			<dialog ref={confirmRef}>
-				<span>The current matchup is beneath the threshold; this will set a new matchup.</span>				<span>Are you sure?</span>
+				<span>The current matchup is beneath the threshold; this will set a new matchup.</span>
+				<span>Are you sure?</span>
 				<button onClick={()=>{
 					dispatch({type:"forceMinimumGames",val:sortedKeys[sliderValue]});
 					confirmRef.current.close();
