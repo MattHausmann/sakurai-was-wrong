@@ -243,11 +243,21 @@ export function prevMatchup(args) {
 export function randomMatchup(args) {
 	let {idx, minimumGames, videogameIds, requiredLeft} = args;
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
-	let i = Math.floor(Math.random()*list.length);
-	while(i == idx || !matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
-		i = Math.floor(Math.random()*list.length);
+	let {videogameId, left, right} = list[idx];
+	
+	let minIdx = firstIndexAtOrAboveThreshold(minimumGames);
+	
+	let i = minIdx;
+	let totalGamesListIndices = totalGamesList.length - minIdx;
+	if(getTotalMatchups(minimumGames, videogameIds, requiredLeft)==1){
+		return searchListForMatchingMatchup(list, totalGamesList[i]);
 	}
-	return i;
+
+	i = Math.floor(Math.random()*totalGamesListIndices) + minIdx;
+	while(!matchupSatisfiesCriteria(totalGamesList[i], minimumGames, videogameIds, requiredLeft)) {		
+		i = Math.floor(Math.random()*totalGamesListIndices) + minIdx;
+	}
+	return searchListForMatchingMatchup(list, totalGamesList[i]);
 }
 
 export function randomQuizQuestion(args) {
