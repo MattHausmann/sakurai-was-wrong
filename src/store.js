@@ -390,6 +390,7 @@ const main_reducer = (prevState = initialState, action) => {
 		case "forceMinimumGames": {
 			let requiredLeft = prevState.requiredLeft;
 			let idx = randomMatchup({ ...prevState, minimumGames: action.val });
+			let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 			return {
 				...prevState,
 				minimumGames: action.val,
@@ -397,7 +398,7 @@ const main_reducer = (prevState = initialState, action) => {
 				totalSeen: countSeenMatchupsMinimumGames(action.val, prevState.videogameIds, prevState.requiredLeft),
 				idx: idx,
 				totalScore: getTotalScore(action.val, prevState.videogameIds, prevState.requiredLeft),
-				winsDisplay: newWinsDisplay(prevState.quizMode, winnerWinPercentList[idx]),
+				winsDisplay: newWinsDisplay(prevState.quizMode, list[idx]),
 			};
 		}
 
