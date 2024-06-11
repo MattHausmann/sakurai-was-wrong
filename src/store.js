@@ -276,6 +276,7 @@ const main_reducer = (prevState = initialState, action) => {
 				seenMatchups[videogameId] = {};
 			}
 
+
 			if (!(alphabeticallyFirst in seenMatchups[videogameId])) {
 				seenMatchups[videogameId][alphabeticallyFirst] = [];
 			}
@@ -421,20 +422,24 @@ const main_reducer = (prevState = initialState, action) => {
 		}
 
 		case "forceToggleGameSelected": {
-			let filteredMatchups = [...prevState.videogameIds].filter((e) => e !== action.val);
+			let {videogameIds, requiredLeft} = prevState;
+			
+			let filteredGameIds = [...prevState.videogameIds].filter((e) => e !== action.val);
 			if (prevState.videogameIds.length === 0) {
-				filteredMatchups = [action.val];
+				filteredGameIds = [action.val];
 			}
-			let idx = randomMatchup({...prevState, videogameIds:filteredMatchups})
+
+			let idx = randomMatchup({...prevState, videogameIds:filteredGameIds})
+			let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 			return {
 				...prevState,
-				videogameIds: filteredMatchups,
+				videogameIds: filteredGameIds,
 				idx: idx,
-				totalMatchups: getTotalMatchups(prevState.minimumGames, filteredMatchups, prevState.requiredLeft),
-				totalSeen: countSeenMatchupsMinimumGames(prevState.minimumGames, filteredMatchups, prevState.requiredLeft),
-				totalGuessed: countGuessedMatchupsMinimumGames(prevState.minimumGames, filteredMatchups, prevState.requiredLeft),
-				totalScore: getTotalScore(prevState.minimumGames, filteredMatchups, prevState.requiredLeft),
-				winsDisplay: newWinsDisplay(prevState.quizMode, winnerWinPercentList[idx]),
+				totalMatchups: getTotalMatchups(prevState.minimumGames, filteredGameIds, prevState.requiredLeft),
+				totalSeen: countSeenMatchupsMinimumGames(prevState.minimumGames, filteredGameIds, prevState.requiredLeft),
+				totalGuessed: countGuessedMatchupsMinimumGames(prevState.minimumGames, filteredGameIds, prevState.requiredLeft),
+				totalScore: getTotalScore(prevState.minimumGames, filteredGameIds, prevState.requiredLeft),
+				winsDisplay: newWinsDisplay(prevState.quizMode, list[idx]),
 			};
 		}
 

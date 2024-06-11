@@ -10,7 +10,6 @@ const CharacterDropdown = ({ side }) => {
 	let { idx, minimumGames, videogameIds, requiredLeft } = useSelector((state) => state.main);
 	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let matchup = list[idx];
-
 	let [dropdownOpen, setDropdownOpen] = useState(false);
 	let [dialogErrors, setDialogErrors] = useState("");
 	let [attemptedMatchup, setAttemptedMatchup] = useState(null);
@@ -53,6 +52,7 @@ const CharacterDropdown = ({ side }) => {
 		}		
 
 		list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+		
 		let idx = searchListForMatchingMatchup(list, m);
 		dispatch({ type: "setMatchupIdx", idx:idx, requiredLeft:requiredLeft});
 		setDropdownOpen(false);
@@ -163,11 +163,11 @@ const CharacterDropdown = ({ side }) => {
 						}
 						if (dialogErrors.includes(wrongVideogameId)) {
 							dispatch({
-								type: "toggleVideogameId",
+								type: "toggleGameSelected",
 								val: attemptedMatchup.videogameId,
 							});
 						}
-						dispatch({ type: "setMatchupIdx", idx:searchListForMatchingMatchup(list, attemptedMatchup)});
+						setMatchup(attemptedMatchup);
 						setAttemptedMatchup(null);
 						errorRef.current.close();
 					}}
