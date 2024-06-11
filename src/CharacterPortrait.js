@@ -53,7 +53,10 @@ const LabeledCharacterPortrait = ({ side, lockSwitch, onClick }) => {
 				onLoad={() => setLoading(false)}
 			/>
 			{quizMode?
-				<div className="character-label">{resolvedName}</div>:
+				<div className="character-label">
+					<img className="selection-game" src={"/characters/"+matchup.videogameId+"/logo.png"} />
+					{resolvedName}
+				</div>:
 				<CharacterDropdown side={side} />
 			}
 				{lockSwitch && (

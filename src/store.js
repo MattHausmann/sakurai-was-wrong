@@ -267,7 +267,7 @@ const main_reducer = (prevState = initialState, action) => {
 				winsDisplay: action.winsDisplay,
 			};
 		case "setMatchupIdx":
-			let requiredLeft = action.requiredLeft?action.requiredLeft:prevState.requiredLeft;
+			let requiredLeft = action.requiredLeft;
 			let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 			let matchup = list[action.idx];
 			let { videogameId, left, right } = matchup;
@@ -275,6 +275,7 @@ const main_reducer = (prevState = initialState, action) => {
 			if (!(videogameId in seenMatchups)) {
 				seenMatchups[videogameId] = {};
 			}
+
 			if (!(alphabeticallyFirst in seenMatchups[videogameId])) {
 				seenMatchups[videogameId][alphabeticallyFirst] = [];
 			}
