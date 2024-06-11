@@ -242,9 +242,11 @@ export function prevMatchup(args) {
 
 export function randomMatchup(args) {
 	let {idx, minimumGames, videogameIds, requiredLeft} = args;
+	console.log(args);
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let {videogameId, left, right} = list[idx];
 	
+	console.log(videogameId, left, right);
 	
 	let minIdx = firstIndexAtOrAboveThreshold(minimumGames);
 	
@@ -255,9 +257,12 @@ export function randomMatchup(args) {
 	}
 
 	i = Math.floor(Math.random()*totalGamesListIndices) + minIdx;
-	while(!matchupSatisfiesCriteria(totalGamesList[i], minimumGames, videogameIds, requiredLeft)) {		
+	console.log(totalGamesList[i], minimumGames, videogameIds, requiredLeft);
+	while(!matchupSatisfiesCriteria(totalGamesList[i], minimumGames, videogameIds, requiredLeft)) {
 		i = Math.floor(Math.random()*totalGamesListIndices) + minIdx;
+		console.log(totalGamesList[i], minimumGames, videogameIds, requiredLeft);
 	}
+	console.log(totalGamesList[i], minimumGames, videogameIds, requiredLeft);
 	let m = totalGamesList[i];
 	if(requiredLeft == m.right) {
 		m = {videogameId: m.videogameId, left:m.right, right:m.left};

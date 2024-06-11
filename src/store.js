@@ -345,7 +345,8 @@ const main_reducer = (prevState = initialState, action) => {
 
 		case "toggleQuizMode": {
 			let requiredLeft = "";
-			let idx = action.val?randomMatchup(prevState):prevState.idx;
+			let idx = action.val?randomMatchup({...prevState,requiredLeft:""}):prevState.idx;
+			console.log(idx);
 			return {
 				...prevState,
 				quizMode: action.val,
