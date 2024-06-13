@@ -7,6 +7,7 @@ import GameSelect from "./GameSelect";
 import MatchupContainer from "./MatchupContainer";
 import MatchupSlider from "./MatchupSlider";
 import ScoreDisplay from "./ScoreDisplay";
+import MatchupScoreDisplay from "./MatchupScoreDisplay";
 
 import "./App.css";
 
@@ -57,6 +58,7 @@ const App = () => {
 					<MatchupContainer quizMode={quizMode} />
 				</div>
 				<div className="right-column" ref={rightColumnRef}>
+					<MatchupScoreDisplay />
 					<ScoreDisplay />
 				</div>
 			</div>
