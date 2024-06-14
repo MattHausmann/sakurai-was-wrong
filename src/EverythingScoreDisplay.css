@@ -1,0 +1,31 @@
+.everything-score-display {
+	width: 600px;
+	height: 20px;
+	border: 0px solid #000;
+	background-color: #ccc;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	position: relative;
+	overflow: hidden;
+}
+
+.everything-score-bar {
+	height: 100%;
+	position: absolute;
+	bottom: 0;
+	transition: width 0.5s ease-out;
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+}
+
+.total-seen {
+	background-color: #345678;
+}
+.total-guessed {
+	background-color: #123456;
+}
+.total-score {
+	background-color: #56789a;
+}
