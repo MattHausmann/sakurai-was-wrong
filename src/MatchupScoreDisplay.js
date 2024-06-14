@@ -6,8 +6,8 @@ import './MatchupScoreDisplay.css';
 const MatchupScoreDisplay = () => {
 	let { mostRecentScore, bestScore } = useSelector((state) => state.main);	
 
-	const [recentHeight, setRecentHeight] = useState(mostRecentScore * 300 / 10000);
-	const [bestHeight, setBestHeight] = useState(bestScore * 300 / 10000);
+	const [recentHeight, setRecentHeight] = useState(mostRecentScore * 100 / 10000);
+	const [bestHeight, setBestHeight] = useState(bestScore * 100 / 10000);
 
 	
 	useEffect(() => {

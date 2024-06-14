@@ -7,6 +7,7 @@ import { MatchupNavigator } from "./MatchupNavigator.js";
 import MatchupRecordDisplay from "./MatchupRecordDisplay";
 import PieChartComponent from "./PieChartComponent";
 import QuizModeSlider from "./QuizModeSlider";
+import EverythingScoreDisplay from "./EverythingScoreDisplay";
 
 import "./MatchupContainer.css";
 
@@ -55,6 +56,7 @@ const MatchupContainer = () => {
 			<div className="bottom-row">
 				{!quizMode && <MatchupNavigator requiredLeft={requiredLeft} />}
 			</div>
+			<EverythingScoreDisplay />
 		</div>
 	);
 };
