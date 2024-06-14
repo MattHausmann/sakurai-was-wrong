@@ -285,6 +285,8 @@ const main_reducer = (prevState = initialState, action) => {
 				totalSeen += 1;
 				localStorage.setItem("seenMatchups", JSON.stringify(seenMatchups));
 			}
+			
+			
 			let bestScore = 0;
 			if (videogameId in bestScorePerMatchup) {
 				if (alphabeticallyFirst in bestScorePerMatchup[videogameId]) {
@@ -293,11 +295,17 @@ const main_reducer = (prevState = initialState, action) => {
 					}
 				}
 			}
+			
+			let totalMatchups = getTotalMatchups(minimumGames, videogameIds, requiredLeft);
+
+
 
 			let mostRecentScore = scoreMatchup(matchup);
 			let totalScore = getTotalScore(minimumGames, videogameIds, requiredLeft)
 
 			let winsDisplay = [ wins[videogameId][left][right], wins[videogameId][right][left] ]
+			totalGuessed = countGuessedMatchupsMinimumGames(minimumGames, videogameIds, requiredLeft);
+			totalSeen = countSeenMatchupsMinimumGames(minimumGames, videogameIds, requiredLeft);
 
 			return {
 				...prevState,
@@ -307,7 +315,9 @@ const main_reducer = (prevState = initialState, action) => {
 				mostRecentScore: mostRecentScore,
 				totalScore: totalScore,
 				totalSeen: totalSeen,
+				totalGuessed:totalGuessed,
 				winsDisplay: winsDisplay,
+				totalMatchups: totalMatchups,
 			};
 
 		case "toggleRequiredLeft":
