@@ -29,6 +29,8 @@ const App = () => {
 			});
 		}
 	}, [quizResults]);
+	
+	useEffect(()=>{document.title = 'Sakurai Was Wrong'},[]);
 
 	return (
 		<div className="app-container">
