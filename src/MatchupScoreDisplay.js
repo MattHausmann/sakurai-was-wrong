@@ -1,15 +1,15 @@
 // src/MatchupScoreDisplay.js
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
 import './MatchupScoreDisplay.css';
 
 const MatchupScoreDisplay = () => {
-	let { mostRecentScore, bestScore } = useSelector((state) => state.main);	
+	let { mostRecentScore, bestScore } = useSelector((state) => state.main);
 
 	const [recentHeight, setRecentHeight] = useState(mostRecentScore * 100 / 10000);
 	const [bestHeight, setBestHeight] = useState(bestScore * 100 / 10000);
 
-	
+
 	useEffect(() => {
 		setBestHeight(bestScore * 100 / 10000);
 		setRecentHeight(mostRecentScore * 100 / 10000);

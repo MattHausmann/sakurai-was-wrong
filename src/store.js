@@ -245,7 +245,12 @@ initialState.totalSeen = countSeenMatchupsMinimumGames(initialState.minimumGames
 initialState.totalGuessed = countGuessedMatchupsMinimumGames(initialState.minimumGames, initialState.videogameIds);
 
 const main_reducer = (prevState = initialState, action) => {
-	let { minimumGames, videogameIds, totalSeen } = prevState;
+	let {
+		minimumGames,
+		videogameIds,
+		totalSeen,
+		totalGuessed,
+	} = prevState;
 	switch (action.type) {
 		case "setGameId":
 			return {
@@ -276,8 +281,8 @@ const main_reducer = (prevState = initialState, action) => {
 				totalSeen += 1;
 				localStorage.setItem("seenMatchups", JSON.stringify(seenMatchups));
 			}
-			
-			
+
+
 			let bestScore = 0;
 			if (videogameId in bestScorePerMatchup) {
 				if (alphabeticallyFirst in bestScorePerMatchup[videogameId]) {
@@ -286,7 +291,7 @@ const main_reducer = (prevState = initialState, action) => {
 					}
 				}
 			}
-			
+
 			let totalMatchups = getTotalMatchups(minimumGames, videogameIds, requiredLeft);
 
 
@@ -345,10 +350,8 @@ const main_reducer = (prevState = initialState, action) => {
 			};
 
 		case "toggleQuizMode": {
-			let requiredLeft = "";
 			let list = winnerWinPercentList;
 			let idx = action.val?randomMatchup({...prevState,requiredLeft:""}):prevState.idx;
-			let targetMatchup = list[idx];
 			return {
 				...prevState,
 				quizMode: action.val,
@@ -361,6 +364,7 @@ const main_reducer = (prevState = initialState, action) => {
 		case "submitGuess": {
 			let list = prevState.requiredLeft?matchupsPerCharacter[prevState.requiredLeft]:winnerWinPercentList;
 			let matchup = list[prevState.idx];
+			// eslint-disable-next-line no-unused-vars
 			let [alphabeticallyFirst, _alphabeticallyLast] = alphabetize(matchup.left, matchup.right);
 			let guess = alphabeticallyFirst === matchup.left ? prevState.winsDisplay[0] : prevState.winsDisplay[1];
 			return mutateStateFromGuess(prevState, matchup, guess);
@@ -382,7 +386,7 @@ const main_reducer = (prevState = initialState, action) => {
 			}
 
 
-			
+
 
 			newState = {
 				...newState,
@@ -444,8 +448,8 @@ const main_reducer = (prevState = initialState, action) => {
 		}
 
 		case "forceToggleGameSelected": {
-			let {videogameIds, requiredLeft} = prevState;
-			
+			let {requiredLeft} = prevState;
+
 			let filteredGameIds = [...prevState.videogameIds].filter((e) => e !== action.val);
 			if (prevState.videogameIds.length === 0) {
 				filteredGameIds = [action.val];

@@ -54,7 +54,7 @@ const LabeledCharacterPortrait = ({ side, lockSwitch, onClick }) => {
 			/>
 			{quizMode?
 				<div className="character-label">
-					<img className="selection-game" src={"/characters/"+matchup.videogameId+"/logo.png"} />
+					<img className="selection-game" src={"/characters/"+matchup.videogameId+"/logo.png"} alt={resolvedName} />
 					{resolvedName}
 				</div>:
 				<CharacterDropdown side={side} />
