@@ -14,6 +14,7 @@ import "./App.css";
 const App = () => {
 	const dispatch = useDispatch();
 	const { quizMode, quizResults } = useSelector((state) => state.main);
+	const rightColumnRef = useRef(null);
 	const dialogRef = useRef();
 
 	useEffect(() => {
@@ -24,7 +25,7 @@ const App = () => {
 			});
 		}
 	}, [quizResults]);
-	
+
 	useEffect(()=>{document.title = 'Sakurai Was Wrong'},[]);
 
 	return (
