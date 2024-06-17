@@ -243,11 +243,25 @@ export function prevMatchup(args) {
 export function randomMatchup(args) {
 	let {idx, minimumGames, videogameIds, requiredLeft} = args;
 	let list=requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
-	let i = Math.floor(Math.random()*list.length);
-	while(i == idx || !matchupSatisfiesCriteria(list[i], minimumGames, videogameIds)) {
-		i = Math.floor(Math.random()*list.length);
+	let {videogameId, left, right} = list[idx];
+		
+	let minIdx = firstIndexAtOrAboveThreshold(minimumGames);
+	
+	let i = minIdx;
+	let totalGamesListIndices = totalGamesList.length - minIdx;
+	if(getTotalMatchups(minimumGames, videogameIds, requiredLeft)==1){
+		return searchListForMatchingMatchup(list, totalGamesList[i]);
 	}
-	return i;
+
+	i = Math.floor(Math.random()*totalGamesListIndices) + minIdx;
+	while(!matchupSatisfiesCriteria(totalGamesList[i], minimumGames, videogameIds, requiredLeft)) {
+		i = Math.floor(Math.random()*totalGamesListIndices) + minIdx;
+	}
+	let m = totalGamesList[i];
+	if(requiredLeft == m.right) {
+		m = {videogameId: m.videogameId, left:m.right, right:m.left};
+	}
+	return searchListForMatchingMatchup(list, m);
 }
 
 export function randomQuizQuestion(args) {
@@ -351,7 +365,7 @@ export function MatchupNavigator() {
 				<button
 					className="button"
 					disabled={firstMatchup(args) === -1}
-					onClick={() => {dispatch({ type: "setMatchupIdx", idx:firstMatchup(args)});}}
+					onClick={() => {dispatch({ type: "setMatchupIdx", idx:firstMatchup(args), requiredLeft: requiredLeft});}}
 					style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 				>
 					First
@@ -359,7 +373,7 @@ export function MatchupNavigator() {
 				<button
 					className="button"
 					disabled={prevMatchup(args) === -1}
-					onClick={() => {dispatch({ type: "setMatchupIdx", idx:prevMatchup(args)});}}
+					onClick={() => {dispatch({ type: "setMatchupIdx", idx:prevMatchup(args), requiredLeft: requiredLeft});}}
 					style={{visibility:leftButtonsVisible(args)?'visible':'hidden'}}
 				>
 					Previous
@@ -368,7 +382,7 @@ export function MatchupNavigator() {
 				<button
 					className="button"
 					onClick={() => {
-						dispatch({ type: "setMatchupIdx", idx:randomMatchup(args)});
+						dispatch({ type: "setMatchupIdx", idx:randomMatchup(args), requiredLeft: requiredLeft});
 					}}
 				>
 					New
@@ -376,7 +390,7 @@ export function MatchupNavigator() {
 				<button
 					className="button"
 					disabled={nextMatchup(args) === -1}
-					onClick={() => {dispatch({ type: "setMatchupIdx", idx:nextMatchup(args)});}}
+					onClick={() => {dispatch({ type: "setMatchupIdx", idx:nextMatchup(args), requiredLeft: requiredLeft});}}
 					style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 				>
 					Next
@@ -384,7 +398,7 @@ export function MatchupNavigator() {
 				<button
 					className="button"
 					disabled={lastMatchup(args) === -1}
-					onClick={() => {dispatch({ type: "setMatchupIdx", idx:lastMatchup(args)});}}
+					onClick={() => {dispatch({ type: "setMatchupIdx", idx:lastMatchup(args), requiredLeft: requiredLeft});}}
 					style={{visibility:rightButtonsVisible(args)?'visible':'hidden'}}
 				>
 					Last

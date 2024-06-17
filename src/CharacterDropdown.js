@@ -10,7 +10,6 @@ const CharacterDropdown = ({ side }) => {
 	let { idx, minimumGames, videogameIds, requiredLeft } = useSelector((state) => state.main);
 	let list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
 	let matchup = list[idx];
-
 	let [dropdownOpen, setDropdownOpen] = useState(false);
 	let [dialogErrors, setDialogErrors] = useState("");
 	let [attemptedMatchup, setAttemptedMatchup] = useState(null);
@@ -45,14 +44,15 @@ const CharacterDropdown = ({ side }) => {
 		let {left,right, videogameId} = m;
 		let leftWins = wins[videogameId][left][right];
 		let rightWins = wins[videogameId][right][left];
-		if(requiredLeft) {
-			requiredLeft = left;
+		if(![left, right].includes(requiredLeft)) {
+			requiredLeft = "";
 		}
 		if(rightWins > leftWins) {
-			requiredLeft = right;
-			m = {videogameId, right:left, left:right};
-		}
+			requiredLeft = left;
+		}		
+
 		list = requiredLeft?matchupsPerCharacter[requiredLeft]:winnerWinPercentList;
+		
 		let idx = searchListForMatchingMatchup(list, m);
 		dispatch({ type: "setMatchupIdx", idx:idx, requiredLeft:requiredLeft});
 		setDropdownOpen(false);
@@ -131,14 +131,12 @@ const CharacterDropdown = ({ side }) => {
 						key={m.videogameId+m.right}
 						className={`dropdown-item ${getErrors(m) ? "errors" : ""}`}
 						onClick={() => {
+							if(side === "left") {
+								m = {videogameId:m.videogameId, left:m.right, right:m.left};
+							}
 							if (getErrors(m)) {
 								showErrorDialog(getErrors(m), m);
 							} else {
-								if (side === "left") {
-									let oldLeft = m.left;
-									m.left = m.right;
-									m.right = oldLeft;
-								}
 								setMatchup(m);
 							}
 						}}
@@ -165,11 +163,11 @@ const CharacterDropdown = ({ side }) => {
 						}
 						if (dialogErrors.includes(wrongVideogameId)) {
 							dispatch({
-								type: "toggleVideogameId",
+								type: "toggleGameSelected",
 								val: attemptedMatchup.videogameId,
 							});
 						}
-						dispatch({ type: "setMatchupIdx", idx:searchListForMatchingMatchup(list, attemptedMatchup)});
+						setMatchup(attemptedMatchup);
 						setAttemptedMatchup(null);
 						errorRef.current.close();
 					}}

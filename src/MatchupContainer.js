@@ -7,12 +7,13 @@ import { MatchupNavigator } from "./MatchupNavigator.js";
 import MatchupRecordDisplay from "./MatchupRecordDisplay";
 import PieChartComponent from "./PieChartComponent";
 import QuizModeSlider from "./QuizModeSlider";
+import EverythingScoreDisplay from "./EverythingScoreDisplay";
 
 import "./MatchupContainer.css";
 
 const MatchupContainer = () => {
 	const dispatch = useDispatch();
-	const { displayQuizResults, quizMode, winsDisplay, lockLeft } = useSelector(
+	const { displayQuizResults, quizMode, winsDisplay, requiredLeft } = useSelector(
 		(state) => state.main
 	);
 	const [pieChartDisplay, setPieChartDisplay] = useState(winsDisplay);
@@ -32,7 +33,7 @@ const MatchupContainer = () => {
 					lockSwitch={!quizMode}
 					side={"left"}
 					onClick={() => {
-						dispatch({ type: "toggleLockLeft" });
+						dispatch({ type: "toggleRequiredLeft" });
 					}}
 				/>
 				<div className="matchup-container-center">
@@ -53,8 +54,9 @@ const MatchupContainer = () => {
 				<LabeledCharacterPortrait side={"right"} />
 			</div>
 			<div className="bottom-row">
-				{!quizMode && <MatchupNavigator lockLeft={lockLeft} />}
+				{!quizMode && <MatchupNavigator requiredLeft={requiredLeft} />}
 			</div>
+			<EverythingScoreDisplay />
 		</div>
 	);
 };

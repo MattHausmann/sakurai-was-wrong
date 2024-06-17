@@ -69,6 +69,7 @@ function MatchupSlider() {
 		setSliderValue(newIndex);
 		dispatch({ type: "setMinimumGames", val: minGames });
 		confirmRef.current.close();
+		cannotChangeRef.current.close();
 		setConfirming(false);
 	};
 
