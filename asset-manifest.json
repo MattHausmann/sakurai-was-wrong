@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/sakurai-was-wrong/static/css/main.ef7d6112.css",
-    "main.js": "/sakurai-was-wrong/static/js/main.26873b92.js",
+    "main.js": "/sakurai-was-wrong/static/js/main.e78e9996.js",
     "static/js/453.9755256b.chunk.js": "/sakurai-was-wrong/static/js/453.9755256b.chunk.js",
     "index.html": "/sakurai-was-wrong/index.html",
     "main.ef7d6112.css.map": "/sakurai-was-wrong/static/css/main.ef7d6112.css.map",
-    "main.26873b92.js.map": "/sakurai-was-wrong/static/js/main.26873b92.js.map",
+    "main.e78e9996.js.map": "/sakurai-was-wrong/static/js/main.e78e9996.js.map",
     "453.9755256b.chunk.js.map": "/sakurai-was-wrong/static/js/453.9755256b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ef7d6112.css",
-    "static/js/main.26873b92.js"
+    "static/js/main.e78e9996.js"
   ]
 }
