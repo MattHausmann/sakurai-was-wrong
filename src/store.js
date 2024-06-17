@@ -355,37 +355,58 @@ const main_reducer = (prevState = initialState, action) => {
 
 		case "toggleQuizMode": {
 			let requiredLeft = "";
+			let list = winnerWinPercentList;
 			let idx = action.val?randomMatchup({...prevState,requiredLeft:""}):prevState.idx;
-			console.log(idx);
+			let targetMatchup = list[idx];
 			return {
 				...prevState,
 				quizMode: action.val,
-				winsDisplay: newWinsDisplay(action.val, winnerWinPercentList[idx]),
+				winsDisplay: newWinsDisplay(action.val, list[idx]),
 				idx,
 				displayQuizResults: false,
 				requiredLeft:"",
 			};
 		}
 		case "submitGuess": {
-			let matchup = winnerWinPercentList[prevState.idx]
+			let list = prevState.requiredLeft?matchupsPerCharacter[prevState.requiredLeft]:winnerWinPercentList;
+			let matchup = list[prevState.idx];
 			let [alphabeticallyFirst, _alphabeticallyLast] = alphabetize(matchup.left, matchup.right);
 			let guess = alphabeticallyFirst === matchup.left ? prevState.winsDisplay[0] : prevState.winsDisplay[1];
 			let newGuessedMatchups = mutateStateFromGuess(prevState, matchup, guess);
 			return newGuessedMatchups;
 		}
 
+
 		case "resetQuizSubmitDisplay": {
-			let newIdx = randomMatchup(prevState);
-			let newMatchup = winnerWinPercentList[newIdx];
-			return {
-				...prevState,
+			let newState = {...prevState, requiredLeft: ""};
+			let idx = randomMatchup({...prevState, requiredLeft:""});
+			let list = winnerWinPercentList;
+			let m = list[idx];
+			let {videogameId, left, right} = m;
+			let flipped = Math.random() <= .5;
+			if(flipped) {
+				list = matchupsPerCharacter[right];
+				m = {videogameId, left:right, right:left};
+				idx = searchListForMatchingMatchup(list, m);
+				newState.requiredLeft = m.left;
+			}
+
+
+			
+
+			newState = {
+				...newState,
 				displayQuizResults: false,
-				idx: newIdx,
-				mostRecentScore: scoreMatchup(newMatchup),
-				winsDisplay: newWinsDisplay(prevState.quizMode, newMatchup),
-				bestScore: getBestScore(newMatchup),
+				requiredLeft:flipped?m.left:"",
+				idx: idx,
+				mostRecentScore: scoreMatchup(m),
+				winsDisplay: newWinsDisplay(prevState.quizMode, m),
+				bestScore: getBestScore(m),
 			};
+			return newState;
 		}
+
+
 		case "setMinimumGames": {
 			let requiredLeft = prevState.requiredLeft;
 			return {

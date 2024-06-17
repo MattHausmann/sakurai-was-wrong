@@ -20,8 +20,6 @@ const EverythingScoreDisplay = () => {
 		setTotalSeenScoreWidth(maxTotalSeenScore * 600 / maxTotalScore);
 		setTotalGuessedScoreWidth(maxTotalGuessedScore * 600 / maxTotalScore);
 	}, [totalScore, totalGuessed, totalSeen, totalMatchups]);
-
-	console.log(totalSeenScoreWidth, totalGuessedScoreWidth, totalScoreWidth);
 	
 	return (
 		<div className="everything-score-display">

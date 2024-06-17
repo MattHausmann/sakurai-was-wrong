@@ -33,6 +33,9 @@ const App = () => {
 	return (
 		<div className="app-container">
 			<div className="app-header">
+			<br />
+			<br />
+			<br />
 				<button
 					id="settingsButton"
 					onClick={() => dialogRef.current.showModal()}
@@ -49,12 +52,14 @@ const App = () => {
 			</div>
 			<div className="app-content">
 				<div className="left-column">
+					<span>Browse Mode</span>
 					<Switch
 						onChange={(e) => {
 							dispatch({ type: "toggleQuizMode", val: e.target.checked });
 						}}
 						value={quizMode}
 					/>
+					<span>Quiz Mode</span>
 					<MatchupContainer quizMode={quizMode} />
 				</div>
 				<div className="right-column" ref={rightColumnRef}>

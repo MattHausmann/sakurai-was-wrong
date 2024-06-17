@@ -21,6 +21,8 @@ const MatchupScoreDisplay = () => {
 			</div>
 			<div className="score-bar recent-score" style={{ height: `${recentHeight}%` }}>
 			</div>
+			<div className = "score-bar guessed-score" style= {{ height:`${0}%` }}>
+			</div>
 		</div>
 	);
 };
